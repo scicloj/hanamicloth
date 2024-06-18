@@ -1,0 +1,7 @@
+{:remote-repo {:git-url "https://github.com/scicloj/hanacloth"
+               :branch "main"}
+ :quarto {:format {:html {:toc true
+                          :toc-depth 4
+                          :theme [:cosmo "notebooks/custom.scss"]}}
+          :fontsize "0.9em"}
+ :base-target-path "temp"}
