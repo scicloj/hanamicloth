@@ -176,11 +176,10 @@
             subs)
      ;; else - the context is already a template
      (-> context
-         (merge ht/layer-chart)
-         (update-in [::ht/defaults :LAYER]
+         (update-in [::ht/defaults :hana/layer]
                     (comp vec conj)
                     (assoc template
-                           :data ht/data-options
+                           :data :hana/data
                            ::ht/defaults (merge default-extenstions
                                                 subs)))))))
 
