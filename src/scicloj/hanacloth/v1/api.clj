@@ -30,20 +30,22 @@
      (stat submap)
      @dataset)))
 
-(defn column->submap->vega-lite-type [colname]
+(defn submap->vega-lite-type [colname-key]
   (fn [{:as submap
         :keys [hana/dataset]}]
-    (let [column (dataset colname)]
-      (cond (tcc/typeof? column :numerical) :quantitative
-            (tcc/typeof? column :datetime) :temporal
-            :else :nominal))))
+    (let [colname (submap colname-key)]
+      (if (= colname hc/RMV)
+        hc/RMV
+        (let [column (@dataset colname)]
+          (cond (tcc/typeof? column :numerical) :quantitative
+                (tcc/typeof? column :datetime) :temporal
+                :else :nominal))))))
 
 (def encoding-base
   {:color {:field :hana/color
            :type :hana/color-type}
    :size {:field :hana/size
-          :type :hana/size-type}
-   :tooltip :hana/tooltip})
+          :type :hana/size-type}})
 
 (def xy-encoding
   (assoc encoding-base
@@ -58,7 +60,8 @@
    :DFMT {:type "csv"}
    ;; defaults for hanamicloth templates
    :hana/csv-data submap->csv
-   :hana/data :hana/csv-data
+   :hana/data {:values :hana/csv-data
+               :format {:type "csv"}}
    :hana/opacity hc/RMV
    :hana/row hc/RMV
    :hana/column hc/RMV
@@ -66,13 +69,13 @@
    :hana/y :y
    :hana/color hc/RMV
    :hana/size hc/RMV
-   :hana/tooltip true
-   :hana/x-type (column->submap->vega-lite-type :hana/x)
-   :hana/y-type (column->submap->vega-lite-type :hana/y)
-   :hana/color-type (column->submap->vega-lite-type :hana/color)
-   :hana/size-type (column->submap->vega-lite-type :hana/size)
+   :hana/x-type (submap->vega-lite-type :hana/x)
+   :hana/y-type (submap->vega-lite-type :hana/y)
+   :hana/color-type (submap->vega-lite-type :hana/color)
+   :hana/size-type (submap->vega-lite-type :hana/size)
    :hana/renderer :svg
    :hana/usermeta {:embedOptions {:renderer :hana/renderer}}
+   :hana/title hc/RMV
    :hana/encoding xy-encoding
    :hana/height 300
    :hana/width 400
@@ -80,17 +83,19 @@
    :hana/mark "circle"
    :hana/mark-color hc/RMV
    :hana/mark-size hc/RMV
-   :hana/mark-tooltip hc/RMV
-   :hana/layer hc/RMV})
+   :hana/mark-tooltip true
+   :hana/layer []})
+
 
 (def view-base
   {:usermeta :hana/usermeta
    :title :hana/title
-   :height :hana/HEIGHT
-   :width :hana/WIDTH
+   :height :hana/height
+   :width :hana/width
    :background :hana/background
    :data :hana/data
-   :encoding :hana/encoding})
+   :encoding :hana/encoding
+   :layer :hana/layer})
 
 (def mark-base
   {:type :hana/mark,
@@ -98,34 +103,14 @@
    :size :hana/mark-size
    :tooltip :hana/mark-tooltip})
 
-(def bar-layer
-  {:mark (assoc mark-base :type "bar")
-   :encoding :hana/encoding})
-
-(def line-layer
-  {:mark (assoc mark-base :type "line")
-   :encoding :hana/encoding})
-
-(def point-layer
-  {:mark (assoc mark-base :type "circle")
-   :encoding :hana/encoding})
-
-(def bar-chart
+(defn mark-based-chart [mark]
   (assoc view-base
-         :mark (merge mark-base {:type "bar"})))
+         :mark (merge mark-base {:type mark})))
 
-(def line-chart
-  (assoc view-base
-         :mark (merge mark-base {:type "line"})))
-
-(def point-chart
-  (assoc view-base
-         :mark (merge mark-base {:type "circle"})))
-
-(def area-chart
-  (assoc view-base
-         :mark (merge mark-base {:type "area"})))
-
+(def bar-chart (mark-based-chart "bar"))
+(def line-chart (mark-based-chart "line"))
+(def point-chart (mark-based-chart "circle"))
+(def area-chart (mark-based-chart "area"))
 
 (deftype WrappedValue [value]
   clojure.lang.IDeref
@@ -138,7 +123,8 @@
 (defn vega-lite-xform [template]
   (-> template
       hc/xform
-      kind/vega-lite))
+      kind/vega-lite
+      (dissoc :kindly/f)))
 
 (defn base
   ([dataset-or-template]
@@ -178,24 +164,27 @@
      (-> context
          (update-in [::ht/defaults :hana/layer]
                     (comp vec conj)
+                    template
                     (assoc template
                            :data :hana/data
                            ::ht/defaults (merge default-extenstions
                                                 subs)))))))
 
+(defn mark-based-layer [mark]
+  (fn
+    ([context]
+     (layer-point context {}))
+    ([context submap]
+     (layer context
+            {:mark mark-base
+             :encoding :hana/encoding}
+            (merge {:hana/mark mark}
+                   submap)))))
 
-(defn layer-point
-  ([context]
-   (layer-point context {}))
-  ([context submap]
-   (layer context ht/point-layer submap)))
-
-(defn layer-line
-  ([context]
-   (layer-line context {}))
-  ([context submap]
-   (layer context ht/line-layer submap)))
-
+(def layer-point (mark-based-layer "circle"))
+(def layer-line (mark-based-layer "line"))
+(def layer-bar (mark-based-layer "bar"))
+(def layer-area (mark-based-layer "area"))
 
 (def smooth-stat
   (fn [{:as submap

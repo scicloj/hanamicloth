@@ -1,35 +1,42 @@
 (ns walkthrough
   (:require [scicloj.hanacloth.v1.api :as hana]
             [scicloj.metamorph.ml.toydata :as toydata]
-            [scicloj.metamorph.ml.toydata.ggplot :as toydata.ggplot]))
+            [scicloj.metamorph.ml.toydata.ggplot :as toydata.ggplot]
+            [aerial.hanami.templates :as ht]
+            [aerial.hanami.common :as hc]))
 
+(-> (toydata/iris-ds)
+    (hana/base ht/point-chart
+               {:X :sepal_width
+                :Y :sepal_length
+                :MSIZE 200}))
 
-(delay
-  (-> (toydata/iris-ds)
-      (hana/base ht/point-chart
-                 {:X :sepal_width
-                  :Y :sepal_length
-                  :MSIZE 200})))
+(-> (toydata/iris-ds)
+    (hana/base hana/point-chart
+               #:hana{:x :sepal_width
+                      :y :sepal_length
+                      :mark-size 200}))
 
-(delay
-  (-> (toydata/iris-ds)
-      (hana/base {:X :sepal_width
-                  :Y :sepal_length
-                  :MSIZE 200})
-      layer-point))
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:x :sepal_width
+                      :y :sepal_length
+                      :mark-size 200})
+    hana/layer-point
+    ;; hana/plot
+    )
 
 (delay
   (-> (toydata/iris-ds)
       (hana/base {:X :sepal_width
                   :Y :sepal_length})
-      (layer-point {:MSIZE 200})))
+      (hana/layer-point {:MSIZE 200})))
 
 (delay
   (-> (toydata/iris-ds)
       (hana/base)
-      (layer-point {:X :sepal_width
-                    :Y :sepal_length
-                    :MSIZE 200})))
+      (hana/layer-point {:X :sepal_width
+                         :Y :sepal_length
+                         :MSIZE 200})))
 
 (delay
   (-> (toydata/iris-ds)
@@ -37,7 +44,7 @@
                   :MCOLOR "green"
                   :X :sepal_width
                   :Y :sepal_length})
-      (layer-point
+      (hana/layer-point
        {:MSIZE 100})
       (layer-line
        {:MSIZE 4
@@ -52,7 +59,7 @@
                   :X :sepal_width
 
                   :Y :sepal_length})
-      (layer-point {:MSIZE 100})
+      (hana/layer-point {:MSIZE 100})
       (layer-line {:MSIZE 4
                    :MCOLOR "brown"})
       (update-data tc/random 20)
@@ -64,16 +71,16 @@
       (tc/select-columns [:sepal_width :sepal_length])
       (hana/base {:X :sepal_width
                   :Y :sepal_length})
-      layer-point
+      hana/layer-point
       layer-smooth))
 
 (delay
   (-> (toydata/iris-ds)
       (hana/base {:X :sepal_width
-             :Y :sepal_length
-             :COLOR "species"
-             :hana/group [:species]})
-      layer-point
+                  :Y :sepal_length
+                  :COLOR "species"
+                  :hana/group [:species]})
+      hana/layer-point
       layer-smooth))
 
 (delay
@@ -86,15 +93,15 @@
       (hana/base {:X :sepal_width
                   :Y :sepal_length
                   :COLOR "relative-time"})
-      layer-point
+      hana/layer-point
       layer-smooth))
 
 
 (delay
   (-> (toydata/iris-ds)
       (hana/base {:X :sepal_width
-             :Y :sepal_length})
-      layer-point
+                  :Y :sepal_length})
+      hana/layer-point
       (layer-smooth {:predictors [:petal_width
                                   :petal_length]})))
 
