@@ -4,7 +4,8 @@
             [scicloj.metamorph.ml.toydata.ggplot :as toydata.ggplot]
             [aerial.hanami.templates :as ht]
             [aerial.hanami.common :as hc]
-            [tablecloth.api :as tc]))
+            [tablecloth.api :as tc]
+            [tablecloth.column.api :as tcc]))
 
 (-> (toydata/iris-ds)
     (hana/base ht/point-chart
@@ -78,17 +79,17 @@
                       :x :sepal_width
                       :y :sepal_length})
     hana/layer-point
-    hana/layer-smooth
-    hana/plot)
+    (hana/layer-smooth #:hana{:mark-color "orange"}))
 
-;; (delay
-;;   (-> (toydata/iris-ds)
-;;       (hana/base {:X :sepal_width
-;;                   :Y :sepal_length
-;;                   :COLOR "species"
-;;                   :hana/group [:species]})
-;;       hana/layer-point
-;;       hana/layer-smooth))
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:title "dummy"
+                      :mark-color "green"
+                      :color :species
+                      :group [:species]
+                      :x :sepal_width
+                      :y :sepal_length})
+    hana/layer-point
+    hana/layer-smooth)
 
 ;; (delay
 ;;   (-> (toydata/iris-ds)
