@@ -81,67 +81,67 @@
     hana/layer-smooth
     hana/plot)
 
-(delay
-  (-> (toydata/iris-ds)
-      (hana/base {:X :sepal_width
-                  :Y :sepal_length
-                  :COLOR "species"
-                  :hana/group [:species]})
-      hana/layer-point
-      hana/layer-smooth))
+;; (delay
+;;   (-> (toydata/iris-ds)
+;;       (hana/base {:X :sepal_width
+;;                   :Y :sepal_length
+;;                   :COLOR "species"
+;;                   :hana/group [:species]})
+;;       hana/layer-point
+;;       hana/layer-smooth))
 
-(delay
-  (-> (toydata/iris-ds)
-      (tc/concat (tc/dataset {:sepal_width (range 4 10)
-                              :sepal_length (repeat 6 nil)}))
-      (tc/map-columns :relative-time
-                      [:sepal_length]
-                      #(if % "Past" "Future"))
-      (hana/base {:X :sepal_width
-                  :Y :sepal_length
-                  :COLOR "relative-time"})
-      hana/layer-point
-      hana/layer-smooth))
-
-
-(delay
-  (-> (toydata/iris-ds)
-      (hana/base {:X :sepal_width
-                  :Y :sepal_length})
-      hana/layer-point
-      (hana/layer-smooth {:predictors [:petal_width
-                                       :petal_length]})))
+;; (delay
+;;   (-> (toydata/iris-ds)
+;;       (tc/concat (tc/dataset {:sepal_width (range 4 10)
+;;                               :sepal_length (repeat 6 nil)}))
+;;       (tc/map-columns :relative-time
+;;                       [:sepal_length]
+;;                       #(if % "Past" "Future"))
+;;       (hana/base {:X :sepal_width
+;;                   :Y :sepal_length
+;;                   :COLOR "relative-time"})
+;;       hana/layer-point
+;;       hana/layer-smooth))
 
 
-(def random-walk
-  (let [n 20]
-    (-> {:x (range n)
-         :y (->> (repeatedly n #(- (rand) 0.5))
-                 (reductions +))}
-        tc/dataset)))
-
-(-> random-walk
-    (hana/plot ht/point-chart
-               {:MSIZE 200}))
-
-(-> random-walk
-    (hana/plot ht/point-chart
-               {:MSIZE 200})
-    kind/pprint)
+;; (delay
+;;   (-> (toydata/iris-ds)
+;;       (hana/base {:X :sepal_width
+;;                   :Y :sepal_length})
+;;       hana/layer-point
+;;       (hana/layer-smooth {:predictors [:petal_width
+;;                                        :petal_length]})))
 
 
-(-> toydata.ggplot/mtcars
-    (hana/plot ht/boxplot-chart
-               {:X :gear
-                :XTYPE :nominal
-                :Y :mpg}))
+;; (def random-walk
+;;   (let [n 20]
+;;     (-> {:x (range n)
+;;          :y (->> (repeatedly n #(- (rand) 0.5))
+;;                  (reductions +))}
+;;         tc/dataset)))
 
-(-> (toydata/iris-is)
-    (hana/plot ht/rule-chart
-               {:X :sepal-width
-                :Y :sepal-length
-                :X2 :petal-width
-                :Y2 :petal-length
-                :OPACITY 0.2
-                :SIZE 3
-                :COLOR "species"}))
+;; (-> random-walk
+;;     (hana/plot ht/point-chart
+;;                {:MSIZE 200}))
+
+;; (-> random-walk
+;;     (hana/plot ht/point-chart
+;;                {:MSIZE 200})
+;;     kind/pprint)
+
+
+;; (-> toydata.ggplot/mtcars
+;;     (hana/plot ht/boxplot-chart
+;;                {:X :gear
+;;                 :XTYPE :nominal
+;;                 :Y :mpg}))
+
+;; (-> (toydata/iris-is)
+;;     (hana/plot ht/rule-chart
+;;                {:X :sepal-width
+;;                 :Y :sepal-length
+;;                 :X2 :petal-width
+;;                 :Y2 :petal-length
+;;                 :OPACITY 0.2
+;;                 :SIZE 3
+;;                 :COLOR "species"}))
