@@ -1,4 +1,4 @@
-(ns walkthrough
+(ns hanacloth.walkthrough
   (:require [scicloj.hanacloth.v1.api :as hana]
             [scicloj.metamorph.ml.toydata :as toydata]
             [scicloj.metamorph.ml.toydata.ggplot :as toydata.ggplot]
