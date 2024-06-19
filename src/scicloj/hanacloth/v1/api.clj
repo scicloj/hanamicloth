@@ -182,7 +182,7 @@
 (defn mark-based-layer [mark]
   (fn
     ([context]
-     (layer-point context {}))
+     (mark-based-layer context {}))
     ([context submap]
      (layer context
             {:mark mark-base
