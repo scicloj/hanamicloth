@@ -38,7 +38,8 @@
     (let [colname (submap colname-key)]
       (if (nonrmv? colname)
         (let [column (@dataset colname)]
-          (cond (tcc/typeof? column :numerical) :quantitative
+          (cond (and (tcc/typeof? column :numerical)
+                     (not (tcc/typeof? column :integer))) :quantitative
                 (tcc/typeof? column :datetime) :temporal
                 :else :nominal))
         hc/RMV))))
