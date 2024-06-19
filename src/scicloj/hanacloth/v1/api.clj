@@ -180,9 +180,9 @@
 
 
 (defn mark-based-layer [mark]
-  (fn
+  (fn f
     ([context]
-     (mark-based-layer context {}))
+     (f context {}))
     ([context submap]
      (layer context
             {:mark mark-base
