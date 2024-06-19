@@ -1,0 +1,32 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Hanacloth",
+    "section": "",
+    "text": "1 Preface\nHanacloth is a composition of Hanami data visualizations and Tablecloth datasets",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Preface</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#existing-chapters-in-this-book",
+    "href": "index.html#existing-chapters-in-this-book",
+    "title": "Hanacloth",
+    "section": "1.1 Existing chapters in this book:",
+    "text": "1.1 Existing chapters in this book:\n\nwalkthrough\n\n\nsource: notebooks/index.clj",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Preface</span>"
+    ]
+  },
+  {
+    "objectID": "hanacloth.walkthrough.html",
+    "href": "hanacloth.walkthrough.html",
+    "title": "Hanacloth",
+    "section": "",
+    "text": "(ns hanacloth.walkthrough\n  (:require [scicloj.hanacloth.v1.api :as hana]\n            [scicloj.metamorph.ml.toydata :as toydata]\n            [scicloj.metamorph.ml.toydata.ggplot :as toydata.ggplot]\n            [aerial.hanami.templates :as ht]\n            [aerial.hanami.common :as hc]\n            [tablecloth.api :as tc]))\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base ht/point-chart\n               {:X :sepal_width\n                :Y :sepal_length\n                :MSIZE 200}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base hana/point-chart\n               #:hana{:x :sepal_width\n                      :y :sepal_length\n                      :mark-size 200}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:x :sepal_width\n                      :y :sepal_length\n                      :mark-size 200})\n    hana/layer-point)\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/layer-point #:hana{:x :sepal_width\n                             :y :sepal_length\n                             :mark-size 200}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:x :sepal_width\n                      :y :sepal_length})\n    (hana/layer-point #:hana{:mark-size 300}))\n\n\n\n(delay\n  (-&gt; (toydata/iris-ds)\n      (hana/base #:hana{:title \"dummy\"\n                        :mark-color \"green\"\n                        :x :sepal_width\n                        :y :sepal_length})\n      (hana/layer-line #:hana{:mark-size 4\n                              :mark-color \"brown\"})\n      (hana/layer-point #:hana{:mark-size 200})))\n\n\n\n(delay\n  (-&gt; (toydata/iris-ds)\n      (hana/base #:hana{:title \"dummy\"\n                        :mark-color \"green\"\n                        :x :sepal_width\n                        :y :sepal_length})\n      (hana/layer-line #:hana{:mark-size 4\n                              :mark-color \"brown\"})\n      (hana/update-data tc/random 5)\n      (hana/layer-point #:hana{:mark-size 200})))\n\n\n\n(delay\n  (-&gt; (toydata/iris-ds)\n      (hana/base #:hana{:title \"dummy\"\n                        :mark-color \"green\"\n                        :x :sepal_width\n                        :y :sepal_length})\n      (hana/layer-line #:hana{:mark-size 4\n                              :mark-color \"brown\"})\n      (hana/layer-line {:MSIZE 4\n                        :MCOLOR \"brown\"})\n      (hana/update-data tc/random 20)\n      (hana/layer-point #:hana{:mark-size 200})\n      hana/plot\n      (assoc :background \"lightgrey\")))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:title \"dummy\"\n                      :mark-color \"green\"\n                      :x :sepal_width\n                      :y :sepal_length})\n    hana/layer-point\n    hana/layer-smooth\n    hana/plot)\n\n\n(delay (-&gt; (toydata/iris-ds) (hana/base {:X :sepal_width :Y :sepal_length :COLOR “species” :hana/group [:species]}) hana/layer-point hana/layer-smooth))\n(delay (-&gt; (toydata/iris-ds) (tc/concat (tc/dataset {:sepal_width (range 4 10) :sepal_length (repeat 6 nil)})) (tc/map-columns :relative-time [:sepal_length]\n#(if % “Past” “Future”)) (hana/base {:X :sepal_width :Y :sepal_length :COLOR “relative-time”}) hana/layer-point hana/layer-smooth))\n(delay (-&gt; (toydata/iris-ds) (hana/base {:X :sepal_width :Y :sepal_length}) hana/layer-point (hana/layer-smooth {:predictors [:petal_width :petal_length]})))\n(def random-walk (let [n 20] (-&gt; {:x (range n) :y (-&gt;&gt; (repeatedly n #(- (rand) 0.5)) (reductions +))} tc/dataset)))\n(-&gt; random-walk (hana/plot ht/point-chart {:MSIZE 200}))\n(-&gt; random-walk (hana/plot ht/point-chart {:MSIZE 200}) kind/pprint)\n(-&gt; toydata.ggplot/mtcars (hana/plot ht/boxplot-chart {:X :gear :XTYPE :nominal :Y :mpg}))\n(-&gt; (toydata/iris-is) (hana/plot ht/rule-chart {:X :sepal-width :Y :sepal-length :X2 :petal-width :Y2 :petal-length :OPACITY 0.2 :SIZE 3 :COLOR “species”}))\n\nsource: notebooks/hanacloth/walkthrough.clj",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>hanacloth.walkthrough.html</span>"
+    ]
+  }
+]
