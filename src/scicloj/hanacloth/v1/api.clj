@@ -54,7 +54,7 @@
          :y {:field :hana/y
              :type :hana/y-type}))
 
-(def default-extenstions
+(def standard-defaults
   {;; defaults for original Hanami templates
    :VALDATA :hana/csv-data
    :DFMT {:type "csv"}
@@ -134,7 +134,7 @@
    (if (tc/dataset? dataset-or-template)
      ;; a dataest
      (base dataset-or-template
-           ht/view-base
+           view-base
            submap)
      ;; a template
      (-> dataset-or-template
@@ -145,7 +145,7 @@
   ([dataset template submap]
    (-> template
        (update ::ht/defaults merge
-               default-extenstions
+               standard-defaults
                (dataset->defaults dataset))
        (base submap))))
 
@@ -155,20 +155,25 @@
        vega-lite-xform))
 
 (defn layer
-  ([context template subs]
+  ([context template submap]
    (if (tc/dataset? context)
      (layer (base context {})
             template
-            subs)
+            submap)
      ;; else - the context is already a template
      (-> context
-         (update-in [::ht/defaults :hana/layer]
-                    (comp vec conj)
-                    template
-                    (assoc template
-                           :data :hana/data
-                           ::ht/defaults (merge default-extenstions
-                                                subs)))))))
+         (update ::ht/defaults
+                 (fn [defaults]
+                   (-> defaults
+                       (update :hana/layer
+                               (comp vec conj)
+                               (assoc template
+                                      :data :hana/data
+                                      ::ht/defaults (merge
+                                                     standard-defaults
+                                                     defaults
+                                                     submap))))))))))
+
 
 (defn mark-based-layer [mark]
   (fn

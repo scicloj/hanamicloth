@@ -21,9 +21,12 @@
     (hana/base #:hana{:x :sepal_width
                       :y :sepal_length
                       :mark-size 200})
-    hana/layer-point
-    ;; hana/plot
-    )
+    hana/layer-point)
+
+(-> (toydata/iris-ds)
+    (hana/layer-point #:hana{:x :sepal_width
+                             :y :sepal_length
+                             :mark-size 200}))
 
 (delay
   (-> (toydata/iris-ds)
