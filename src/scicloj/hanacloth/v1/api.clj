@@ -13,6 +13,8 @@
             [fastmath.stats]
             [scicloj.hanacloth.v1.api :as hana]))
 
+(defn nonrmv? [v]
+  (not= v hc/RMV))
 
 (defn dataset->csv [dataset]
   (when dataset
@@ -34,12 +36,12 @@
   (fn [{:as submap
         :keys [hana/dataset]}]
     (let [colname (submap colname-key)]
-      (if (= colname hc/RMV)
-        hc/RMV
+      (if (nonrmv? colname)
         (let [column (@dataset colname)]
           (cond (tcc/typeof? column :numerical) :quantitative
                 (tcc/typeof? column :datetime) :temporal
-                :else :nominal))))))
+                :else :nominal))
+        hc/RMV))))
 
 (def encoding-base
   {:color {:field :hana/color
@@ -84,7 +86,9 @@
    :hana/mark-color hc/RMV
    :hana/mark-size hc/RMV
    :hana/mark-tooltip true
-   :hana/layer []})
+   :hana/layer []
+   :hana/group hc/RMV
+   :hana/predictors [:hana/x]})
 
 
 (def view-base
@@ -191,41 +195,47 @@
 (def layer-bar (mark-based-layer "bar"))
 (def layer-area (mark-based-layer "area"))
 
+(defn xform-specific-keys [submap ks]
+  (hc/xform (apply hash-map (interleave ks ks))))
+
 (def smooth-stat
-  (fn [{:as submap
-        :keys [hana/dataset]}]
-    (let [[Y X predictors group] (map submap [:Y :X :predictors :hana/group])
-          predictors (or predictors [X])
+  (fn [submap]
+    (let [{:hana/keys [dataset x y predictors group]}
+          (xform-specific-keys
+           submap
+           [:hana/dataset :hana/x :hana/y :hana/predictors :hana/group])
+          ;;
           predictions-fn (fn [dataset]
-                           (let [nonmissing-Y (-> dataset
-                                                  (tc/drop-missing [Y]))]
+                           (prn [:DBG x y predictors group])
+                           (let [nonmissing-y (-> dataset
+                                                  (tc/drop-missing [y]))]
                              (if (-> predictors count (= 1))
                                ;; simple linear regression
-                               (let [model (fun/linear-regressor (-> predictors first nonmissing-Y)
-                                                                 (nonmissing-Y Y))]
+                               (let [model (fun/linear-regressor (-> predictors first nonmissing-y)
+                                                                 (nonmissing-y y))]
                                  (->> predictors
                                       first
                                       dataset
                                       (map model)))
                                ;; multiple linear regression
                                (let [_ (require 'scicloj.ml.smile.regression)
-                                     model (-> nonmissing-Y
-                                               (modelling/set-inference-target Y)
-                                               (tc/select-columns (cons Y predictors))
+                                     model (-> nonmissing-y
+                                               (modelling/set-inference-target y)
+                                               (tc/select-columns (cons y predictors))
                                                (ml/train {:model-type
                                                           :smile.regression/ordinary-least-square}))]
                                  (-> dataset
-                                     (tc/drop-columns [Y])
+                                     (tc/drop-columns [y])
                                      (ml/predict model)
-                                     (get Y))))))
+                                     (get y))))))
           update-data-fn (fn [dataset]
-                           (if group
+                           (if (nonrmv? group)
                              (-> dataset
                                  (tc/group-by group)
-                                 (tc/add-or-replace-column Y predictions-fn)
+                                 (tc/add-or-replace-column y predictions-fn)
                                  tc/ungroup)
                              (-> dataset
-                                 (tc/add-or-replace-column Y predictions-fn))))
+                                 (tc/add-or-replace-column y predictions-fn))))
           new-data (update-data-fn @dataset)]
       new-data)))
 
