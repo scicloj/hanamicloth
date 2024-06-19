@@ -195,50 +195,40 @@
 (def layer-bar (mark-based-layer "bar"))
 (def layer-area (mark-based-layer "area"))
 
-(defn xform-specific-keys [submap ks]
-  (hc/xform (apply hash-map (interleave ks ks))))
-
-(def smooth-stat
-  (fn [submap]
-    (let [{:hana/keys [dataset x y predictors group]}
-          (xform-specific-keys
-           submap
-           [:hana/dataset :hana/x :hana/y :hana/predictors :hana/group])
-          ;;
-          predictions-fn (fn [dataset]
-                           (prn [:DBG x y predictors group])
-                           (let [nonmissing-y (-> dataset
-                                                  (tc/drop-missing [y]))]
-                             (if (-> predictors count (= 1))
-                               ;; simple linear regression
-                               (let [model (fun/linear-regressor (-> predictors first nonmissing-y)
-                                                                 (nonmissing-y y))]
-                                 (->> predictors
-                                      first
-                                      dataset
-                                      (map model)))
-                               ;; multiple linear regression
-                               (let [_ (require 'scicloj.ml.smile.regression)
-                                     model (-> nonmissing-y
-                                               (modelling/set-inference-target y)
-                                               (tc/select-columns (cons y predictors))
-                                               (ml/train {:model-type
-                                                          :smile.regression/ordinary-least-square}))]
-                                 (-> dataset
-                                     (tc/drop-columns [y])
-                                     (ml/predict model)
-                                     (get y))))))
-          update-data-fn (fn [dataset]
-                           (if (nonrmv? group)
-                             (-> dataset
-                                 (tc/group-by group)
-                                 (tc/add-or-replace-column y predictions-fn)
-                                 tc/ungroup)
-                             (-> dataset
-                                 (tc/add-or-replace-column y predictions-fn))))
-          new-data (update-data-fn @dataset)]
-      new-data)))
-
+(defn smooth-stat [submap]
+  (let [[dataset x y
+         predictors group] (hc/xform [:hana/dataset :hana/x :hana/y
+                                      :hana/predictors :hana/group]
+                                     submap)
+        predictions-fn (fn [dataset]
+                         (let [nonmissing-y (-> dataset
+                                                (tc/drop-missing [y]))]
+                           (if (-> predictors count (= 1))
+                             ;; simple linear regression
+                             (let [model (fun/linear-regressor (-> predictors first nonmissing-y)
+                                                               (nonmissing-y y))]
+                               (->> predictors
+                                    first
+                                    dataset
+                                    (map model)))
+                             ;; multiple linear regression
+                             (let [_ (require 'scicloj.ml.smile.regression)
+                                   model (-> nonmissing-y
+                                             (modelling/set-inference-target y)
+                                             (tc/select-columns (cons y predictors))
+                                             (ml/train {:model-type
+                                                        :smile.regression/ordinary-least-square}))]
+                               (-> dataset
+                                   (tc/drop-columns [y])
+                                   (ml/predict model)
+                                   (get y))))))]
+    (if group
+      (-> @dataset
+          (tc/group-by group)
+          (tc/add-or-replace-column y predictions-fn)
+          tc/ungroup)
+      (-> @dataset
+          (tc/add-or-replace-column y predictions-fn)))))
 
 
 (defn layer-smooth
@@ -246,9 +236,11 @@
    (layer-smooth context {}))
   ([context submap]
    (layer context
-          ht/line-layer
-          (assoc submap
-                 :hana/stat smooth-stat))))
+          {:mark mark-base
+           :encoding :hana/encoding}
+          (merge {:hana/stat smooth-stat
+                  :hana/mark :line}
+                 submap))))
 
 
 ;; (defn layer-histogram
