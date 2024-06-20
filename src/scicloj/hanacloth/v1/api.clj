@@ -48,6 +48,12 @@
                :else :nominal))
        hc/RMV))))
 
+(dag/defn-with-deps submap->group [color color-type size size-type]
+  (concat (when (= color-type :nominal)
+            [color])
+          (when (= size-type :nominal)
+            [size])))
+
 (def encoding-base
   {:color {:field :hana/color
            :type :hana/color-type}
@@ -92,7 +98,7 @@
    :hana/mark-size hc/RMV
    :hana/mark-tooltip true
    :hana/layer []
-   :hana/group hc/RMV
+   :hana/group submap->group
    :hana/predictors [:hana/x]
    :hana/stat hc/RMV})
 
