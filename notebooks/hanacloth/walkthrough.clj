@@ -1,3 +1,5 @@
+;; # Walkthrough
+
 (ns hanacloth.walkthrough
   (:require [scicloj.hanacloth.v1.api :as hana]
             [scicloj.metamorph.ml.toydata :as toydata]
@@ -6,7 +8,13 @@
             [aerial.hanami.common :as hc]
             [tablecloth.api :as tc]
             [tablecloth.column.api :as tcc]
-            [scicloj.kindly.v4.kind :as kind]))
+            [scicloj.kindly.v4.kind :as kind]
+            [scicloj.kindly.v4.api :as kindly]))
+
+:kindly/hide-code
+(def md (comp kindly/hide-code kind/md))
+
+;; ## Using the original Hanami templates & defaults
 
 (-> (toydata/iris-ds)
     (hana/base ht/point-chart
@@ -14,11 +22,20 @@
                 :Y :sepal_length
                 :MSIZE 200}))
 
+;; ## Using Hanacloth templates & defaults
+
 (-> (toydata/iris-ds)
     (hana/base hana/point-chart
                #:hana{:x :sepal_width
                       :y :sepal_length
                       :mark-size 200}))
+
+(-> toydata.ggplot/mpg
+    (hana/plot hana/boxplot-chart
+               #:hana{:x :cyl
+                      :y :displ}))
+
+;; ## Adding layers
 
 (-> (toydata/iris-ds)
     (hana/base #:hana{:x :sepal_width
@@ -36,7 +53,6 @@
                       :y :sepal_length})
     (hana/layer-point #:hana{:mark-size 200}))
 
-
 (-> (toydata/iris-ds)
     (hana/base #:hana{:title "dummy"
                       :mark-color "green"
@@ -45,6 +61,8 @@
     (hana/layer-line #:hana{:mark-size 4
                             :mark-color "brown"})
     (hana/layer-point #:hana{:mark-size 200}))
+
+;; ## Updating data
 
 (-> (toydata/iris-ds)
     (hana/base #:hana{:title "dummy"
@@ -56,6 +74,7 @@
     (hana/update-data tc/random 5)
     (hana/layer-point #:hana{:mark-size 200}))
 
+;; ## Processing raw vega-lite
 
 (-> (toydata/iris-ds)
     (hana/base #:hana{:title "dummy"
@@ -71,6 +90,8 @@
     hana/plot
     (assoc :background "lightgrey"))
 
+;; ## Smoothing
+
 (-> (toydata/iris-ds)
     (hana/base #:hana{:title "dummy"
                       :mark-color "green"
@@ -78,6 +99,15 @@
                       :y :sepal_length})
     hana/layer-point
     (hana/layer-smooth #:hana{:mark-color "orange"}))
+
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:x :sepal_width
+                      :y :sepal_length})
+    hana/layer-point
+    (hana/layer-smooth #:hana{:predictors [:petal_width
+                                           :petal_length]}))
+
+;; ## Grouping
 
 (-> (toydata/iris-ds)
     (hana/base #:hana{:title "dummy"
@@ -98,6 +128,8 @@
     hana/layer-point
     hana/layer-smooth)
 
+;; ## Example: out-of-sample predictions
+
 (-> (toydata/iris-ds)
     (tc/concat (tc/dataset {:sepal_width (range 4 10)
                             :sepal_length (repeat 6 nil)}))
@@ -111,18 +143,7 @@
     hana/layer-point
     hana/layer-smooth)
 
-(-> (toydata/iris-ds)
-    (hana/base #:hana{:x :sepal_width
-                      :y :sepal_length})
-    hana/layer-point
-    (hana/layer-smooth #:hana{:predictors [:petal_width
-                                           :petal_length]}))
 
-
-(-> toydata.ggplot/mpg
-    (hana/plot hana/boxplot-chart
-               #:hana{:x :cyl
-                      :y :displ}))
 
 ;; (-> (toydata/iris-is)
 ;;     (hana/plot ht/rule-chart
