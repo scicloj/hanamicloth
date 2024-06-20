@@ -11,8 +11,13 @@
             [scicloj.metamorph.ml :as ml]
             [tech.v3.dataset.modelling :as modelling]
             [fastmath.stats]
+            [fastmath.ml.regression :as regression]
             [scicloj.hanacloth.v1.api :as hana]
             [scicloj.hanacloth.v1.dag :as dag]))
+
+
+
+
 
 (defn nonrmv? [v]
   (not= v hc/RMV))
@@ -212,26 +217,16 @@
   [dataset y predictors group]
   (let [predictions-fn (fn [ds]
                          (let [nonmissing-y (-> ds
-                                                (tc/drop-missing [y]))]
-                           (if (-> predictors count (= 1))
-                             ;; simple linear regression
-                             (let [model (fun/linear-regressor (-> predictors first nonmissing-y)
-                                                               (nonmissing-y y))]
-                               (->> predictors
-                                    first
-                                    ds
-                                    (map model)))
-                             ;; multiple linear regression
-                             (let [_ (require 'scicloj.ml.smile.regression)
-                                   model (-> nonmissing-y
-                                             (modelling/set-inference-target y)
-                                             (tc/select-columns (cons y predictors))
-                                             (ml/train {:model-type
-                                                        :smile.regression/ordinary-least-square}))]
-                               (-> ds
-                                   (tc/drop-columns [y])
-                                   (ml/predict model)
-                                   (get y))))))]
+                                                (tc/drop-missing [y]))
+                               model (regression/glm (-> nonmissing-y
+                                                         (get y))
+                                                     (-> nonmissing-y
+                                                         (tc/select-columns predictors)
+                                                         tc/rows))]
+                           (-> ds
+                               (tc/select-columns predictors)
+                               tc/rows
+                               (->> (map (partial regression/predict model))))))]
     (if group
       (-> @dataset
           (tc/group-by group)
@@ -239,7 +234,6 @@
           tc/ungroup)
       (-> @dataset
           (tc/add-or-replace-column y predictions-fn)))))
-
 
 (defn layer-smooth
   ([context]
