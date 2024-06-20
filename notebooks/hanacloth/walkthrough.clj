@@ -82,7 +82,16 @@
     (hana/base #:hana{:title "dummy"
                       :mark-color "green"
                       :color :species
-                      :group [:species]
+                      :x :sepal_width
+                      :y :sepal_length})
+    hana/layer-point
+    hana/layer-smooth)
+
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:title "dummy"
+                      :mark-color "green"
+                      :color :species
+                      :group []
                       :x :sepal_width
                       :y :sepal_length})
     hana/layer-point
