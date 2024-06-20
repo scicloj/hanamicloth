@@ -32,7 +32,7 @@
      (stat submap)
      @dataset)))
 
-(defn submap->vega-lite-type [colname-key]
+(defn submap->field-type [colname-key]
   (fn [{:as submap
         :keys [hana/dataset]}]
     (let [colname (submap colname-key)]
@@ -72,10 +72,10 @@
    :hana/y :y
    :hana/color hc/RMV
    :hana/size hc/RMV
-   :hana/x-type (submap->vega-lite-type :hana/x)
-   :hana/y-type (submap->vega-lite-type :hana/y)
-   :hana/color-type (submap->vega-lite-type :hana/color)
-   :hana/size-type (submap->vega-lite-type :hana/size)
+   :hana/x-type (submap->field-type :hana/x)
+   :hana/y-type (submap->field-type :hana/y)
+   :hana/color-type (submap->field-type :hana/color)
+   :hana/size-type (submap->field-type :hana/size)
    :hana/renderer :svg
    :hana/usermeta {:embedOptions {:renderer :hana/renderer}}
    :hana/title hc/RMV
