@@ -115,3 +115,27 @@
     ~(mapv keyword dep-symbols)
     (fn [{:keys ~(vec dep-symbols)}]
       ~@forms)))
+
+(defmacro defn-with-deps
+  "Defining a function using fn-with-deps-impl.
+
+  For example:
+
+  ```clj
+  (defn-with-deps B->C [B] (inc B))
+  (defn-with-deps A->B [A] (inc A))
+
+  (with-clean-cache
+    (-> {:b :B
+         :c :C
+         ::ht/defaults {:B A->B
+                        :C B->C}}
+        (hc/xform :A 9)))
+
+    => {:b 10 :c 11}
+  ```
+  "
+  [fsymbol dep-symbols & forms]
+  `(def ~fsymbol
+     (fn-with-deps ~dep-symbols
+       ~@forms)))
