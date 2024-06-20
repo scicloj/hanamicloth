@@ -5,7 +5,8 @@
             [aerial.hanami.templates :as ht]
             [aerial.hanami.common :as hc]
             [tablecloth.api :as tc]
-            [tablecloth.column.api :as tcc]))
+            [tablecloth.column.api :as tcc]
+            [scicloj.kindly.v4.kind :as kind]))
 
 (-> (toydata/iris-ds)
     (hana/base ht/point-chart
@@ -118,28 +119,10 @@
                                            :petal_length]}))
 
 
-;; (def random-walk
-;;   (let [n 20]
-;;     (-> {:x (range n)
-;;          :y (->> (repeatedly n #(- (rand) 0.5))
-;;                  (reductions +))}
-;;         tc/dataset)))
-
-;; (-> random-walk
-;;     (hana/plot ht/point-chart
-;;                {:MSIZE 200}))
-
-;; (-> random-walk
-;;     (hana/plot ht/point-chart
-;;                {:MSIZE 200})
-;;     kind/pprint)
-
-
-;; (-> toydata.ggplot/mtcars
-;;     (hana/plot ht/boxplot-chart
-;;                {:X :gear
-;;                 :XTYPE :nominal
-;;                 :Y :mpg}))
+(-> toydata.ggplot/mpg
+    (hana/plot hana/boxplot-chart
+               #:hana{:x :cyl
+                      :y :displ}))
 
 ;; (-> (toydata/iris-is)
 ;;     (hana/plot ht/rule-chart
