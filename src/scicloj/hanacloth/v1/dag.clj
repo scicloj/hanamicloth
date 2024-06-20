@@ -64,7 +64,7 @@
              assoc k computed-result)
       computed-result)))
 
-(defn fn-with-deps-impl
+(defn fn-with-deps-keys
   "Given a set of dependency keys and a submap function,
   create a submap function that first makes sure
   that the xform results for these keys are available.
@@ -75,10 +75,10 @@
   (with-clean-cache
     (-> {:b :B
          :c :C
-         ::ht/defaults {:B (fn-with-deps-impl
+         ::ht/defaults {:B (fn-with-deps-keys
                             [:A]
                             (fn [{:keys [A]}] (inc A)))
-                        :C (fn-with-deps-impl
+                        :C (fn-with-deps-keys
                             [:B]
                             (fn [{:keys [B]}] (inc B)))}}
         (hc/xform :A 9)))
@@ -111,7 +111,7 @@
   ```
   "
   [dep-symbols & forms]
-  `(fn-with-deps-impl
+  `(fn-with-deps-keys
     ~(mapv keyword dep-symbols)
     (fn [{:keys ~(vec dep-symbols)}]
       ~@forms)))
