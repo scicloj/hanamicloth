@@ -97,27 +97,25 @@
     hana/layer-point
     hana/layer-smooth)
 
-;; (delay
-;;   (-> (toydata/iris-ds)
-;;       (tc/concat (tc/dataset {:sepal_width (range 4 10)
-;;                               :sepal_length (repeat 6 nil)}))
-;;       (tc/map-columns :relative-time
-;;                       [:sepal_length]
-;;                       #(if % "Past" "Future"))
-;;       (hana/base {:X :sepal_width
-;;                   :Y :sepal_length
-;;                   :COLOR "relative-time"})
-;;       hana/layer-point
-;;       hana/layer-smooth))
+(-> (toydata/iris-ds)
+    (tc/concat (tc/dataset {:sepal_width (range 4 10)
+                            :sepal_length (repeat 6 nil)}))
+    (tc/map-columns :relative-time
+                    [:sepal_length]
+                    #(if % "Past" "Future"))
+    (hana/base #:hana{:x :sepal_width
+                      :y :sepal_length
+                      :color "relative-time"
+                      :group []})
+    hana/layer-point
+    hana/layer-smooth)
 
-
-;; (delay
-;;   (-> (toydata/iris-ds)
-;;       (hana/base {:X :sepal_width
-;;                   :Y :sepal_length})
-;;       hana/layer-point
-;;       (hana/layer-smooth {:predictors [:petal_width
-;;                                        :petal_length]})))
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:x :sepal_width
+                      :y :sepal_length})
+    hana/layer-point
+    (hana/layer-smooth #:hana{:predictors [:petal_width
+                                           :petal_length]}))
 
 
 ;; (def random-walk
