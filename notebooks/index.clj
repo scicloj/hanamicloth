@@ -14,7 +14,7 @@
 
 (md "
 
-Hanacloth is a composition of Hanami data visualizations and Tablecloth datasets
+Hanamicloth is a composition of Hanami data visualizations and Tablecloth datasets
 
 ## Existing chapters in this book:
 ")
@@ -22,7 +22,7 @@ Hanacloth is a composition of Hanami data visualizations and Tablecloth datasets
 ^:kindly/hide-code
 (defn chapter->title [chapter]
   (or (some->> chapter
-               (format "notebooks/hanacloth/%s.clj")
+               (format "notebooks/hanamicloth/%s.clj")
                slurp
                str/split-lines
                (filter #(re-matches #"^;; # .*" %))
@@ -35,7 +35,7 @@ Hanacloth is a composition of Hanami data visualizations and Tablecloth datasets
      clojure.edn/read-string
      (map (fn [chapter]
             (prn [chapter (chapter->title chapter)])
-            (format "\n- [%s](hanacloth.%s.html)\n"
+            (format "\n- [%s](hanamicloth.%s.html)\n"
                     (chapter->title chapter)
                     chapter)))
      (string/join "\n")

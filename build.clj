@@ -1,5 +1,5 @@
 (ns build
-  "Hanacloth's build script.
+  "Hanamicloth's build script.
 
   clojure -T:build ci
   clojure -T:build deploy
@@ -14,7 +14,7 @@
   (:require [clojure.tools.build.api :as b]
             [deps-deploy.deps-deploy :as dd]))
 
-(def lib 'org.scicloj/hanacloth)
+(def lib 'org.scicloj/hanamicloth)
 (def version "1-alpha1-SNAPSHOT")
 
 (def snapshot (str version "-SNAPSHOT"))
@@ -33,16 +33,16 @@
   opts)
 
 (defn- pom-template [version]
-  [[:description "Hanacloth is a data visualization library composing Hanami templates with Tablecloth datasets"]
-   [:url "https://scicloj.github.io/hanacloth/"]
+  [[:description "Hanamicloth is a data visualization library composing Hanami templates with Tablecloth datasets"]
+   [:url "https://scicloj.github.io/hanamicloth/"]
    [:licenses
     [:license
      [:name "Eclipse Public License - v 2.0"]
      [:url "https://www.eclipse.org/legal/epl-2.0/"]]]
    [:scm
-    [:url "https://github.com/scicloj/hanacloth"]
-    [:connection "scm:git:https://github.com/scicloj/hanacloth.git"]
-    [:developerConnection "scm:git:ssh:git@github.com:scicloj/hanacloth.git"]
+    [:url "https://github.com/scicloj/hanamicloth"]
+    [:connection "scm:git:https://github.com/scicloj/hanamicloth.git"]
+    [:developerConnection "scm:git:ssh:git@github.com:scicloj/hanamicloth.git"]
     [:tag (str "v" version)]]])
 
 (defn- jar-opts [opts]

@@ -1,4 +1,4 @@
-# hanacloth
+# hanamicloth
 
 A composition of Hanami data visualizations and Tablecloth datasets
 
@@ -8,7 +8,7 @@ initial draft
 
 ## Discussion
 
-- development - topic threads under [#noj-dev](https://clojurians.zulipchat.com/#narrow/stream/321125-noj-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/hanacloth/issues)
+- development - topic threads under [#noj-dev](https://clojurians.zulipchat.com/#narrow/stream/321125-noj-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/hanamicloth/issues)
 - usage - topic threads under [#data-science](https://clojurians.zulipchat.com/#narrow/stream/151924-data-science) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/)
 
 ## License

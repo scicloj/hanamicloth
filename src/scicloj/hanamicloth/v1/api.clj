@@ -1,4 +1,4 @@
-(ns scicloj.hanacloth.v1.api
+(ns scicloj.hanamicloth.v1.api
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]
             [scicloj.kindly.v4.kind :as kind]
@@ -8,8 +8,7 @@
             [tech.v3.dataset :as ds]
             [fastmath.stats]
             [fastmath.ml.regression :as regression]
-            [scicloj.hanacloth.v1.api :as hana]
-            [scicloj.hanacloth.v1.dag :as dag]))
+            [scicloj.hanamicloth.v1.dag :as dag]))
 
 (defn nonrmv? [v]
   (not= v hc/RMV))
@@ -24,9 +23,9 @@
 
 (def submap->csv
   (dag/fn-with-deps-keys
-   [:hana/dataset :hana/stat]
+   [:hanami/dataset :hanami/stat]
    (fn [{:as submap
-         :keys [hana/dataset hana/stat]}]
+         :keys [hanami/dataset hanami/stat]}]
      (dataset->csv
       (if stat
         (@stat submap)
@@ -34,9 +33,9 @@
 
 (defn submap->field-type [colname-key]
   (dag/fn-with-deps-keys
-   [colname-key :hana/dataset]
+   [colname-key :hanami/dataset]
    (fn [{:as submap
-         :keys [hana/dataset]}]
+         :keys [hanami/dataset]}]
      (if-let [colname (submap colname-key)]
        (let [column (@dataset colname)]
          (cond (and (tcc/typeof? column :numerical)
@@ -52,69 +51,69 @@
             [size])))
 
 (def encoding-base
-  {:color {:field :hana/color
-           :type :hana/color-type}
-   :size {:field :hana/size
-          :type :hana/size-type}})
+  {:color {:field :hanami/color
+           :type :hanami/color-type}
+   :size {:field :hanami/size
+          :type :hanami/size-type}})
 
 (def xy-encoding
   (assoc encoding-base
-         :x {:field :hana/x
-             :type :hana/x-type}
-         :y {:field :hana/y
-             :type :hana/y-type}))
+         :x {:field :hanami/x
+             :type :hanami/x-type}
+         :y {:field :hanami/y
+             :type :hanami/y-type}))
 
 (def standard-defaults
   {;; defaults for original Hanami templates
-   :VALDATA :hana/csv-data
+   :VALDATA :hanami/csv-data
    :DFMT {:type "csv"}
    ;; defaults for hanamicloth templates
-   :hana/csv-data submap->csv
-   :hana/data {:values :hana/csv-data
+   :hanami/csv-data submap->csv
+   :hanami/data {:values :hanami/csv-data
                :format {:type "csv"}}
-   :hana/opacity hc/RMV
-   :hana/row hc/RMV
-   :hana/column hc/RMV
-   :hana/x :x
-   :hana/y :y
-   :hana/color hc/RMV
-   :hana/size hc/RMV
-   :hana/x-type (submap->field-type :hana/x)
-   :hana/y-type (submap->field-type :hana/y)
-   :hana/color-type (submap->field-type :hana/color)
-   :hana/size-type (submap->field-type :hana/size)
-   :hana/renderer :svg
-   :hana/usermeta {:embedOptions {:renderer :hana/renderer}}
-   :hana/title hc/RMV
-   :hana/encoding xy-encoding
-   :hana/height 300
-   :hana/width 400
-   :hana/background "floralwhite"
-   :hana/mark "circle"
-   :hana/mark-color hc/RMV
-   :hana/mark-size hc/RMV
-   :hana/mark-tooltip true
-   :hana/layer []
-   :hana/group submap->group
-   :hana/predictors [:hana/x]
-   :hana/stat hc/RMV})
+   :hanami/opacity hc/RMV
+   :hanami/row hc/RMV
+   :hanami/column hc/RMV
+   :hanami/x :x
+   :hanami/y :y
+   :hanami/color hc/RMV
+   :hanami/size hc/RMV
+   :hanami/x-type (submap->field-type :hanami/x)
+   :hanami/y-type (submap->field-type :hanami/y)
+   :hanami/color-type (submap->field-type :hanami/color)
+   :hanami/size-type (submap->field-type :hanami/size)
+   :hanami/renderer :svg
+   :hanami/usermeta {:embedOptions {:renderer :hanami/renderer}}
+   :hanami/title hc/RMV
+   :hanami/encoding xy-encoding
+   :hanami/height 300
+   :hanami/width 400
+   :hanami/background "floralwhite"
+   :hanami/mark "circle"
+   :hanami/mark-color hc/RMV
+   :hanami/mark-size hc/RMV
+   :hanami/mark-tooltip true
+   :hanami/layer []
+   :hanami/group submap->group
+   :hanami/predictors [:hanami/x]
+   :hanami/stat hc/RMV})
 
 
 (def view-base
-  {:usermeta :hana/usermeta
-   :title :hana/title
-   :height :hana/height
-   :width :hana/width
-   :background :hana/background
-   :data :hana/data
-   :encoding :hana/encoding
-   :layer :hana/layer})
+  {:usermeta :hanami/usermeta
+   :title :hanami/title
+   :height :hanami/height
+   :width :hanami/width
+   :background :hanami/background
+   :data :hanami/data
+   :encoding :hanami/encoding
+   :layer :hanami/layer})
 
 (def mark-base
-  {:type :hana/mark,
-   :color :hana/mark-color
-   :size :hana/mark-size
-   :tooltip :hana/mark-tooltip})
+  {:type :hanami/mark,
+   :color :hanami/mark-color
+   :size :hanami/mark-size
+   :tooltip :hanami/mark-tooltip})
 
 (defn mark-based-chart [mark]
   (assoc view-base
@@ -132,7 +131,7 @@
 
 
 (defn dataset->defaults [dataset]
-  {:hana/dataset (->WrappedValue dataset)})
+  {:hanami/dataset (->WrappedValue dataset)})
 
 (defn vega-lite-xform [template]
   (dag/with-clean-cache
@@ -180,10 +179,10 @@
          (update ::ht/defaults
                  (fn [defaults]
                    (-> defaults
-                       (update :hana/layer
+                       (update :hanami/layer
                                (comp vec conj)
                                (assoc template
-                                      :data :hana/data
+                                      :data :hanami/data
                                       ::ht/defaults (merge
                                                      standard-defaults
                                                      defaults
@@ -197,8 +196,8 @@
     ([context submap]
      (layer context
             {:mark mark-base
-             :encoding :hana/encoding}
-            (merge {:hana/mark mark}
+             :encoding :hanami/encoding}
+            (merge {:hanami/mark mark}
                    submap)))))
 
 (def layer-point (mark-based-layer "circle"))
@@ -234,9 +233,9 @@
   ([context submap]
    (layer context
           {:mark mark-base
-           :encoding :hana/encoding}
-          (merge {:hana/stat (->WrappedValue smooth-stat)
-                  :hana/mark :line}
+           :encoding :hanami/encoding}
+          (merge {:hanami/stat (->WrappedValue smooth-stat)
+                  :hanami/mark :line}
                  submap))))
 
 
@@ -247,7 +246,7 @@
 ;;    (layer context
 ;;           ht/bar-layer
 ;;           (assoc submap
-;;                  :hana/stat histogram-stat))))
+;;                  :hanami/stat histogram-stat))))
 
 
 ;; (defn histogram [dataset column-name {:keys [nbins]}]
@@ -271,7 +270,7 @@
 
 (defn update-data [template dataset-fn & submap]
   (-> template
-      (update-in [::ht/defaults :hana/dataset]
+      (update-in [::ht/defaults :hanami/dataset]
                  (fn [wrapped-data]
                    (->WrappedValue
                     (apply dataset-fn

@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Hanacloth",
+    "title": "Hanamicloth",
     "section": "",
-    "text": "1 Preface\nHanacloth is a composition of Hanami data visualizations and Tablecloth datasets",
+    "text": "1 Preface\nHanamicloth is a composition of Hanami data visualizations and Tablecloth datasets",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Preface</span>"
     ]
@@ -12,7 +12,7 @@
   {
     "objectID": "index.html#existing-chapters-in-this-book",
     "href": "index.html#existing-chapters-in-this-book",
-    "title": "Hanacloth",
+    "title": "Hanamicloth",
     "section": "1.1 Existing chapters in this book:",
     "text": "1.1 Existing chapters in this book:\n\nWalkthrough\n\n\nsource: notebooks/index.clj",
     "crumbs": [
@@ -20,8 +20,8 @@
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html",
-    "href": "hanacloth.walkthrough.html",
+    "objectID": "hanamicloth.walkthrough.html",
+    "href": "hanamicloth.walkthrough.html",
     "title": "2  Walkthrough",
     "section": "",
     "text": "2.1 Using the original Hanami templates & defaults",
@@ -30,81 +30,81 @@
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#using-the-original-hanami-templates-defaults",
-    "href": "hanacloth.walkthrough.html#using-the-original-hanami-templates-defaults",
+    "objectID": "hanamicloth.walkthrough.html#using-the-original-hanami-templates-defaults",
+    "href": "hanamicloth.walkthrough.html#using-the-original-hanami-templates-defaults",
     "title": "2  Walkthrough",
     "section": "",
-    "text": "(-&gt; (toydata/iris-ds)\n    (hana/base ht/point-chart\n               {:X :sepal_width\n                :Y :sepal_length\n                :MSIZE 200}))",
+    "text": "(-&gt; (toydata/iris-ds)\n    (hanami/base ht/point-chart\n                 {:X :sepal_width\n                  :Y :sepal_length\n                  :MSIZE 200}))",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#using-hanacloth-templates-defaults",
-    "href": "hanacloth.walkthrough.html#using-hanacloth-templates-defaults",
+    "objectID": "hanamicloth.walkthrough.html#using-hanamicloth-templates-defaults",
+    "href": "hanamicloth.walkthrough.html#using-hanamicloth-templates-defaults",
     "title": "2  Walkthrough",
-    "section": "2.2 Using Hanacloth templates & defaults",
-    "text": "2.2 Using Hanacloth templates & defaults\n\n(-&gt; (toydata/iris-ds)\n    (hana/base hana/point-chart\n               #:hana{:x :sepal_width\n                      :y :sepal_length\n                      :mark-size 200}))\n\n\n\n(-&gt; toydata.ggplot/mpg\n    (hana/plot hana/boxplot-chart\n               #:hana{:x :cyl\n                      :y :displ}))",
+    "section": "2.2 Using Hanamicloth templates & defaults",
+    "text": "2.2 Using Hanamicloth templates & defaults\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base hanami/point-chart\n                 #:hanami{:x :sepal_width\n                          :y :sepal_length\n                          :mark-size 200}))\n\n\n\n(-&gt; toydata.ggplot/mpg\n    (hanami/plot hanami/boxplot-chart\n                 #:hanami{:x :cyl\n                          :y :displ}))",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#adding-layers",
-    "href": "hanacloth.walkthrough.html#adding-layers",
+    "objectID": "hanamicloth.walkthrough.html#adding-layers",
+    "href": "hanamicloth.walkthrough.html#adding-layers",
     "title": "2  Walkthrough",
     "section": "2.3 Adding layers",
-    "text": "2.3 Adding layers\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:x :sepal_width\n                      :y :sepal_length\n                      :mark-size 200})\n    hana/layer-point)\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/layer-point #:hana{:x :sepal_width\n                             :y :sepal_length\n                             :mark-size 200}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:x :sepal_width\n                      :y :sepal_length})\n    (hana/layer-point #:hana{:mark-size 200}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:title \"dummy\"\n                      :mark-color \"green\"\n                      :x :sepal_width\n                      :y :sepal_length})\n    (hana/layer-line #:hana{:mark-size 4\n                            :mark-color \"brown\"})\n    (hana/layer-point #:hana{:mark-size 200}))",
+    "text": "2.3 Adding layers\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:x :sepal_width\n                          :y :sepal_length\n                          :mark-size 200})\n    hanami/layer-point)\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hanami/layer-point #:hanami{:x :sepal_width\n                                 :y :sepal_length\n                                 :mark-size 200}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:x :sepal_width\n                          :y :sepal_length})\n    (hanami/layer-point #:hanami{:mark-size 200}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:title \"dummy\"\n                          :mark-color \"green\"\n                          :x :sepal_width\n                          :y :sepal_length})\n    (hanami/layer-line #:hanami{:mark-size 4\n                                :mark-color \"brown\"})\n    (hanami/layer-point #:hanami{:mark-size 200}))",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#updating-data",
-    "href": "hanacloth.walkthrough.html#updating-data",
+    "objectID": "hanamicloth.walkthrough.html#updating-data",
+    "href": "hanamicloth.walkthrough.html#updating-data",
     "title": "2  Walkthrough",
     "section": "2.4 Updating data",
-    "text": "2.4 Updating data\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:title \"dummy\"\n                      :mark-color \"green\"\n                      :x :sepal_width\n                      :y :sepal_length})\n    (hana/layer-line #:hana{:mark-size 4\n                            :mark-color \"brown\"})\n    (hana/update-data tc/random 5)\n    (hana/layer-point #:hana{:mark-size 200}))",
+    "text": "2.4 Updating data\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:title \"dummy\"\n                          :mark-color \"green\"\n                          :x :sepal_width\n                          :y :sepal_length})\n    (hanami/layer-line #:hanami{:mark-size 4\n                                :mark-color \"brown\"})\n    (hanami/update-data tc/random 5)\n    (hanami/layer-point #:hanami{:mark-size 200}))",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#processing-raw-vega-lite",
-    "href": "hanacloth.walkthrough.html#processing-raw-vega-lite",
+    "objectID": "hanamicloth.walkthrough.html#processing-raw-vega-lite",
+    "href": "hanamicloth.walkthrough.html#processing-raw-vega-lite",
     "title": "2  Walkthrough",
     "section": "2.5 Processing raw vega-lite",
-    "text": "2.5 Processing raw vega-lite\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:title \"dummy\"\n                      :mark-color \"green\"\n                      :x :sepal_width\n                      :y :sepal_length})\n    (hana/layer-line #:hana{:mark-size 4\n                            :mark-color \"brown\"})\n    (hana/layer-line {:MSIZE 4\n                      :MCOLOR \"brown\"})\n    (hana/update-data tc/random 20)\n    (hana/layer-point #:hana{:mark-size 200})\n    hana/plot\n    (assoc :background \"lightgrey\"))",
+    "text": "2.5 Processing raw vega-lite\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:title \"dummy\"\n                          :mark-color \"green\"\n                          :x :sepal_width\n                          :y :sepal_length})\n    (hanami/layer-line #:hanami{:mark-size 4\n                                :mark-color \"brown\"})\n    (hanami/layer-line {:MSIZE 4\n                        :MCOLOR \"brown\"})\n    (hanami/update-data tc/random 20)\n    (hanami/layer-point #:hanami{:mark-size 200})\n    hanami/plot\n    (assoc :background \"lightgrey\"))",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#smoothing",
-    "href": "hanacloth.walkthrough.html#smoothing",
+    "objectID": "hanamicloth.walkthrough.html#smoothing",
+    "href": "hanamicloth.walkthrough.html#smoothing",
     "title": "2  Walkthrough",
     "section": "2.6 Smoothing",
-    "text": "2.6 Smoothing\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:title \"dummy\"\n                      :mark-color \"green\"\n                      :x :sepal_width\n                      :y :sepal_length})\n    hana/layer-point\n    (hana/layer-smooth #:hana{:mark-color \"orange\"}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:x :sepal_width\n                      :y :sepal_length})\n    hana/layer-point\n    (hana/layer-smooth #:hana{:predictors [:petal_width\n                                           :petal_length]}))",
+    "text": "2.6 Smoothing\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:title \"dummy\"\n                          :mark-color \"green\"\n                          :x :sepal_width\n                          :y :sepal_length})\n    hanami/layer-point\n    (hanami/layer-smooth #:hanami{:mark-color \"orange\"}))\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:x :sepal_width\n                          :y :sepal_length})\n    hanami/layer-point\n    (hanami/layer-smooth #:hanami{:predictors [:petal_width\n                                               :petal_length]}))",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#grouping",
-    "href": "hanacloth.walkthrough.html#grouping",
+    "objectID": "hanamicloth.walkthrough.html#grouping",
+    "href": "hanamicloth.walkthrough.html#grouping",
     "title": "2  Walkthrough",
     "section": "2.7 Grouping",
-    "text": "2.7 Grouping\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:title \"dummy\"\n                      :mark-color \"green\"\n                      :color :species\n                      :x :sepal_width\n                      :y :sepal_length})\n    hana/layer-point\n    hana/layer-smooth)\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hana/base #:hana{:title \"dummy\"\n                      :mark-color \"green\"\n                      :color :species\n                      :group []\n                      :x :sepal_width\n                      :y :sepal_length})\n    hana/layer-point\n    hana/layer-smooth)",
+    "text": "2.7 Grouping\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:title \"dummy\"\n                          :mark-color \"green\"\n                          :color :species\n                          :x :sepal_width\n                          :y :sepal_length})\n    hanami/layer-point\n    hanami/layer-smooth)\n\n\n\n(-&gt; (toydata/iris-ds)\n    (hanami/base #:hanami{:title \"dummy\"\n                          :mark-color \"green\"\n                          :color :species\n                          :group []\n                          :x :sepal_width\n                          :y :sepal_length})\n    hanami/layer-point\n    hanami/layer-smooth)",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]
   },
   {
-    "objectID": "hanacloth.walkthrough.html#example-out-of-sample-predictions",
-    "href": "hanacloth.walkthrough.html#example-out-of-sample-predictions",
+    "objectID": "hanamicloth.walkthrough.html#example-out-of-sample-predictions",
+    "href": "hanamicloth.walkthrough.html#example-out-of-sample-predictions",
     "title": "2  Walkthrough",
     "section": "2.8 Example: out-of-sample predictions",
-    "text": "2.8 Example: out-of-sample predictions\n\n(-&gt; (toydata/iris-ds)\n    (tc/concat (tc/dataset {:sepal_width (range 4 10)\n                            :sepal_length (repeat 6 nil)}))\n    (tc/map-columns :relative-time\n                    [:sepal_length]\n                    #(if % \"Past\" \"Future\"))\n    (hana/base #:hana{:x :sepal_width\n                      :y :sepal_length\n                      :color \"relative-time\"\n                      :group []})\n    hana/layer-point\n    hana/layer-smooth)\n\n\n(-&gt; (toydata/iris-is) (hana/plot ht/rule-chart {:X :sepal-width :Y :sepal-length :X2 :petal-width :Y2 :petal-length :OPACITY 0.2 :SIZE 3 :COLOR “species”}))\n\nsource: notebooks/hanacloth/walkthrough.clj",
+    "text": "2.8 Example: out-of-sample predictions\n\n(-&gt; (toydata/iris-ds)\n    (tc/concat (tc/dataset {:sepal_width (range 4 10)\n                            :sepal_length (repeat 6 nil)}))\n    (tc/map-columns :relative-time\n                    [:sepal_length]\n                    #(if % \"Past\" \"Future\"))\n    (hanami/base #:hanami{:x :sepal_width\n                          :y :sepal_length\n                          :color \"relative-time\"\n                          :group []})\n    hanami/layer-point\n    hanami/layer-smooth)\n\n\n(-&gt; (toydata/iris-is) (hanami/plot ht/rule-chart {:X :sepal-width :Y :sepal-length :X2 :petal-width :Y2 :petal-length :OPACITY 0.2 :SIZE 3 :COLOR “species”}))\n\nsource: notebooks/hanamicloth/walkthrough.clj",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Walkthrough</span>"
     ]

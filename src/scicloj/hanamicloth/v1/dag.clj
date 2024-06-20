@@ -1,4 +1,4 @@
-(ns scicloj.hanacloth.v1.dag
+(ns scicloj.hanamicloth.v1.dag
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]))
 
@@ -74,28 +74,28 @@
 
   ```clj
   (with-clean-cache
-    (-> {:b :hana/B
-         :c :hana/C
-         ::ht/defaults {:hana/B (fn-with-deps-keys
-                                 [:hana/A]
-                                 (fn [{:keys [hana/A]}] (inc A)))
-                        :hana/C (fn-with-deps-keys
-                                 [:hana/B]
-                                 (fn [{:keys [hana/B]}] (inc B)))}}
-        (hc/xform :hana/A 9)))
+    (-> {:b :hanami/B
+         :c :hanami/C
+         ::ht/defaults {:hanami/B (fn-with-deps-keys
+                                 [:hanami/A]
+                                 (fn [{:keys [hanami/A]}] (inc A)))
+                        :hanami/C (fn-with-deps-keys
+                                 [:hanami/B]
+                                 (fn [{:keys [hanami/B]}] (inc B)))}}
+        (hc/xform :hanami/A 9)))
 
   => {:b 10 :c 11}
 
   (with-clean-cache
-    (-> {:b :hana/B
-         :c :hana/C
-         ::ht/defaults {:hana/B (fn-with-deps-keys
-                                 [:hana/A]
-                                 (fn [{:keys [hana/A]}] (inc A)))
-                        :hana/C (fn-with-deps-keys
-                                 [:hana/A :hana/B]
-                                 (fn [{:keys [hana/A hana/B]}] (+ A B)))}}
-        (hc/xform :hana/A 9)))
+    (-> {:b :hanami/B
+         :c :hanami/C
+         ::ht/defaults {:hanami/B (fn-with-deps-keys
+                                 [:hanami/A]
+                                 (fn [{:keys [hanami/A]}] (inc A)))
+                        :hanami/C (fn-with-deps-keys
+                                 [:hanami/A :hanami/B]
+                                 (fn [{:keys [hanami/A hanami/B]}] (+ A B)))}}
+        (hc/xform :hanami/A 9)))
 
   => {:b 10 :c 19}
   ```
@@ -115,19 +115,19 @@
 
   ```clj
   (with-clean-cache
-    (-> {:b :hana/B
-         :c :hana/C
-         ::ht/defaults #:hana{:B (fn-with-deps [A] (inc A))
-                              :C (fn-with-deps [B] (inc B))}}
-        (hc/xform :hana/A 9)))
+    (-> {:b :hanami/B
+         :c :hanami/C
+         ::ht/defaults #:hanami{:B (fn-with-deps [A] (inc A))
+                                :C (fn-with-deps [B] (inc B))}}
+        (hc/xform :hanami/A 9)))
 
     => {:b 10 :c 11}
   ```
   "
   [dep-symbols & forms]
   `(fn-with-deps-keys
-    ~(mapv #(keyword "hana" (name %)) dep-symbols)
-    (fn [{:keys ~(mapv #(symbol "hana" (name %)) dep-symbols)}]
+    ~(mapv #(keyword "hanami" (name %)) dep-symbols)
+    (fn [{:keys ~(mapv #(symbol "hanami" (name %)) dep-symbols)}]
       ~@forms)))
 
 (defmacro defn-with-deps
@@ -140,11 +140,11 @@
   (defn-with-deps A->B [A] (inc A))
 
   (with-clean-cache
-    (-> {:b :hana/B
-         :c :hana/C
-         ::ht/defaults #:hana{:B A->B
-                              :C B->C}}
-        (hc/xform :hana/A 9)))
+    (-> {:b :hanami/B
+         :c :hanami/C
+         ::ht/defaults #:hanami{:B A->B
+                                :C B->C}}
+        (hc/xform :hanami/A 9)))
 
     => {:b 10 :c 11}
   ```
@@ -152,4 +152,4 @@
   [fsymbol dep-symbols & forms]
   `(def ~fsymbol
      (fn-with-deps ~dep-symbols
-       ~@forms)))
+                   ~@forms)))
