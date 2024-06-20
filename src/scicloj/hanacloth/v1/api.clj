@@ -124,6 +124,7 @@
 (def line-chart (mark-based-chart "line"))
 (def point-chart (mark-based-chart "circle"))
 (def area-chart (mark-based-chart "area"))
+(def boxplot-chart (mark-based-chart "boxplot"))
 
 (deftype WrappedValue [value]
   clojure.lang.IDeref
