@@ -57,12 +57,13 @@
   ```
   "
   [k submap]
-  (if-let [result (@*cache k)]
-    result
-    (let [computed-result (xform-k k submap)]
-      (swap! *cache
-             assoc k computed-result)
-      computed-result)))
+  (let [id [k submap]]
+    (if-let [result (@*cache id)]
+      result
+      (let [computed-result (xform-k k submap)]
+        (swap! *cache
+               assoc id computed-result)
+        computed-result))))
 
 (defn fn-with-deps-keys
   "Given a set of dependency keys and a submap function,
@@ -73,33 +74,28 @@
 
   ```clj
   (with-clean-cache
-    (-> {:b :B
-         :c :C
-         ::ht/defaults {:B (fn-with-deps-keys
-                            [:A]
-                            (fn [{:keys [A]}] (inc A)))
-                        :C (fn-with-deps-keys
-                            [:B]
-                            (fn [{:keys [B]}] (inc B)))}}
-        (hc/xform :A 9)))
+    (-> {:b :hana/B
+         :c :hana/C
+         ::ht/defaults {:hana/B (fn-with-deps-keys
+                                 [:hana/A]
+                                 (fn [{:keys [hana/A]}] (inc A)))
+                        :hana/C (fn-with-deps-keys
+                                 [:hana/B]
+                                 (fn [{:keys [hana/B]}] (inc B)))}}
+        (hc/xform :hana/A 9)))
+
+  => {:b 10 :c 11}
 
   (with-clean-cache
-    (-> {:b :B
-         :c :C
-         ::ht/defaults {:B (fn-with-deps-keys
-                            [:A]
-                            (fn [{:keys [A]}] (inc A)))
-                        :C (fn-with-deps-keys
-                            [:A :B]
-                            (fn [{:keys [A B]}] (+ A B)))}}
-        (hc/xform :A 9)))
-
-  (with-clean-cache
-    (-> {:b :B
-         ::ht/defaults {:B (fn-with-deps-keys
-                            [:A]
-                            (fn [{:keys [A]}] (pr-str A)))}}
-        (hc/xform :A hc/RMV)))
+    (-> {:b :hana/B
+         :c :hana/C
+         ::ht/defaults {:hana/B (fn-with-deps-keys
+                                 [:hana/A]
+                                 (fn [{:keys [hana/A]}] (inc A)))
+                        :hana/C (fn-with-deps-keys
+                                 [:hana/A :hana/B]
+                                 (fn [{:keys [hana/A hana/B]}] (+ A B)))}}
+        (hc/xform :hana/A 9)))
 
   => {:b 10 :c 19}
   ```
@@ -119,19 +115,19 @@
 
   ```clj
   (with-clean-cache
-    (-> {:b :B
-         :c :C
-         ::ht/defaults {:B (fn-with-deps [A] (inc A))
-                        :C (fn-with-deps [B] (inc B))}}
-        (hc/xform :A 9)))
+    (-> {:b :hana/B
+         :c :hana/C
+         ::ht/defaults #:hana{:B (fn-with-deps [A] (inc A))
+                              :C (fn-with-deps [B] (inc B))}}
+        (hc/xform :hana/A 9)))
 
     => {:b 10 :c 11}
   ```
   "
   [dep-symbols & forms]
   `(fn-with-deps-keys
-    ~(mapv keyword dep-symbols)
-    (fn [{:keys ~(vec dep-symbols)}]
+    ~(mapv #(keyword "hana" (name %)) dep-symbols)
+    (fn [{:keys ~(mapv #(symbol "hana" (name %)) dep-symbols)}]
       ~@forms)))
 
 (defmacro defn-with-deps
@@ -144,11 +140,11 @@
   (defn-with-deps A->B [A] (inc A))
 
   (with-clean-cache
-    (-> {:b :B
-         :c :C
-         ::ht/defaults {:B A->B
-                        :C B->C}}
-        (hc/xform :A 9)))
+    (-> {:b :hana/B
+         :c :hana/C
+         ::ht/defaults #:hana{:B A->B
+                              :C B->C}}
+        (hc/xform :hana/A 9)))
 
     => {:b 10 :c 11}
   ```
