@@ -2,6 +2,7 @@
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]))
 
+;; TODO: Make this concurrency safe.
 (def *cache (atom {}))
 
 (defmacro with-clean-cache
