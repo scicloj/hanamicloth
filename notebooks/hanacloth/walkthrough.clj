@@ -33,45 +33,42 @@
 (-> (toydata/iris-ds)
     (hana/base #:hana{:x :sepal_width
                       :y :sepal_length})
-    (hana/layer-point #:hana{:mark-size 300}))
+    (hana/layer-point #:hana{:mark-size 200}))
 
 
-(delay
-  (-> (toydata/iris-ds)
-      (hana/base #:hana{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal_width
-                        :y :sepal_length})
-      (hana/layer-line #:hana{:mark-size 4
-                              :mark-color "brown"})
-      (hana/layer-point #:hana{:mark-size 200})))
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:title "dummy"
+                      :mark-color "green"
+                      :x :sepal_width
+                      :y :sepal_length})
+    (hana/layer-line #:hana{:mark-size 4
+                            :mark-color "brown"})
+    (hana/layer-point #:hana{:mark-size 200}))
 
-(delay
-  (-> (toydata/iris-ds)
-      (hana/base #:hana{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal_width
-                        :y :sepal_length})
-      (hana/layer-line #:hana{:mark-size 4
-                              :mark-color "brown"})
-      (hana/update-data tc/random 5)
-      (hana/layer-point #:hana{:mark-size 200})))
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:title "dummy"
+                      :mark-color "green"
+                      :x :sepal_width
+                      :y :sepal_length})
+    (hana/layer-line #:hana{:mark-size 4
+                            :mark-color "brown"})
+    (hana/update-data tc/random 5)
+    (hana/layer-point #:hana{:mark-size 200}))
 
 
-(delay
-  (-> (toydata/iris-ds)
-      (hana/base #:hana{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal_width
-                        :y :sepal_length})
-      (hana/layer-line #:hana{:mark-size 4
-                              :mark-color "brown"})
-      (hana/layer-line {:MSIZE 4
-                        :MCOLOR "brown"})
-      (hana/update-data tc/random 20)
-      (hana/layer-point #:hana{:mark-size 200})
-      hana/plot
-      (assoc :background "lightgrey")))
+(-> (toydata/iris-ds)
+    (hana/base #:hana{:title "dummy"
+                      :mark-color "green"
+                      :x :sepal_width
+                      :y :sepal_length})
+    (hana/layer-line #:hana{:mark-size 4
+                            :mark-color "brown"})
+    (hana/layer-line {:MSIZE 4
+                      :MCOLOR "brown"})
+    (hana/update-data tc/random 20)
+    (hana/layer-point #:hana{:mark-size 200})
+    hana/plot
+    (assoc :background "lightgrey"))
 
 (-> (toydata/iris-ds)
     (hana/base #:hana{:title "dummy"
