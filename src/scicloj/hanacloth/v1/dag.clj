@@ -21,12 +21,12 @@
   given a substitution map.
 
   For example:
-(xform-k :B
+  (xform-k :B
          {:A 9
           :B (fn [{:keys [A]}] (inc A))
           :C (fn [{:keys [B]}] (inc B))})
-=> 10
-"
+  => 10
+  "
   [k submap]
   (-> {:result k}
       (hc/xform submap)
@@ -56,10 +56,10 @@
   10
   ```
   "
-  [k submap-with-cache]
+  [k submap]
   (if-let [result (@*cache k)]
     result
-    (let [computed-result (xform-k k submap-with-cache)]
+    (let [computed-result (xform-k k submap)]
       (swap! *cache
              assoc k computed-result)
       computed-result)))
@@ -83,7 +83,25 @@
                             (fn [{:keys [B]}] (inc B)))}}
         (hc/xform :A 9)))
 
-  => {:b 10 :c 11}
+  (with-clean-cache
+    (-> {:b :B
+         :c :C
+         ::ht/defaults {:B (fn-with-deps-keys
+                            [:A]
+                            (fn [{:keys [A]}] (inc A)))
+                        :C (fn-with-deps-keys
+                            [:A :B]
+                            (fn [{:keys [A B]}] (+ A B)))}}
+        (hc/xform :A 9)))
+
+  (with-clean-cache
+    (-> {:b :B
+         ::ht/defaults {:B (fn-with-deps-keys
+                            [:A]
+                            (fn [{:keys [A]}] (pr-str A)))}}
+        (hc/xform :A hc/RMV)))
+
+  => {:b 10 :c 19}
   ```
   "
   [dep-ks f]
