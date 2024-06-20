@@ -11,7 +11,8 @@
             [scicloj.metamorph.ml :as ml]
             [tech.v3.dataset.modelling :as modelling]
             [fastmath.stats]
-            [scicloj.hanacloth.v1.api :as hana]))
+            [scicloj.hanacloth.v1.api :as hana]
+            [scicloj.hanacloth.v1.dag :as dag]))
 
 (defn nonrmv? [v]
   (not= v hc/RMV))
@@ -24,25 +25,28 @@
           (ds/write! path))
       (slurp path))))
 
-(defn submap->csv [{:as submap
-                    :keys [hana/dataset
-                           hana/stat]}]
-  (dataset->csv
-   (if stat
-     (stat submap)
-     @dataset)))
+(def submap->csv
+  (dag/fn-with-deps-keys
+   [:hana/dataset :hana/stat]
+   (fn [{:as submap
+         :keys [hana/dataset hana/stat]}]
+     (dataset->csv
+      (if stat
+        (@stat submap)
+        @dataset)))))
 
 (defn submap->field-type [colname-key]
-  (fn [{:as submap
-        :keys [hana/dataset]}]
-    (let [colname (submap colname-key)]
-      (if (nonrmv? colname)
-        (let [column (@dataset colname)]
-          (cond (and (tcc/typeof? column :numerical)
-                     (not (tcc/typeof? column :integer))) :quantitative
-                (tcc/typeof? column :datetime) :temporal
-                :else :nominal))
-        hc/RMV))))
+  (dag/fn-with-deps-keys
+   [colname-key :hana/dataset]
+   (fn [{:as submap
+         :keys [hana/dataset]}]
+     (if-let [colname (submap colname-key)]
+       (let [column (@dataset colname)]
+         (cond (and (tcc/typeof? column :numerical)
+                    (not (tcc/typeof? column :integer))) :quantitative
+               (tcc/typeof? column :datetime) :temporal
+               :else :nominal))
+       hc/RMV))))
 
 (def encoding-base
   {:color {:field :hana/color
@@ -89,7 +93,8 @@
    :hana/mark-tooltip true
    :hana/layer []
    :hana/group hc/RMV
-   :hana/predictors [:hana/x]})
+   :hana/predictors [:hana/x]
+   :hana/stat hc/RMV})
 
 
 (def view-base
@@ -126,10 +131,11 @@
   {:hana/dataset (->WrappedValue dataset)})
 
 (defn vega-lite-xform [template]
-  (-> template
-      hc/xform
-      kind/vega-lite
-      (dissoc :kindly/f)))
+  (dag/with-clean-cache
+    (-> template
+        hc/xform
+        kind/vega-lite
+        (dissoc :kindly/f))))
 
 (defn base
   ([dataset-or-template]
@@ -196,13 +202,10 @@
 (def layer-bar (mark-based-layer "bar"))
 (def layer-area (mark-based-layer "area"))
 
-(defn smooth-stat [submap]
-  (let [[dataset x y
-         predictors group] (hc/xform [:hana/dataset :hana/x :hana/y
-                                      :hana/predictors :hana/group]
-                                     submap)
-        predictions-fn (fn [dataset]
-                         (let [nonmissing-y (-> dataset
+(dag/defn-with-deps smooth-stat
+  [dataset y predictors group]
+  (let [predictions-fn (fn [ds]
+                         (let [nonmissing-y (-> ds
                                                 (tc/drop-missing [y]))]
                            (if (-> predictors count (= 1))
                              ;; simple linear regression
@@ -210,7 +213,7 @@
                                                                (nonmissing-y y))]
                                (->> predictors
                                     first
-                                    dataset
+                                    ds
                                     (map model)))
                              ;; multiple linear regression
                              (let [_ (require 'scicloj.ml.smile.regression)
@@ -219,7 +222,7 @@
                                              (tc/select-columns (cons y predictors))
                                              (ml/train {:model-type
                                                         :smile.regression/ordinary-least-square}))]
-                               (-> dataset
+                               (-> ds
                                    (tc/drop-columns [y])
                                    (ml/predict model)
                                    (get y))))))]
@@ -239,7 +242,7 @@
    (layer context
           {:mark mark-base
            :encoding :hana/encoding}
-          (merge {:hana/stat smooth-stat
+          (merge {:hana/stat (->WrappedValue smooth-stat)
                   :hana/mark :line}
                  submap))))
 
