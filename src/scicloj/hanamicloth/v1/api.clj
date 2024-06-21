@@ -38,8 +38,7 @@
          :keys [hanami/dataset]}]
      (if-let [colname (submap colname-key)]
        (let [column (@dataset colname)]
-         (cond (and (tcc/typeof? column :numerical)
-                    (not (tcc/typeof? column :integer))) :quantitative
+         (cond (tcc/typeof? column :numerical) :quantitative
                (tcc/typeof? column :datetime) :temporal
                :else :nominal))
        hc/RMV))))
