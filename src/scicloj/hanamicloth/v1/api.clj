@@ -73,6 +73,9 @@
    :VALDATA :hanami/csv-data
    :DFMT {:type "csv"}
    ;; defaults for hanamicloth templates
+   :hanami/stat hc/RMV
+   :hanami/dataset hc/RMV
+   :hanami/dataset-after-stat :hanami/dataset
    :hanami/csv-data submap->csv
    :hanami/data {:values :hanami/csv-data
                  :format {:type "csv"}}
@@ -80,13 +83,19 @@
    :hanami/row hc/RMV
    :hanami/column hc/RMV
    :hanami/x :x
+   :hanami/x-after-stat :hanami/x
    :hanami/y :y
+   :hanami/y-after-stat :hanami/y
    :hanami/x2 hc/RMV
+   :hanami/x2-after-stat :hanami/x2
    :hanami/y2 hc/RMV
+   :hanami/y2-after-stat :hanami/y2
    :hanami/color hc/RMV
    :hanami/size hc/RMV
    :hanami/x-type (submap->field-type :hanami/x)
+   :hanami/x-type-after-stat :hanami/x-type
    :hanami/y-type (submap->field-type :hanami/y)
+   :hanami/y-type-after-stat :hanami/y-type
    :hanami/x2-type (dag/fn-with-deps [x-type x2]
                      (when x2 x-type))
    :hanami/y2-type (dag/fn-with-deps [y-type y2]
@@ -125,7 +134,6 @@
    :hanami/mark-tooltip true
    :hanami/layer []
    :hanami/group submap->group
-   :hanami/stat hc/RMV
    :hanami/predictors [:hanami/x]
    :hanami/histogram-nbins 30})
 
