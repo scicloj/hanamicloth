@@ -61,7 +61,9 @@
          :x {:field :hanami/x
              :type :hanami/x-type}
          :y {:field :hanami/y
-             :type :hanami/y-type}))
+             :type :hanami/y-type}
+         :x2 :hanami/x2-encoding
+         :y2 :hanami/y2-encoding))
 
 (def standard-defaults
   {;; defaults for original Hanami templates
@@ -70,16 +72,36 @@
    ;; defaults for hanamicloth templates
    :hanami/csv-data submap->csv
    :hanami/data {:values :hanami/csv-data
-               :format {:type "csv"}}
+                 :format {:type "csv"}}
    :hanami/opacity hc/RMV
    :hanami/row hc/RMV
    :hanami/column hc/RMV
    :hanami/x :x
    :hanami/y :y
+   :hanami/x2 hc/RMV
+   :hanami/y2 hc/RMV
    :hanami/color hc/RMV
    :hanami/size hc/RMV
    :hanami/x-type (submap->field-type :hanami/x)
    :hanami/y-type (submap->field-type :hanami/y)
+   :hanami/x2-type (dag/fn-with-deps [x-type x2]
+                     (when x2 x-type))
+   :hanami/y2-type (dag/fn-with-deps [y-type y2]
+                     (when y2 y-type))
+   :hanami/x2-encoding (dag/fn-with-deps [x2 x2-type]
+                         (if x2
+                           (-> xy-encoding
+                               :x
+                               (assoc :field x2
+                                      :type x2-type))
+                           hc/RMV))
+   :hanami/y2-encoding (dag/fn-with-deps [y2 y2-type]
+                         (if y2
+                           (-> xy-encoding
+                               :y
+                               (assoc :field y2
+                                      :type y2-type))
+                           hc/RMV))
    :hanami/color-type (submap->field-type :hanami/color)
    :hanami/size-type (submap->field-type :hanami/size)
    :hanami/renderer :svg
@@ -124,6 +146,8 @@
 (def point-chart (mark-based-chart "circle"))
 (def area-chart (mark-based-chart "area"))
 (def boxplot-chart (mark-based-chart "boxplot"))
+(def rect-chart (mark-based-chart "rect"))
+(def rule-chart (mark-based-chart "rule"))
 
 (deftype WrappedValue [value]
   clojure.lang.IDeref
