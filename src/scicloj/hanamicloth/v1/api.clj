@@ -58,9 +58,13 @@
 (def xy-encoding
   (assoc encoding-base
          :x {:field :hanami/x
-             :type :hanami/x-type}
+             :type :hanami/x-type
+             :title :hanami/x-title
+             :bin :hanami/x-bin}
          :y {:field :hanami/y
-             :type :hanami/y-type}
+             :type :hanami/y-type
+             :title :hanami/y-title
+             :bin :hanami/y-bin}
          :x2 :hanami/x2-encoding
          :y2 :hanami/y2-encoding))
 
@@ -87,6 +91,10 @@
                      (when x2 x-type))
    :hanami/y2-type (dag/fn-with-deps [y-type y2]
                      (when y2 y-type))
+   :hanami/x-title hc/RMV
+   :hanami/y-title hc/RMV
+   :hanami/x-bin hc/RMV
+   :hanami/y-bin hc/RMV
    :hanami/x2-encoding (dag/fn-with-deps [x2 x2-type]
                          (if x2
                            (-> xy-encoding
@@ -117,8 +125,9 @@
    :hanami/mark-tooltip true
    :hanami/layer []
    :hanami/group submap->group
+   :hanami/stat hc/RMV
    :hanami/predictors [:hanami/x]
-   :hanami/stat hc/RMV})
+   :hanami/histogram-nbins 30})
 
 
 (def view-base
@@ -264,34 +273,6 @@
                  submap))))
 
 
-;; (defn layer-histogram
-;;   ([context]
-;;    (layer-smooth context {}))
-;;   ([context submap]
-;;    (layer context
-;;           ht/bar-layer
-;;           (assoc submap
-;;                  :hanami/stat histogram-stat))))
-
-
-;; (defn histogram [dataset column-name {:keys [nbins]}]
-;;   (let [{:keys [bins max step]} (-> column-name
-;;                                     dataset
-;;                                     (fastmath.stats/histogram nbins))
-;;         left (map first bins)]
-;;     (-> {:left (map first bins)
-;;          :right (concat (rest left)
-;;                         [max])
-;;          :count (map second bins)}
-;;         tc/dataset
-;;         (hanami/plot ht/bar-chart
-;;                      {:X :left
-;;                       :X2 :right
-;;                       :Y :count})
-;;         (assoc-in [:encoding :x :bin] {:binned true
-;;                                        :step step})
-;;         (assoc-in [:encoding :x :title] column-name))))
-
 
 (defn update-data [template dataset-fn & submap]
   (-> template
@@ -301,3 +282,34 @@
                     (apply dataset-fn
                            @wrapped-data
                            submap))))))
+
+
+;; (dag/defn-with-deps histogram-stat
+;;   [dataset x histogram-nbins]
+;;   (let [{:keys [bins max step]} (-> @dataset
+;;                                     (get x)
+;;                                     (fastmath.stats/histogram
+;;                                      histogram-nbins))
+;;         left (map first bins)]
+;;     (-> {:x (map first bins)
+;;          :right (concat (rest left)
+;;                         [max])
+;;          :count (map second bins)}
+;;         tc/dataset)))
+
+;; (defn layer-histogram
+;;   ([context]
+;;    (layer-histogram context {}))
+;;   ([context submap]
+;;    (layer context
+;;           {:mark mark-base
+;;            :encoding :hanami/encoding}
+;;           (merge {:hanami/stat (->WrappedValue histogram-stat)
+;;                   :hanami/mark :bar
+;;                   :hanami/x :left
+;;                   :hanami/x2 :right
+;;                   :hanami/y :count
+;;                   :hanami/y-type :quantitative
+;;                   :hanami/x-title :hanami/x
+;;                   :hanami/x-bin {:binned true}}
+;;                  submap))))
