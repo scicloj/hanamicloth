@@ -149,7 +149,7 @@
    :hanami/layer []
    :hanami/group submap->group
    :hanami/predictors [:hanami/x]
-   :hanami/histogram-nbins 30})
+   :hanami/histogram-nbins 10})
 
 
 (def view-base
@@ -304,32 +304,31 @@
                            submap))))))
 
 
-;; (dag/defn-with-deps histogram-stat
-;;   [dataset x histogram-nbins]
-;;   (let [{:keys [bins max step]} (-> @dataset
-;;                                     (get x)
-;;                                     (fastmath.stats/histogram
-;;                                      histogram-nbins))
-;;         left (map first bins)]
-;;     (-> {:x (map first bins)
-;;          :right (concat (rest left)
-;;                         [max])
-;;          :count (map second bins)}
-;;         tc/dataset)))
+(dag/defn-with-deps histogram-stat
+  [dataset x histogram-nbins]
+  (let [{:keys [bins max step]} (-> @dataset
+                                    (get x)
+                                    (fastmath.stats/histogram
+                                     histogram-nbins))
+        left (map first bins)]
+    (-> {:left left
+         :right (concat (rest left)
+                        [max])
+         :count (map second bins)}
+        tc/dataset)))
 
-;; (defn layer-histogram
-;;   ([context]
-;;    (layer-histogram context {}))
-;;   ([context submap]
-;;    (layer context
-;;           {:mark mark-base
-;;            :encoding :hanami/encoding}
-;;           (merge {:hanami/stat (->WrappedValue histogram-stat)
-;;                   :hanami/mark :bar
-;;                   :hanami/x :left
-;;                   :hanami/x2 :right
-;;                   :hanami/y :count
-;;                   :hanami/y-type :quantitative
-;;                   :hanami/x-title :hanami/x
-;;                   :hanami/x-bin {:binned true}}
-;;                  submap))))
+(defn layer-histogram
+  ([context]
+   (layer-histogram context {}))
+  ([context submap]
+   (layer context
+          {:mark mark-base
+           :encoding :hanami/encoding}
+          (merge {:hanami/stat (->WrappedValue histogram-stat)
+                  :hanami/mark :bar
+                  :hanami/x-after-stat :left
+                  :hanami/x2-after-stat :right
+                  :hanami/y-after-stat :count
+                  :hanami/x-title :hanami/x
+                  :hanami/x-bin {:binned true}}
+                 submap))))
