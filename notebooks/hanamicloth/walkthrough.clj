@@ -1,24 +1,6 @@
 ;; # Walkthrough
 
-;; Hanamicloth is a composition of
-;; [Hanami](https://github.com/jsa-aerial/hanami) data visualization [templates](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations)
-;; and [Tablecloth](https://scicloj.github.io/tablecloth/) datasets.
-;; It adds a simplified set of Hanami templates and defaults alongside those of Hanami,
-;; as well as a set of template-processing functions
-;; inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
-;; [layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html).
-
 ;; In this walkthrough, we will demonstrate its main functionality.
-
-;; A more comprehensive documentation is coming soon.
-
-;; The current draft was written by Daniel Slutsky,
-;; mentored by Jon Anthony (Hanami author) and Kira McLean.
-
-;; An early version of this library was demonstrated in Kira Mclean's
-;; April 2024 talk at London Clojurians:
-^:kind/video
-{:youtube-id "eUFf3-og_-Y"}
 
 ;; ## Setup
 
@@ -355,7 +337,8 @@ mtcars
 ;; ## Example: out-of-sample predictions
 
 ;; Here is a slighly more elaborate example
-;; inpired by Kira Mclean's talk mentioned above.
+;; inpired by the London Clojurians [talk](https://www.youtube.com/watch?v=eUFf3-og_-Y)
+;; mentioned in the preface.
 ;; We use the same regression line for the
 ;; `Past` and `Future` groups.
 ;; The line is affected only by the past,
