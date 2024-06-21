@@ -1,18 +1,41 @@
 ;; # Walkthrough
 
+;; Hanamicloth is a composition of
+;; [Hanami](https://github.com/jsa-aerial/hanami) data visualization [templates](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations)
+;; and [Tablecloth](https://scicloj.github.io/tablecloth/) datasets.
+;; It adds a simplified set of Hanami templates and defaults alongside those of Hanami,
+;; as well as a set of template-processing functions
+;; inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
+;; [layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html).
+
+;; In this walkthrough, we will demonstrate its main functionality.
+
+;; A more comprehensive documentation is coming soon.
+
+;; The current draft was written by Daniel Slutsky,
+;; mentored by Jon Anthony (Hanami author) and Kira McLean.
+
+;; An early version of this library was demonstrated in Kira Mclean's
+;; April 2024 talk at London Clojurians:
+^:kind/video
+{:youtube-id "eUFf3-og_-Y"}
+
+;; ## Setup
+
+;; Here we require Hanamicloth's main API namepace
+;; as well as those of Hanami and Tablecloth,
+;; and also [Kindly](https://scicloj.github.io/kindly-noted/)
+;; (which allows us to specify how values should be visualized).
+
 (ns hanamicloth.walkthrough
   (:require [scicloj.hanamicloth.v1.api :as hanami]
             [aerial.hanami.templates :as ht]
-            [aerial.hanami.common :as hc]
             [tablecloth.api :as tc]
-            [tablecloth.column.api :as tcc]
-            [scicloj.kindly.v4.kind :as kind]
-            [scicloj.kindly.v4.api :as kindly]))
-
-:kindly/hide-code
-(def md (comp kindly/hide-code kind/md))
+            [scicloj.kindly.v4.kind :as kind]))
 
 ;; ## Some datasets
+
+;; In this walkthrough, we will used the following datasets:
 
 (defonce iris
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/iris.csv"
@@ -31,28 +54,82 @@ iris
 
 mtcars
 
-;; ## Using the original Hanami templates & defaults
+;; ## Basic usage
+
+;; Let us create a scatter plot from the Iris dataset.
+;; Here we use Hanami's original templates (`ht/chart`)
+;; and substitution keys (`:X`, `:Y`, `:MSIZE`).
 
 (-> iris
-    (hanami/base ht/point-chart
+    (hanami/plot ht/point-chart
                  {:X :sepal-width
                   :Y :sepal-length
                   :MSIZE 200}))
 
-;; ## Using Hanamicloth templates & defaults
+;; The resulting plot is displayed correctly,
+;; as it is annotated by Kindly.
 
 (-> iris
-    (hanami/base hanami/point-chart
+    (hanami/plot ht/point-chart
+                 {:X :sepal-width
+                  :Y :sepal-length
+                  :MSIZE 200})
+    meta)
+
+;; The value returned by a `hanami/plot` function
+;; is a [Vega-Lite](https://vega.github.io/vega-lite/) spec:
+
+(-> iris
+    (hanami/plot ht/point-chart
+                 {:X :sepal-width
+                  :Y :sepal-length
+                  :MSIZE 200})
+    kind/pprint)
+
+;; By looking at the `:values` key above,
+;; you can see that the dataset was implicitly represented as CSV.
+
+;; You can also see that
+
+;; ## Using Hanamicloth templates & defaults
+
+;; Hanamicloth offers its own set of templates and substitution keys.
+;; Compared to Hanami's original, it is similar but less sophisticated.
+;; Also, it supports the layered grammar which is demonstrated
+;; later in this document.
+
+(-> iris
+    (hanami/plot hanami/point-chart
                  #:hanami{:x :sepal-width
                           :y :sepal-length
                           :mark-size 200}))
 
 (-> iris
-    (hanami/base hanami/point-chart
+    (hanami/plot hanami/point-chart
+                 #:hanami{:x :sepal-width
+                          :y :sepal-length
+                          :mark-size 200})
+    kind/pprint)
+
+;; You see a slight differnece in the resulting spec:
+;; it is defined to be rendered as `:svg` by default.
+
+;; ## Inferring and overriding field types
+
+;; Field types are inferred from the Column type.
+;; Here, for example, `:x` and `:y` are `:quantitative`, and
+;; `:species` is `:nominal`
+;; (and is thus coloured with distinct colours rather than a gradient).
+
+(-> iris
+    (hanami/plot hanami/point-chart
                  #:hanami{:x :sepal-width
                           :y :sepal-length
                           :color :species
                           :mark-size 200}))
+
+;; On the other hand, in the following example,
+;; `:color` is `:quantitative`:
 
 (-> mtcars
     (hanami/plot hanami/point-chart
@@ -60,6 +137,8 @@ mtcars
                           :y :disp
                           :color :cyl
                           :mark-size 200}))
+
+;; This can be overridden:
 
 (-> mtcars
     (hanami/plot hanami/point-chart
@@ -69,6 +148,8 @@ mtcars
                           :color-type :nominal
                           :mark-size 200}))
 
+;; ## More examples
+
 (-> mtcars
     (hanami/plot hanami/boxplot-chart
                  #:hanami{:x :cyl
@@ -76,7 +157,7 @@ mtcars
                           :y :disp}))
 
 (-> iris
-    (hanami/base hanami/rule-chart
+    (hanami/plot hanami/rule-chart
                  #:hanami{:x :sepal-width
                           :y :sepal-length
                           :x2 :petal-width
@@ -85,7 +166,50 @@ mtcars
                           :mark-size 3
                           :color :species}))
 
+;; ## Delayed transformation
+
+;; Instead of the `hanami/plot` function, it is possible to used
+;; `hanami/base`:
+
+(-> iris
+    (hanami/base hanami/point-chart
+                 #:hanami{:x :sepal-width
+                          :y :sepal-length
+                          :mark-size 200}))
+
+;; The result is displayed the same way, but the internal representation
+;; delays the Hanami transformation of templates.
+
+;; Let us compare the two:
+
+(-> iris
+    (hanami/plot hanami/point-chart
+                 #:hanami{:x :sepal-width
+                          :y :sepal-length
+                          :color :species
+                          :mark-size 200})
+    kind/pprint)
+
+(-> iris
+    (hanami/base hanami/point-chart
+                 #:hanami{:x :sepal-width
+                          :y :sepal-length
+                          :color :species
+                          :mark-size 200})
+    kind/pprint)
+
+;; The structure returned by `hanami/base` is a Hanami template
+;; (with [local defaults](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#template-local-defaults)).
+;; When it is displayed, it goes through the Hanami transform
+;; to recieve the Vega-Lite spec.
+
+;; When we use base, we can keep processing the template in a pipeline
+;; of transformations. We will use it soon with layers.
+
 ;; ## Adding layers
+
+;; A base plot does not need to have a specified chart.
+;; Instead, we may add layers:
 
 (-> iris
     (hanami/base #:hanami{:x :sepal-width
@@ -93,15 +217,14 @@ mtcars
                           :mark-size 200})
     hanami/layer-point)
 
-(-> iris
-    (hanami/layer-point #:hanami{:x :sepal-width
-                                 :y :sepal-length
-                                 :mark-size 200}))
+;; The substitution keys can also be specified on the layer level:
 
 (-> iris
     (hanami/base #:hanami{:x :sepal-width
                           :y :sepal-length})
     (hanami/layer-point #:hanami{:mark-size 200}))
+
+;; This allows us to create aesthetic differences between layers:
 
 (-> iris
     (hanami/base #:hanami{:title "dummy"
@@ -114,6 +237,12 @@ mtcars
 
 ;; ## Updating data
 
+;; Using `hanami/update-data`, we may process the dataset
+;; during the pipeline, affecting only the layers added further down the pipeline.
+
+;; This functionality is inspired by [ggbuilder](https://github.com/mjskay/ggbuilder)
+;; and [metamorph](https://github.com/scicloj/metamorph).
+
 (-> iris
     (hanami/base #:hanami{:title "dummy"
                           :mark-color "green"
@@ -124,7 +253,14 @@ mtcars
     (hanami/update-data tc/random 5)
     (hanami/layer-point #:hanami{:mark-size 200}))
 
+;; You see, we have lots of data for the lines,
+;; but only five random points.
+
 ;; ## Processing raw vega-lite
+
+;; During a pipeline, we may call `hanami/plot`
+;; to apply the Hanami transform and realize the
+;; `Vega-Lite` spec.
 
 (-> iris
     (hanami/base #:hanami{:title "dummy"
@@ -133,14 +269,35 @@ mtcars
                           :y :sepal-length})
     (hanami/layer-line #:hanami{:mark-size 4
                                 :mark-color "brown"})
-    (hanami/layer-line {:MSIZE 4
-                        :MCOLOR "brown"})
-    (hanami/update-data tc/random 20)
+    (hanami/update-data tc/random 5)
+    (hanami/layer-point #:hanami{:mark-size 200})
+    hanami/plot
+    kind/pprint)
+
+;; While this in itself does not affect the display of the plot,
+;; it allows us to keep editing it as a Vega-Lite spec.
+;; For example, let us change the backgound colour this way:
+
+(-> iris
+    (hanami/base #:hanami{:title "dummy"
+                          :mark-color "green"
+                          :x :sepal-width
+                          :y :sepal-length})
+    (hanami/layer-line #:hanami{:mark-size 4
+                                :mark-color "brown"})
+    (hanami/update-data tc/random 5)
     (hanami/layer-point #:hanami{:mark-size 200})
     hanami/plot
     (assoc :background "lightgrey"))
 
 ;; ## Smoothing
+
+;; `hanami/layer-smooth` is a layer that applies some statistical
+;; processing to the dataset to model it as a smooth shape.
+;; It is inspired by ggplot's [geom_smooth](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
+
+;; At the moment, it can only be used to model `:y` by linear regression.
+;; Soon we will add more ways of modelling the data.
 
 (-> iris
     (hanami/base #:hanami{:title "dummy"
@@ -149,6 +306,11 @@ mtcars
                           :y :sepal-length})
     hanami/layer-point
     (hanami/layer-smooth #:hanami{:mark-color "orange"}))
+
+;; By default, the regression is computed with only one predictore variable,
+;; which is `:x`.
+;; But this can be overriden using the `:predictors` key.
+;; We may compute a regression with more than one predictor.
 
 (-> iris
     (hanami/base #:hanami{:x :sepal-width
@@ -159,6 +321,12 @@ mtcars
 
 ;; ## Grouping
 
+;; The regression computed by `hanami/layer-smooth`
+;; is affected by the inferred grouping of the data.
+
+;; For example, here we recieve three regression lines,
+;; each for every species.
+
 (-> iris
     (hanami/base #:hanami{:title "dummy"
                           :mark-color "green"
@@ -167,6 +335,12 @@ mtcars
                           :y :sepal-length})
     hanami/layer-point
     hanami/layer-smooth)
+
+;; This happened because the `:color` field was `:species`,
+;; which is of `:nominal` type.
+
+;; But we may override this using the `:group` key.
+;; For example, let us avoid grouping:
 
 (-> iris
     (hanami/base #:hanami{:title "dummy"
@@ -179,6 +353,13 @@ mtcars
     hanami/layer-smooth)
 
 ;; ## Example: out-of-sample predictions
+
+;; Here is a slighly more elaborate example
+;; inpired by Kira Mclean's talk mentioned above.
+;; We use the same regression line for the
+;; `Past` and `Future` groups.
+;; The line is affected only by the past,
+;; since in the Future, `:y` is missing.
 
 (-> iris
     (tc/concat (tc/dataset {:sepal-width (range 4 10)
@@ -195,5 +376,12 @@ mtcars
 
 ;; ## Histograms
 
+;; Histograms can also be represented as layers
+;; with statistical processing:
+
 (-> iris
     (hanami/layer-histogram #:hanami{:x :sepal-width}))
+
+(-> iris
+    (hanami/layer-histogram #:hanami{:x :sepal-width
+                                     :histogram-nbins 30}))
