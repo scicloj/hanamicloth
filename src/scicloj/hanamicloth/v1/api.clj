@@ -8,7 +8,8 @@
             [tech.v3.dataset :as ds]
             [fastmath.stats]
             [fastmath.ml.regression :as regression]
-            [scicloj.hanamicloth.v1.dag :as dag]))
+            [scicloj.hanamicloth.v1.dag :as dag]
+            [clojure.string :as str]))
 
 (deftype WrappedValue [value]
   clojure.lang.IDeref
@@ -38,17 +39,25 @@
 (dag/defn-with-deps submap->csv [dataset-after-stat]
   (dataset->csv @dataset-after-stat))
 
+
 (defn submap->field-type [colname-key]
-  (dag/fn-with-deps-keys
-   [colname-key :hanami/dataset]
-   (fn [{:as submap
-         :keys [hanami/dataset]}]
-     (if-let [colname (submap colname-key)]
-       (let [column (@dataset colname)]
-         (cond (tcc/typeof? column :numerical) :quantitative
-               (tcc/typeof? column :datetime) :temporal
-               :else :nominal))
-       hc/RMV))))
+  (let [dataset-key (if (-> colname-key
+                            name
+                            (str/ends-with? "after-stat"))
+                      :hanami/dataset-after-stat
+                      :hanami/dataset)]
+    (dag/fn-with-deps-keys
+     [colname-key dataset-key]
+     (fn [submap]
+       (if-let [colname (submap colname-key)]
+         (let [column (-> submap
+                          (get dataset-key)
+                          deref
+                          (get colname))]
+           (cond (tcc/typeof? column :numerical) :quantitative
+                 (tcc/typeof? column :datetime) :temporal
+                 :else :nominal))
+         hc/RMV)))))
 
 (dag/defn-with-deps submap->group [color color-type size size-type]
   (concat (when (= color-type :nominal)
@@ -100,9 +109,9 @@
    :hanami/color hc/RMV
    :hanami/size hc/RMV
    :hanami/x-type (submap->field-type :hanami/x)
-   :hanami/x-type-after-stat :hanami/x-type
+   :hanami/x-type-after-stat (submap->field-type :hanami/x-after-stat)
    :hanami/y-type (submap->field-type :hanami/y)
-   :hanami/y-type-after-stat :hanami/y-type
+   :hanami/y-type-after-stat (submap->field-type :hanami/y-after-stat)
    :hanami/x-title hc/RMV
    :hanami/y-title hc/RMV
    :hanami/x-bin hc/RMV
