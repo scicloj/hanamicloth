@@ -10,6 +10,10 @@
             [fastmath.ml.regression :as regression]
             [scicloj.hanamicloth.v1.dag :as dag]))
 
+(deftype WrappedValue [value]
+  clojure.lang.IDeref
+  (deref [this] value))
+
 (defn nonrmv? [v]
   (not= v hc/RMV))
 
@@ -21,15 +25,18 @@
           (ds/write! path))
       (slurp path))))
 
-(def submap->csv
+(def submap->dataset-after-stat
   (dag/fn-with-deps-keys
    [:hanami/dataset :hanami/stat]
    (fn [{:as submap
          :keys [hanami/dataset hanami/stat]}]
-     (dataset->csv
-      (if stat
-        (@stat submap)
-        @dataset)))))
+     (if stat
+       (->WrappedValue
+        (@stat submap))
+       dataset))))
+
+(dag/defn-with-deps submap->csv [dataset-after-stat]
+  (dataset->csv @dataset-after-stat))
 
 (defn submap->field-type [colname-key]
   (dag/fn-with-deps-keys
@@ -57,12 +64,12 @@
 
 (def xy-encoding
   (assoc encoding-base
-         :x {:field :hanami/x
-             :type :hanami/x-type
+         :x {:field :hanami/x-after-stat
+             :type :hanami/x-type-after-stat
              :title :hanami/x-title
              :bin :hanami/x-bin}
-         :y {:field :hanami/y
-             :type :hanami/y-type
+         :y {:field :hanami/y-after-stat
+             :type :hanami/y-type-after-stat
              :title :hanami/y-title
              :bin :hanami/y-bin}
          :x2 :hanami/x2-encoding
@@ -75,7 +82,7 @@
    ;; defaults for hanamicloth templates
    :hanami/stat hc/RMV
    :hanami/dataset hc/RMV
-   :hanami/dataset-after-stat :hanami/dataset
+   :hanami/dataset-after-stat submap->dataset-after-stat
    :hanami/csv-data submap->csv
    :hanami/data {:values :hanami/csv-data
                  :format {:type "csv"}}
@@ -100,19 +107,21 @@
    :hanami/y-title hc/RMV
    :hanami/x-bin hc/RMV
    :hanami/y-bin hc/RMV
-   :hanami/x2-encoding (dag/fn-with-deps [x2 x-type]
-                         (if x2
+   :hanami/x2-encoding (dag/fn-with-deps [x2-after-stat
+                                          x-type-after-stat]
+                         (if x2-after-stat
                            (-> xy-encoding
                                :x
-                               (assoc :field x2
-                                      :type x-type))
+                               (assoc :field x2-after-stat
+                                      :type x-type-after-stat))
                            hc/RMV))
-   :hanami/y2-encoding (dag/fn-with-deps [y2 y-type]
-                         (if y2
+   :hanami/y2-encoding (dag/fn-with-deps [y2-after-stat
+                                          y-type-after-stat]
+                         (if y2-after-stat
                            (-> xy-encoding
                                :y
-                               (assoc :field y2
-                                      :type y-type))
+                               (assoc :field y2-after-stat
+                                      :type y-type-after-stat))
                            hc/RMV))
    :hanami/color-type (submap->field-type :hanami/color)
    :hanami/size-type (submap->field-type :hanami/size)
@@ -163,9 +172,7 @@
 (def rect-chart (mark-based-chart "rect"))
 (def rule-chart (mark-based-chart "rule"))
 
-(deftype WrappedValue [value]
-  clojure.lang.IDeref
-  (deref [this] value))
+
 
 
 (defn dataset->defaults [dataset]
