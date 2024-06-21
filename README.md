@@ -1,6 +1,8 @@
-# hanamicloth
+# Hanamicloth
 
-A composition of Hanami data visualizations and Tablecloth datasets
+Hanamicloth is a composition of Hanami data visualizations and Tablecloth datasets.
+
+[Documentation](https://scicloj.github.io/hanamicloth/)
 
 ## Status
 
