@@ -35,6 +35,15 @@
                  #:hanami{:x :cyl
                           :y :displ}))
 
+(-> (toydata/iris-ds)
+    (hanami/base hanami/rule-chart
+                 #:hanami{:x :sepal_width
+                          :y :sepal_length
+                          :x2 :petal_width
+                          :y2 :petal_length
+                          :mark-size 3
+                          :color :species}))
+
 ;; ## Adding layers
 
 (-> (toydata/iris-ds)
@@ -147,10 +156,10 @@
 
 ;; (-> (toydata/iris-is)
 ;;     (hanami/plot ht/rule-chart
-;;                {:X :sepal-width
-;;                 :Y :sepal-length
+;;                {:X :sepal_width
+;;                 :Y :sepal_length
 ;;                 :X2 :petal-width
-;;                 :Y2 :petal-length
+;;                 :Y2 :petal_length
 ;;                 :OPACITY 0.2
 ;;                 :SIZE 3
 ;;                 :COLOR "species"}))
