@@ -5,7 +5,8 @@
 ;; ## Setup
 
 ;; Here we require Hanamicloth's main API namepace
-;; as well as those of Hanami and Tablecloth,
+;; as well as those of [Hanami](https://github.com/jsa-aerial/hanami)
+;; and [Tablecloth](https://scicloj.github.io/tablecloth/),
 ;; and also [Kindly](https://scicloj.github.io/kindly-noted/)
 ;; (which allows us to specify how values should be visualized).
 
@@ -39,6 +40,8 @@ mtcars
 ;; ## Basic usage
 
 ;; Let us create a scatter plot from the Iris dataset.
+;; We pass a Tablecloth dataset to a Hanamicloth function
+;; with a Hanami template.
 ;; Here we use Hanami's original templates (`ht/chart`)
 ;; and substitution keys (`:X`, `:Y`, `:MSIZE`).
 
