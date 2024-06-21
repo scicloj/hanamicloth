@@ -96,27 +96,23 @@
    :hanami/x-type-after-stat :hanami/x-type
    :hanami/y-type (submap->field-type :hanami/y)
    :hanami/y-type-after-stat :hanami/y-type
-   :hanami/x2-type (dag/fn-with-deps [x-type x2]
-                     (when x2 x-type))
-   :hanami/y2-type (dag/fn-with-deps [y-type y2]
-                     (when y2 y-type))
    :hanami/x-title hc/RMV
    :hanami/y-title hc/RMV
    :hanami/x-bin hc/RMV
    :hanami/y-bin hc/RMV
-   :hanami/x2-encoding (dag/fn-with-deps [x2 x2-type]
+   :hanami/x2-encoding (dag/fn-with-deps [x2 x-type]
                          (if x2
                            (-> xy-encoding
                                :x
                                (assoc :field x2
-                                      :type x2-type))
+                                      :type x-type))
                            hc/RMV))
-   :hanami/y2-encoding (dag/fn-with-deps [y2 y2-type]
+   :hanami/y2-encoding (dag/fn-with-deps [y2 y-type]
                          (if y2
                            (-> xy-encoding
                                :y
                                (assoc :field y2
-                                      :type y2-type))
+                                      :type y-type))
                            hc/RMV))
    :hanami/color-type (submap->field-type :hanami/color)
    :hanami/size-type (submap->field-type :hanami/size)
