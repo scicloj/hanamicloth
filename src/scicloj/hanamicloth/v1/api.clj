@@ -114,6 +114,7 @@
    :hanami/mark "circle"
    :hanami/mark-color hc/RMV
    :hanami/mark-size hc/RMV
+   :hanami/mark-opacity hc/RMV
    :hanami/mark-tooltip true
    :hanami/layer []
    :hanami/group submap->group
@@ -135,6 +136,7 @@
   {:type :hanami/mark,
    :color :hanami/mark-color
    :size :hanami/mark-size
+   :opacity :hanami/mark-opacity
    :tooltip :hanami/mark-tooltip})
 
 (defn mark-based-chart [mark]
