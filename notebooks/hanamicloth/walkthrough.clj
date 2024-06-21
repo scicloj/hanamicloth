@@ -41,6 +41,7 @@
                           :y :sepal_length
                           :x2 :petal_width
                           :y2 :petal_length
+                          :mark-opacity 0.5
                           :mark-size 3
                           :color :species}))
 
