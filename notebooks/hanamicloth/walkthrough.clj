@@ -195,7 +195,7 @@ mtcars
 
 ;; ## Histograms
 
-#_(-> iris
-      (hanami/layer-histogram #:hanami{:x :sepal-width})
-      hanami/plot
-      (dissoc :encoding))
+(-> iris
+    (hanami/layer-histogram #:hanami{:x :sepal-width})
+    hanami/plot
+    (dissoc :encoding))
