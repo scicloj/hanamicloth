@@ -314,7 +314,6 @@ mtcars
 
 (-> iris
     (hanami/base #:hanami{:title "dummy"
-                          :mark-color "green"
                           :color :species
                           :x :sepal-width
                           :y :sepal-length})
