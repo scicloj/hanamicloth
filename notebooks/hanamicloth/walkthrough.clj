@@ -21,7 +21,7 @@
 
 ;; In this walkthrough, we will used the following datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html):
 
-;; Edgar Anderson's Iris Data
+;; ### Edgar Anderson's Iris Data
 
 (defonce iris
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/iris.csv"
@@ -34,7 +34,7 @@
 
 iris
 
-;; Motor Trend Car Road Tests
+;; ### Motor Trend Car Road Tests
 
 (defonce mtcars
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/mtcars.csv"
@@ -43,7 +43,7 @@ iris
 mtcars
 
 
-;; US economic time series
+;; ### US economic time series
 
 (defonce economics-long
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/economics_long.csv"
@@ -116,8 +116,8 @@ economics-long
 ;; ## Inferring and overriding field types
 
 ;; Field [types](https://vega.github.io/vega-lite/docs/type.html) are inferred from the Column type.
-;; Here, for example, `:x` and `:y` are `:quantitative`, and
-;; `:species` is `:nominal`
+;; Here, for example, `:hanami/x` and `:hanami/y` are `:quantitative`, and
+;; `:hanami/color` is `:nominal`
 ;; (and is thus coloured with distinct colours rather than a gradient).
 
 (-> iris
@@ -299,9 +299,9 @@ economics-long
 
 ;; `hanami/layer-smooth` is a layer that applies some statistical
 ;; processing to the dataset to model it as a smooth shape.
-;; It is inspired by ggplot's [geom_smooth](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
+;; It is inspired by ggplot's [geom_smooth](https://ggplot2.tidyverse.org/reference/geom_smooth.html).
 
-;; At the moment, it can only be used to model `:y` by linear regression.
+;; At the moment, it can only be used to model `:hanami/y` by linear regression.
 ;; Soon we will add more ways of modelling the data.
 
 (-> iris
@@ -312,8 +312,8 @@ economics-long
     hanami/layer-point
     (hanami/layer-smooth #:hanami{:mark-color "orange"}))
 
-;; By default, the regression is computed with only one predictore variable,
-;; which is `:x`.
+;; By default, the regression is computed with only one predictor variable,
+;; which is `:hanami/x`.
 ;; But this can be overriden using the `:predictors` key.
 ;; We may compute a regression with more than one predictor.
 
