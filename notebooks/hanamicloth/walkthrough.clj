@@ -16,9 +16,12 @@
             [tablecloth.api :as tc]
             [scicloj.kindly.v4.kind :as kind]))
 
+
 ;; ## Some datasets
 
-;; In this walkthrough, we will used the following datasets:
+;; In this walkthrough, we will used the following datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html):
+
+;; Edgar Anderson's Iris Data
 
 (defonce iris
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/iris.csv"
@@ -31,11 +34,22 @@
 
 iris
 
+;; Motor Trend Car Road Tests
+
 (defonce mtcars
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/mtcars.csv"
       (tc/dataset {:key-fn keyword})))
 
 mtcars
+
+
+;; US economic time series
+
+(defonce economics-long
+  (-> "https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/economics_long.csv"
+      (tc/dataset {:key-fn keyword})))
+
+economics-long
 
 ;; ## Basic usage
 
@@ -101,7 +115,7 @@ mtcars
 
 ;; ## Inferring and overriding field types
 
-;; Field types are inferred from the Column type.
+;; Field [types](https://vega.github.io/vega-lite/docs/type.html) are inferred from the Column type.
 ;; Here, for example, `:x` and `:y` are `:quantitative`, and
 ;; `:species` is `:nominal`
 ;; (and is thus coloured with distinct colours rather than a gradient).
@@ -208,6 +222,12 @@ mtcars
     (hanami/base #:hanami{:x :sepal-width
                           :y :sepal-length})
     (hanami/layer-point #:hanami{:mark-size 200}))
+
+;; We can also skip the base and have everything in the layer:
+(-> iris
+    (hanami/layer-point #:hanami{:x :sepal-width
+                                 :y :sepal-length
+                                 :mark-size 200}))
 
 ;; This allows us to create aesthetic differences between layers:
 
@@ -370,3 +390,22 @@ mtcars
 (-> iris
     (hanami/layer-histogram #:hanami{:x :sepal-width
                                      :histogram-nbins 30}))
+
+;; ## Time series
+
+;; Let us plot a time series:
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "pop")))
+    (hanami/layer-line #:hanami{:x :date
+                                :y :value}))
+
+;; You see, the `:date` field was correctly inferred to be
+;; of the `:temporal` kind.
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "pop")))
+    (hanami/layer-line #:hanami{:x :date
+                                :y :value})
+    hanami/plot
+    kind/pprint)
