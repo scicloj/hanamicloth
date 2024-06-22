@@ -73,28 +73,28 @@
 
   ```clj
   (with-clean-cache
-    (-> {:b :hanami/B
-         :c :hanami/C
-         ::ht/defaults {:hanami/B (fn-with-deps-keys
-                                 [:hanami/A]
-                                 (fn [{:keys [hanami/A]}] (inc A)))
-                        :hanami/C (fn-with-deps-keys
-                                 [:hanami/B]
-                                 (fn [{:keys [hanami/B]}] (inc B)))}}
-        (hc/xform :hanami/A 9)))
+    (-> {:b :haclo/B
+         :c :haclo/C
+         ::ht/defaults {:haclo/B (fn-with-deps-keys
+                                 [:haclo/A]
+                                 (fn [{:keys [haclo/A]}] (inc A)))
+                        :haclo/C (fn-with-deps-keys
+                                 [:haclo/B]
+                                 (fn [{:keys [haclo/B]}] (inc B)))}}
+        (hc/xform :haclo/A 9)))
 
   => {:b 10 :c 11}
 
   (with-clean-cache
-    (-> {:b :hanami/B
-         :c :hanami/C
-         ::ht/defaults {:hanami/B (fn-with-deps-keys
-                                 [:hanami/A]
-                                 (fn [{:keys [hanami/A]}] (inc A)))
-                        :hanami/C (fn-with-deps-keys
-                                 [:hanami/A :hanami/B]
-                                 (fn [{:keys [hanami/A hanami/B]}] (+ A B)))}}
-        (hc/xform :hanami/A 9)))
+    (-> {:b :haclo/B
+         :c :haclo/C
+         ::ht/defaults {:haclo/B (fn-with-deps-keys
+                                 [:haclo/A]
+                                 (fn [{:keys [haclo/A]}] (inc A)))
+                        :haclo/C (fn-with-deps-keys
+                                 [:haclo/A :haclo/B]
+                                 (fn [{:keys [haclo/A haclo/B]}] (+ A B)))}}
+        (hc/xform :haclo/A 9)))
 
   => {:b 10 :c 19}
   ```
@@ -114,19 +114,19 @@
 
   ```clj
   (with-clean-cache
-    (-> {:b :hanami/B
-         :c :hanami/C
-         ::ht/defaults #:hanami{:B (fn-with-deps [A] (inc A))
-                                :C (fn-with-deps [B] (inc B))}}
-        (hc/xform :hanami/A 9)))
+    (-> {:b :haclo/B
+         :c :haclo/C
+         ::ht/defaults #:haclo{:B (fn-with-deps [A] (inc A))
+                               :C (fn-with-deps [B] (inc B))}}
+        (hc/xform :haclo/A 9)))
 
     => {:b 10 :c 11}
   ```
   "
   [dep-symbols & forms]
   `(fn-with-deps-keys
-    ~(mapv #(keyword "hanami" (name %)) dep-symbols)
-    (fn [{:keys ~(mapv #(symbol "hanami" (name %)) dep-symbols)}]
+    ~(mapv #(keyword "haclo" (name %)) dep-symbols)
+    (fn [{:keys ~(mapv #(symbol "haclo" (name %)) dep-symbols)}]
       ~@forms)))
 
 (defmacro defn-with-deps
@@ -139,11 +139,11 @@
   (defn-with-deps A->B [A] (inc A))
 
   (with-clean-cache
-    (-> {:b :hanami/B
-         :c :hanami/C
-         ::ht/defaults #:hanami{:B A->B
+    (-> {:b :haclo/B
+         :c :haclo/C
+         ::ht/defaults #:haclo{:B A->B
                                 :C B->C}}
-        (hc/xform :hanami/A 9)))
+        (hc/xform :haclo/A 9)))
 
     => {:b 10 :c 11}
   ```

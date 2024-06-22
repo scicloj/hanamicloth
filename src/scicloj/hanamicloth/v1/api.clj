@@ -28,9 +28,9 @@
 
 (def submap->dataset-after-stat
   (dag/fn-with-deps-keys
-   [:hanami/dataset :hanami/stat]
+   [:haclo/dataset :haclo/stat]
    (fn [{:as submap
-         :keys [hanami/dataset hanami/stat]}]
+         :keys [haclo/dataset haclo/stat]}]
      (if stat
        (->WrappedValue
         (@stat submap))
@@ -44,8 +44,8 @@
   (let [dataset-key (if (-> colname-key
                             name
                             (str/ends-with? "after-stat"))
-                      :hanami/dataset-after-stat
-                      :hanami/dataset)]
+                      :haclo/dataset-after-stat
+                      :haclo/dataset)]
     (dag/fn-with-deps-keys
      [colname-key dataset-key]
      (fn [submap]
@@ -66,57 +66,57 @@
             [size])))
 
 (def encoding-base
-  {:color {:field :hanami/color
-           :type :hanami/color-type}
-   :size {:field :hanami/size
-          :type :hanami/size-type}})
+  {:color {:field :haclo/color
+           :type :haclo/color-type}
+   :size {:field :haclo/size
+          :type :haclo/size-type}})
 
 (def xy-encoding
   (assoc encoding-base
-         :x {:field :hanami/x-after-stat
-             :type :hanami/x-type-after-stat
-             :title :hanami/x-title
-             :bin :hanami/x-bin}
-         :y {:field :hanami/y-after-stat
-             :type :hanami/y-type-after-stat
-             :title :hanami/y-title
-             :bin :hanami/y-bin}
-         :x2 :hanami/x2-encoding
-         :y2 :hanami/y2-encoding))
+         :x {:field :haclo/x-after-stat
+             :type :haclo/x-type-after-stat
+             :title :haclo/x-title
+             :bin :haclo/x-bin}
+         :y {:field :haclo/y-after-stat
+             :type :haclo/y-type-after-stat
+             :title :haclo/y-title
+             :bin :haclo/y-bin}
+         :x2 :haclo/x2-encoding
+         :y2 :haclo/y2-encoding))
 
 (def standard-defaults
   {;; defaults for original Hanami templates
-   :VALDATA :hanami/csv-data
+   :VALDATA :haclo/csv-data
    :DFMT {:type "csv"}
    ;; defaults for hanamicloth templates
-   :hanami/stat hc/RMV
-   :hanami/dataset hc/RMV
-   :hanami/dataset-after-stat submap->dataset-after-stat
-   :hanami/csv-data submap->csv
-   :hanami/data {:values :hanami/csv-data
+   :haclo/stat hc/RMV
+   :haclo/dataset hc/RMV
+   :haclo/dataset-after-stat submap->dataset-after-stat
+   :haclo/csv-data submap->csv
+   :haclo/data {:values :haclo/csv-data
                  :format {:type "csv"}}
-   :hanami/opacity hc/RMV
-   :hanami/row hc/RMV
-   :hanami/column hc/RMV
-   :hanami/x :x
-   :hanami/x-after-stat :hanami/x
-   :hanami/y :y
-   :hanami/y-after-stat :hanami/y
-   :hanami/x2 hc/RMV
-   :hanami/x2-after-stat :hanami/x2
-   :hanami/y2 hc/RMV
-   :hanami/y2-after-stat :hanami/y2
-   :hanami/color hc/RMV
-   :hanami/size hc/RMV
-   :hanami/x-type (submap->field-type :hanami/x)
-   :hanami/x-type-after-stat (submap->field-type :hanami/x-after-stat)
-   :hanami/y-type (submap->field-type :hanami/y)
-   :hanami/y-type-after-stat (submap->field-type :hanami/y-after-stat)
-   :hanami/x-title hc/RMV
-   :hanami/y-title hc/RMV
-   :hanami/x-bin hc/RMV
-   :hanami/y-bin hc/RMV
-   :hanami/x2-encoding (dag/fn-with-deps [x2-after-stat
+   :haclo/opacity hc/RMV
+   :haclo/row hc/RMV
+   :haclo/column hc/RMV
+   :haclo/x :x
+   :haclo/x-after-stat :haclo/x
+   :haclo/y :y
+   :haclo/y-after-stat :haclo/y
+   :haclo/x2 hc/RMV
+   :haclo/x2-after-stat :haclo/x2
+   :haclo/y2 hc/RMV
+   :haclo/y2-after-stat :haclo/y2
+   :haclo/color hc/RMV
+   :haclo/size hc/RMV
+   :haclo/x-type (submap->field-type :haclo/x)
+   :haclo/x-type-after-stat (submap->field-type :haclo/x-after-stat)
+   :haclo/y-type (submap->field-type :haclo/y)
+   :haclo/y-type-after-stat (submap->field-type :haclo/y-after-stat)
+   :haclo/x-title hc/RMV
+   :haclo/y-title hc/RMV
+   :haclo/x-bin hc/RMV
+   :haclo/y-bin hc/RMV
+   :haclo/x2-encoding (dag/fn-with-deps [x2-after-stat
                                           x-type-after-stat]
                          (if x2-after-stat
                            (-> xy-encoding
@@ -124,7 +124,7 @@
                                (assoc :field x2-after-stat
                                       :type x-type-after-stat))
                            hc/RMV))
-   :hanami/y2-encoding (dag/fn-with-deps [y2-after-stat
+   :haclo/y2-encoding (dag/fn-with-deps [y2-after-stat
                                           y-type-after-stat]
                          (if y2-after-stat
                            (-> xy-encoding
@@ -132,42 +132,42 @@
                                (assoc :field y2-after-stat
                                       :type y-type-after-stat))
                            hc/RMV))
-   :hanami/color-type (submap->field-type :hanami/color)
-   :hanami/size-type (submap->field-type :hanami/size)
-   :hanami/renderer :svg
-   :hanami/usermeta {:embedOptions {:renderer :hanami/renderer}}
-   :hanami/title hc/RMV
-   :hanami/encoding xy-encoding
-   :hanami/height 300
-   :hanami/width 400
-   :hanami/background "floralwhite"
-   :hanami/mark "circle"
-   :hanami/mark-color hc/RMV
-   :hanami/mark-size hc/RMV
-   :hanami/mark-opacity hc/RMV
-   :hanami/mark-tooltip true
-   :hanami/layer []
-   :hanami/group submap->group
-   :hanami/predictors [:hanami/x]
-   :hanami/histogram-nbins 10})
+   :haclo/color-type (submap->field-type :haclo/color)
+   :haclo/size-type (submap->field-type :haclo/size)
+   :haclo/renderer :svg
+   :haclo/usermeta {:embedOptions {:renderer :haclo/renderer}}
+   :haclo/title hc/RMV
+   :haclo/encoding xy-encoding
+   :haclo/height 300
+   :haclo/width 400
+   :haclo/background "floralwhite"
+   :haclo/mark "circle"
+   :haclo/mark-color hc/RMV
+   :haclo/mark-size hc/RMV
+   :haclo/mark-opacity hc/RMV
+   :haclo/mark-tooltip true
+   :haclo/layer []
+   :haclo/group submap->group
+   :haclo/predictors [:haclo/x]
+   :haclo/histogram-nbins 10})
 
 
 (def view-base
-  {:usermeta :hanami/usermeta
-   :title :hanami/title
-   :height :hanami/height
-   :width :hanami/width
-   :background :hanami/background
-   :data :hanami/data
-   :encoding :hanami/encoding
-   :layer :hanami/layer})
+  {:usermeta :haclo/usermeta
+   :title :haclo/title
+   :height :haclo/height
+   :width :haclo/width
+   :background :haclo/background
+   :data :haclo/data
+   :encoding :haclo/encoding
+   :layer :haclo/layer})
 
 (def mark-base
-  {:type :hanami/mark,
-   :color :hanami/mark-color
-   :size :hanami/mark-size
-   :opacity :hanami/mark-opacity
-   :tooltip :hanami/mark-tooltip})
+  {:type :haclo/mark,
+   :color :haclo/mark-color
+   :size :haclo/mark-size
+   :opacity :haclo/mark-opacity
+   :tooltip :haclo/mark-tooltip})
 
 (defn mark-based-chart [mark]
   (assoc view-base
@@ -185,7 +185,7 @@
 
 
 (defn dataset->defaults [dataset]
-  {:hanami/dataset (->WrappedValue dataset)})
+  {:haclo/dataset (->WrappedValue dataset)})
 
 (defn vega-lite-xform [template]
   (dag/with-clean-cache
@@ -233,10 +233,10 @@
          (update ::ht/defaults
                  (fn [defaults]
                    (-> defaults
-                       (update :hanami/layer
+                       (update :haclo/layer
                                (comp vec conj)
                                (assoc template
-                                      :data :hanami/data
+                                      :data :haclo/data
                                       ::ht/defaults (merge
                                                      standard-defaults
                                                      defaults
@@ -250,8 +250,8 @@
     ([context submap]
      (layer context
             {:mark mark-base
-             :encoding :hanami/encoding}
-            (merge {:hanami/mark mark}
+             :encoding :haclo/encoding}
+            (merge {:haclo/mark mark}
                    submap)))))
 
 (def layer-point (mark-based-layer "circle"))
@@ -287,16 +287,16 @@
   ([context submap]
    (layer context
           {:mark mark-base
-           :encoding :hanami/encoding}
-          (merge {:hanami/stat (->WrappedValue smooth-stat)
-                  :hanami/mark :line}
+           :encoding :haclo/encoding}
+          (merge {:haclo/stat (->WrappedValue smooth-stat)
+                  :haclo/mark :line}
                  submap))))
 
 
 
 (defn update-data [template dataset-fn & submap]
   (-> template
-      (update-in [::ht/defaults :hanami/dataset]
+      (update-in [::ht/defaults :haclo/dataset]
                  (fn [wrapped-data]
                    (->WrappedValue
                     (apply dataset-fn
@@ -323,12 +323,12 @@
   ([context submap]
    (layer context
           {:mark mark-base
-           :encoding :hanami/encoding}
-          (merge {:hanami/stat (->WrappedValue histogram-stat)
-                  :hanami/mark :bar
-                  :hanami/x-after-stat :left
-                  :hanami/x2-after-stat :right
-                  :hanami/y-after-stat :count
-                  :hanami/x-title :hanami/x
-                  :hanami/x-bin {:binned true}}
+           :encoding :haclo/encoding}
+          (merge {:haclo/stat (->WrappedValue histogram-stat)
+                  :haclo/mark :bar
+                  :haclo/x-after-stat :left
+                  :haclo/x2-after-stat :right
+                  :haclo/y-after-stat :count
+                  :haclo/x-title :haclo/x
+                  :haclo/x-bin {:binned true}}
                  submap))))
