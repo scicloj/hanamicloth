@@ -1,6 +1,7 @@
 # Hanamicloth
 
 Hanamicloth is a composition of Hanami data visualizations and Tablecloth datasets.
+[![Clojars Project](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
 
 [Documentation](https://scicloj.github.io/hanamicloth/)
 
