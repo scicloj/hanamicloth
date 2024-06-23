@@ -60,7 +60,7 @@ April 2024 talk at London Clojurians:
 
 ## Discussion
 - development - topic threads under [#hanamicloth-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-hanamicloth-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/hanamicloth/issues)
-- usage - topic threads under [#data-science]
+- usage - topic threads under [#data-science](https://clojurians.zulipchat.com/#narrow/stream/151924-data-science/)
 
 
 ## Chapters in this book:
