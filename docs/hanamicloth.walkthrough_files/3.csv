@@ -1,6 +1,6 @@
 rownames,sepal-length,sepal-width,petal-length,petal-width,species
-12,4.8,3.4,1.6,0.2,setosa
-21,5.4,3.4,1.7,0.2,setosa
-93,5.8,2.6,4.0,1.2,versicolor
-82,5.5,2.4,3.7,1.0,versicolor
-80,5.7,2.6,3.5,1.0,versicolor
+101,6.3,3.3,6.0,2.5,virginica
+118,7.7,3.8,6.7,2.2,virginica
+101,6.3,3.3,6.0,2.5,virginica
+27,5.0,3.4,1.6,0.4,setosa
+108,7.3,2.9,6.3,1.8,virginica
