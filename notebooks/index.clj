@@ -47,6 +47,8 @@ April 2024 talk at London Clojurians:
 
 - Have a functional grammar for common plotting tasks (but not all tasks).
 - In particular, provide an easy way to work with layers.
+- Be able to pass Tablecloth/tech.ml.dataset datasets directly to the plotting functions.
+- Work out-of-the box in Kindly-supporting tools.
 - By default, infer relevant information from the data (e.g., field types).
 - Catch common errors using the data (e.g., missing fields).
 - Be able to use backend Clojure for relevant statistical tasks (e.g., smoothing by regression, histograms, density estimation).
