@@ -1,11 +1,11 @@
 ;; # Some datasets
 
+;; In this documentation, we will use a few datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html).
+
 (ns hanamicloth.datasets
   (:require [tablecloth.api :as tc]
             [clojure.string :as str]
             [scicloj.kindly.v4.kind :as kind]))
-
-;; In this documentation, we will use a few datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html).
 
 (defn fetch-dataset [dataset-name]
   (-> dataset-name
