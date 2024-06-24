@@ -10,6 +10,7 @@
 ;; the `datetime` namespace of [dtype-next](https://github.com/cnuernber/dtype-next),
 ;; and also [Kindly](https://scicloj.github.io/kindly-noted/)
 ;; (which allows us to specify how values should be visualized).
+;; We will use the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html).
 
 (ns hanamicloth.walkthrough
   (:require [scicloj.hanamicloth.v1.api :as haclo]
@@ -18,50 +19,9 @@
             [tech.v3.datatype.datetime :as datetime]
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
-            [scicloj.kindly.v4.api :as kindly])
+            [scicloj.kindly.v4.api :as kindly]
+            [hanamicloth.datasets :as datasets])
   (:import java.time.LocalDate))
-
-;; ## Some datasets
-
-;; In this walkthrough, we will use a few datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html).
-
-(defn fetch-dataset [dataset-name]
-  (-> dataset-name
-      (->> (format "https://vincentarelbundock.github.io/Rdatasets/csv/%s.csv"))
-      (tc/dataset {:key-fn (fn [k]
-                             (-> k
-                                 str/lower-case
-                                 (str/replace #"\." "-")
-                                 keyword))})
-      (tc/set-dataset-name dataset-name)))
-
-(defn compact-view [dataset]
-  (-> dataset
-      (kind/table {:use-datatables true
-                   :datatables {:scrollY 150
-                                :searching false
-                                :info false}})))
-
-;; ### Edgar Anderson's Iris Data
-
-(defonce iris
-  (fetch-dataset "datasets/iris"))
-
-(compact-view iris)
-
-;; ### Motor Trend Car Road Tests
-
-(defonce mtcars
-  (fetch-dataset "datasets/mtcars"))
-
-(compact-view mtcars)
-
-;; ### US economic time series
-
-(defonce economics-long
-  (fetch-dataset "ggplot2/economics_long"))
-
-(compact-view economics-long)
 
 ;; ## Basic usage
 
@@ -69,7 +29,7 @@
 ;; We pass a Tablecloth dataset to a Hanamicloth function
 ;; with a Hanamicloth template.
 
-(-> iris
+(-> datasets/iris
     (haclo/plot haclo/point-chart
                 #:haclo{:x :sepal-width
                         :y :sepal-length
@@ -84,7 +44,7 @@
 
 ;; (Here is how we can express the same plot with the layered grammar:)
 
-(-> iris
+(-> datasets/iris
     (haclo/layer-point
      #:haclo{:x :sepal-width
              :y :sepal-length
@@ -94,7 +54,7 @@
 ;; The value returned by a `haclo/plot` function
 ;; is a [Vega-Lite](https://vega.github.io/vega-lite/) spec:
 
-(-> iris
+(-> datasets/iris
     (haclo/plot haclo/point-chart
                 #:haclo{:x :sepal-width
                         :y :sepal-length
@@ -109,7 +69,7 @@
 ;; The resulting plot is displayed correctly,
 ;; as it is annotated by Kindly:
 
-(-> iris
+(-> datasets/iris
     (haclo/plot haclo/point-chart
                 #:haclo{:x :sepal-width
                         :y :sepal-length
@@ -122,14 +82,14 @@
 ;; We can also use Hanami's original templates (`ht/chart`)
 ;; and substitution keys (`:X`, `:Y`, `:MSIZE`).
 
-(-> iris
+(-> datasets/iris
     (haclo/plot ht/point-chart
                 {:X :sepal-width
                  :Y :sepal-length
                  :MSIZE 200
                  :COLOR "species"}))
 
-(-> iris
+(-> datasets/iris
     (haclo/plot ht/point-chart
                 {:X :sepal-width
                  :Y :sepal-length
@@ -144,7 +104,7 @@
 ;; `:haclo/color` is `:nominal`
 ;; (and is thus coloured with distinct colours rather than a gradient).
 
-(-> iris
+(-> datasets/iris
     (haclo/plot haclo/point-chart
                 #:haclo{:x :sepal-width
                         :y :sepal-length
@@ -154,7 +114,7 @@
 ;; On the other hand, in the following example,
 ;; `:color` is `:quantitative`:
 
-(-> mtcars
+(-> datasets/mtcars
     (haclo/plot haclo/point-chart
                 #:haclo{:x :mpg
                         :y :disp
@@ -163,7 +123,7 @@
 
 ;; This can be overridden:
 
-(-> mtcars
+(-> datasets/mtcars
     (haclo/plot haclo/point-chart
                 #:haclo{:x :mpg
                         :y :disp
@@ -173,13 +133,13 @@
 
 ;; ## More examples
 
-(-> mtcars
+(-> datasets/mtcars
     (haclo/plot haclo/boxplot-chart
                 #:haclo{:x :cyl
                         :x-type :nominal
                         :y :disp}))
 
-(-> iris
+(-> datasets/iris
     (haclo/plot haclo/rule-chart
                 #:haclo{:x :sepal-width
                         :y :sepal-length
@@ -193,7 +153,7 @@
 
 ;; Let us plot a time series:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/plot haclo/line-chart
                 #:haclo{:x :date
@@ -203,7 +163,7 @@
 ;; You see, the `:date` field was correctly inferred to be
 ;; of the `:temporal` kind.
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/plot haclo/line-chart
                 #:haclo{:x :date
@@ -216,7 +176,7 @@
 ;; Instead of the `haclo/plot` function, it is possible to used
 ;; `haclo/base`:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base haclo/line-chart
                 #:haclo{:x :date
@@ -228,7 +188,7 @@
 
 ;; Let us compare the two:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/plot haclo/line-chart
                 #:haclo{:x :date
@@ -236,7 +196,7 @@
                         :mark-color "purple"})
     kind/pprint)
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base haclo/line-chart
                 #:haclo{:x :date
@@ -257,7 +217,7 @@
 ;; A base plot does not need to have a specified chart.
 ;; Instead, we may add layers:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base #:haclo{:x :date
                         :y :value
@@ -266,7 +226,7 @@
 
 ;; The substitution keys can also be specified on the layer level:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base #:haclo{:x :date
                         :y :value})
@@ -274,7 +234,7 @@
 
 ;; This allows us to create, e.g., aesthetic differences between layers:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base #:haclo{:x :date
                         :y :value})
@@ -285,7 +245,7 @@
 
 ;; We can also skip the base and have everything in the layer:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/layer-line #:haclo{:x :date
                               :y :value
@@ -299,7 +259,7 @@
 ;; This functionality is inspired by [ggbuilder](https://github.com/mjskay/ggbuilder)
 ;; and [metamorph](https://github.com/scicloj/metamorph).
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base #:haclo{:x :date
                         :y :value})
@@ -318,7 +278,7 @@
 ;; to apply the Hanami transform and realize the
 ;; `Vega-Lite` spec.
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base #:haclo{:x :date
                         :y :value})
@@ -334,7 +294,7 @@
 ;; it allows us to keep editing it as a Vega-Lite spec.
 ;; For example, let us change the backgound colour this way:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base #:haclo{:x :date
                         :y :value})
@@ -355,7 +315,7 @@
 ;; At the moment, it can only be used to model `:haclo/y` by linear regression.
 ;; Soon we will add more ways of modelling the data.
 
-(-> iris
+(-> datasets/iris
     (haclo/base #:haclo{:title "dummy"
                         :mark-color "green"
                         :x :sepal-width
@@ -368,7 +328,7 @@
 ;; But this can be overriden using the `:predictors` key.
 ;; We may compute a regression with more than one predictor.
 
-(-> iris
+(-> datasets/iris
     (haclo/base #:haclo{:x :sepal-width
                         :y :sepal-length})
     haclo/layer-point
@@ -383,7 +343,7 @@
 ;; For example, here we recieve three regression lines,
 ;; each for every species.
 
-(-> iris
+(-> datasets/iris
     (haclo/base #:haclo{:title "dummy"
                         :color :species
                         :x :sepal-width
@@ -397,7 +357,7 @@
 ;; But we may override this using the `:group` key.
 ;; For example, let us avoid grouping:
 
-(-> iris
+(-> datasets/iris
     (haclo/base #:haclo{:title "dummy"
                         :mark-color "green"
                         :color :species
@@ -417,10 +377,10 @@
 ;; Let us add those months to our dataset,
 ;; and mark them as `Future` (considering the original data as `Past`):
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (tc/add-column :relative-time "Past")
-    (tc/concat (tc/dataset {:date (-> economics-long
+    (tc/concat (tc/dataset {:date (-> datasets/economics-long
                                       :date
                                       last
                                       (datetime/plus-temporal-amount (range 96) :days))
@@ -428,10 +388,10 @@
 
 ;; Let us represent our dates as numbers, so that we can use them in linear regression:
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (tc/add-column :relative-time "Past")
-    (tc/concat (tc/dataset {:date (-> economics-long
+    (tc/concat (tc/dataset {:date (-> datasets/economics-long
                                       :date
                                       last
                                       (datetime/plus-temporal-amount (range 96) :months))
@@ -446,10 +406,10 @@
 ;; We use the numerical field `:yearmonth` as the regression predictor,
 ;; but for plotting, we still use the `:temporal` field `:date`.
 
-(-> economics-long
+(-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (tc/add-column :relative-time "Past")
-    (tc/concat (tc/dataset {:date (-> economics-long
+    (tc/concat (tc/dataset {:date (-> datasets/economics-long
                                       :date
                                       last
                                       (datetime/plus-temporal-amount (range 96) :months))
@@ -476,36 +436,9 @@
 ;; Histograms can also be represented as layers
 ;; with statistical processing:
 
-(-> iris
+(-> datasets/iris
     (haclo/layer-histogram #:haclo{:x :sepal-width}))
 
-(-> iris
+(-> datasets/iris
     (haclo/layer-histogram #:haclo{:x :sepal-width
                                    :histogram-nbins 30}))
-
-
-
-
-
-
-
-
-
-
-
-(->
- (fetch-dataset "datasets/iris")
- (haclo/plot haclo/point-chart
-             #:haclo{:x :sepal-width
-                     :y :sepal-length
-                     :color :species
-                     :mark-size 200}))
-
-
-
-(->
- (fetch-dataset "datasets/iris")
- (haclo/layer-point #:haclo{:x :sepal-width
-                            :y :sepal-length
-                            :color :species
-                            :mark-size 200}))
