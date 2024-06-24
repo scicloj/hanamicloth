@@ -17,7 +17,8 @@
             [tablecloth.api :as tc]
             [tech.v3.datatype.datetime :as datetime]
             [scicloj.kindly.v4.kind :as kind]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [scicloj.kindly.v4.api :as kindly])
   (:import java.time.LocalDate))
 
 ;; ## Some datasets
@@ -66,63 +67,75 @@
 
 ;; Let us create a scatter plot from the Iris dataset.
 ;; We pass a Tablecloth dataset to a Hanamicloth function
-;; with a Hanami template.
-;; Here we use Hanami's original templates (`ht/chart`)
+;; with a Hanamicloth template.
+
+(-> iris
+    (haclo/plot haclo/point-chart
+                #:haclo{:x :sepal-width
+                        :y :sepal-length
+                        :color :species
+                        :mark-size 200}))
+
+;; While Hanamicloth allows using the classic Hanami templates and substitution keys,
+;; it also offers its own sets of templates, that we just used here.
+
+;; Compared to Hanami's original templates, the ones of Hanamicloth are similar but less sophisticated.
+;; Also, they supports a layered grammar which is demonstrated later in this document.
+
+;; (Here is how we can express the same plot with the layered grammar:)
+
+(-> iris
+    (haclo/layer-point
+     #:haclo{:x :sepal-width
+             :y :sepal-length
+             :color :species
+             :mark-size 200}))
+
+;; The value returned by a `haclo/plot` function
+;; is a [Vega-Lite](https://vega.github.io/vega-lite/) spec:
+
+(-> iris
+    (haclo/plot haclo/point-chart
+                #:haclo{:x :sepal-width
+                        :y :sepal-length
+                        :color :species
+                        :mark-size 200})
+    kind/pprint)
+
+;; By looking at the `:values` key above,
+;; you can see that the dataset was implicitly represented as CSV,
+;; and that it is defined to be rendered as `:svg` by default.
+
+;; The resulting plot is displayed correctly,
+;; as it is annotated by Kindly:
+
+(-> iris
+    (haclo/plot haclo/point-chart
+                #:haclo{:x :sepal-width
+                        :y :sepal-length
+                        :color :species
+                        :mark-size 200})
+    meta)
+
+;; ## Using classic Hanami templates and defaults
+
+;; We can also use Hanami's original templates (`ht/chart`)
 ;; and substitution keys (`:X`, `:Y`, `:MSIZE`).
 
 (-> iris
     (haclo/plot ht/point-chart
                 {:X :sepal-width
                  :Y :sepal-length
-                 :MSIZE 200}))
-
-;; The resulting plot is displayed correctly,
-;; as it is annotated by Kindly.
+                 :MSIZE 200
+                 :COLOR "species"}))
 
 (-> iris
     (haclo/plot ht/point-chart
                 {:X :sepal-width
                  :Y :sepal-length
-                 :MSIZE 200})
-    meta)
-
-;; The value returned by a `haclo/plot` function
-;; is a [Vega-Lite](https://vega.github.io/vega-lite/) spec:
-
-(-> iris
-    (haclo/plot ht/point-chart
-                {:X :sepal-width
-                 :Y :sepal-length
-                 :MSIZE 200})
+                 :MSIZE 200
+                 :COLOR "species"})
     kind/pprint)
-
-;; By looking at the `:values` key above,
-;; you can see that the dataset was implicitly represented as CSV.
-
-;; You can also see that
-
-;; ## Using Hanamicloth templates & defaults
-
-;; Hanamicloth offers its own set of templates and substitution keys.
-;; Compared to Hanami's original, it is similar but less sophisticated.
-;; Also, it supports the layered grammar which is demonstrated
-;; later in this document.
-
-(-> iris
-    (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :mark-size 200}))
-
-(-> iris
-    (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :mark-size 200})
-    kind/pprint)
-
-;; You see a slight differnece in the resulting spec:
-;; it is defined to be rendered as `:svg` by default.
 
 ;; ## Inferring and overriding field types
 
@@ -469,3 +482,30 @@
 (-> iris
     (haclo/layer-histogram #:haclo{:x :sepal-width
                                    :histogram-nbins 30}))
+
+
+
+
+
+
+
+
+
+
+
+(->
+ (fetch-dataset "datasets/iris")
+ (haclo/plot haclo/point-chart
+             #:haclo{:x :sepal-width
+                     :y :sepal-length
+                     :color :species
+                     :mark-size 200}))
+
+
+
+(->
+ (fetch-dataset "datasets/iris")
+ (haclo/layer-point #:haclo{:x :sepal-width
+                            :y :sepal-length
+                            :color :species
+                            :mark-size 200}))
