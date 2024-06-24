@@ -1,6 +1,6 @@
-rownames,sepal-length,sepal-width,petal-length,petal-width,species
-135,6.1,2.6,5.6,1.4,virginica
-114,5.7,2.5,5.0,2.0,virginica
-83,5.8,2.7,3.9,1.2,versicolor
-70,5.6,2.5,3.9,1.1,versicolor
-55,6.5,2.8,4.6,1.5,versicolor
+rownames,date,variable,value,value01
+2705,2001-07-01,unemploy,6583.0,0.30772874398042155
+2301,1967-11-01,unemploy,3066.0,0.030078155838004262
+2773,2007-03-01,unemploy,6731.0,0.31941264703560435
+2368,1973-06-01,unemploy,4363.0,0.13247019815268019
+2860,2014-06-01,unemploy,9460.0,0.5348543459382648
