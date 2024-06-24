@@ -446,7 +446,7 @@
     (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y))))
     (haclo/base #:haclo{:x :date
                         :y :value})
-    (haclo/layer-smooth #:haclo{:color "relative-time"
+    (haclo/layer-smooth #:haclo{:color :relative-time
                                 :mark-size 10
                                 :group []
                                 :predictors [:yearmonth]})
