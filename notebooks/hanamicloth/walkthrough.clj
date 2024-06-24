@@ -21,6 +21,13 @@
 
 ;; In this walkthrough, we will used the following datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html):
 
+(defn compact-view [dataset]
+  (-> dataset
+      (kind/table {:use-datatables true
+                   :datatables {:scrollY 150
+                                :searching false
+                                :info false}})))
+
 ;; ### Edgar Anderson's Iris Data
 
 (defonce iris
@@ -32,7 +39,7 @@
                           :Petal.Width :petal-width
                           :Species :species})))
 
-iris
+(compact-view iris)
 
 ;; ### Motor Trend Car Road Tests
 
@@ -40,7 +47,7 @@ iris
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/mtcars.csv"
       (tc/dataset {:key-fn keyword})))
 
-mtcars
+(compact-view mtcars)
 
 
 ;; ### US economic time series
@@ -49,7 +56,7 @@ mtcars
   (-> "https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/economics_long.csv"
       (tc/dataset {:key-fn keyword})))
 
-economics-long
+(compact-view economics-long)
 
 ;; ## Basic usage
 
