@@ -15,9 +15,6 @@
   clojure.lang.IDeref
   (deref [this] value))
 
-(defn nonrmv? [v]
-  (not= v hc/RMV))
-
 (defn dataset->csv [dataset]
   (when dataset
     (let [{:keys [path _]}
