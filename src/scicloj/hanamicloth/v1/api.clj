@@ -28,6 +28,9 @@
    [:haclo/dataset :haclo/stat]
    (fn [{:as submap
          :keys [haclo/dataset haclo/stat]}]
+     (when-not (tc/dataset? @dataset)
+       (throw (ex-info "missing :haclo/dataset"
+                       submap)))
      (if stat
        (->WrappedValue
         (@stat submap))
