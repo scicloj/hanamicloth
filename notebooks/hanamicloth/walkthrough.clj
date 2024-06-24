@@ -14,12 +14,23 @@
   (:require [scicloj.hanamicloth.v1.api :as haclo]
             [aerial.hanami.templates :as ht]
             [tablecloth.api :as tc]
-            [scicloj.kindly.v4.kind :as kind]))
+            [scicloj.kindly.v4.kind :as kind]
+            [clojure.string :as str]))
 
 
 ;; ## Some datasets
 
-;; In this walkthrough, we will used the following datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html):
+;; In this walkthrough, we will use a few datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html).
+
+(defn fetch-dataset [dataset-name]
+  (-> dataset-name
+      (->> (format "https://vincentarelbundock.github.io/Rdatasets/csv/%s.csv"))
+      (tc/dataset {:key-fn (fn [k]
+                             (-> k
+                                 str/lower-case
+                                 (str/replace #"\." "-")
+                                 keyword))})
+      (tc/set-dataset-name dataset-name)))
 
 (defn compact-view [dataset]
   (-> dataset
@@ -31,30 +42,21 @@
 ;; ### Edgar Anderson's Iris Data
 
 (defonce iris
-  (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/iris.csv"
-      (tc/dataset {:key-fn keyword})
-      (tc/rename-columns {:Sepal.Length :sepal-length
-                          :Sepal.Width :sepal-width
-                          :Petal.Length :petal-length
-                          :Petal.Width :petal-width
-                          :Species :species})))
+  (fetch-dataset "datasets/iris"))
 
 (compact-view iris)
 
 ;; ### Motor Trend Car Road Tests
 
 (defonce mtcars
-  (-> "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/mtcars.csv"
-      (tc/dataset {:key-fn keyword})))
+  (fetch-dataset "datasets/mtcars"))
 
 (compact-view mtcars)
-
 
 ;; ### US economic time series
 
 (defonce economics-long
-  (-> "https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/economics_long.csv"
-      (tc/dataset {:key-fn keyword})))
+  (fetch-dataset "ggplot2/economics_long"))
 
 (compact-view economics-long)
 
