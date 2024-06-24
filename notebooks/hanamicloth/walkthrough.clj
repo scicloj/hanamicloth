@@ -5,8 +5,9 @@
 ;; ## Setup
 
 ;; Here we require Hanamicloth's main API namepace
-;; as well as those of [Hanami](https://github.com/jsa-aerial/hanami)
-;; and [Tablecloth](https://scicloj.github.io/tablecloth/),
+;; as well as those of [Hanami](https://github.com/jsa-aerial/hanami),
+;; [Tablecloth](https://scicloj.github.io/tablecloth/),
+;; the `datetime` namespace of [dtype-next](https://github.com/cnuernber/dtype-next),
 ;; and also [Kindly](https://scicloj.github.io/kindly-noted/)
 ;; (which allows us to specify how values should be visualized).
 
@@ -14,9 +15,10 @@
   (:require [scicloj.hanamicloth.v1.api :as haclo]
             [aerial.hanami.templates :as ht]
             [tablecloth.api :as tc]
+            [tech.v3.datatype.datetime :as datetime]
             [scicloj.kindly.v4.kind :as kind]
-            [clojure.string :as str]))
-
+            [clojure.string :as str])
+  (:import java.time.LocalDate))
 
 ;; ## Some datasets
 
@@ -174,36 +176,59 @@
                         :mark-size 3
                         :color :species}))
 
+;; ## Time series
+
+;; Let us plot a time series:
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/plot haclo/line-chart
+                #:haclo{:x :date
+                        :y :value
+                        :mark-color "purple"}))
+
+;; You see, the `:date` field was correctly inferred to be
+;; of the `:temporal` kind.
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/plot haclo/line-chart
+                #:haclo{:x :date
+                        :y :value
+                        :mark-color "purple"})
+    kind/pprint)
+
 ;; ## Delayed transformation
 
 ;; Instead of the `haclo/plot` function, it is possible to used
 ;; `haclo/base`:
 
-(-> iris
-    (haclo/base haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :mark-size 200}))
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base haclo/line-chart
+                #:haclo{:x :date
+                        :y :value
+                        :mark-color "purple"}))
 
 ;; The result is displayed the same way, but the internal representation
 ;; delays the Hanami transformation of templates.
 
 ;; Let us compare the two:
 
-(-> iris
-    (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color :species
-                        :mark-size 200})
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/plot haclo/line-chart
+                #:haclo{:x :date
+                        :y :value
+                        :mark-color "purple"})
     kind/pprint)
 
-(-> iris
-    (haclo/base haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color :species
-                        :mark-size 200})
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base haclo/line-chart
+                #:haclo{:x :date
+                        :y :value
+                        :mark-color "purple"})
     kind/pprint)
 
 ;; The structure returned by `haclo/base` is a Hanami template
@@ -219,35 +244,39 @@
 ;; A base plot does not need to have a specified chart.
 ;; Instead, we may add layers:
 
-(-> iris
-    (haclo/base #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :mark-size 200})
-    haclo/layer-point)
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base #:haclo{:x :date
+                        :y :value
+                        :mark-color "purple"})
+    haclo/layer-line)
 
 ;; The substitution keys can also be specified on the layer level:
 
-(-> iris
-    (haclo/base #:haclo{:x :sepal-width
-                        :y :sepal-length})
-    (haclo/layer-point #:haclo{:mark-size 200}))
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base #:haclo{:x :date
+                        :y :value})
+    (haclo/layer-line #:haclo{:mark-color "purple"}))
+
+;; This allows us to create, e.g., aesthetic differences between layers:
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base #:haclo{:x :date
+                        :y :value})
+    (haclo/layer-point #:haclo{:mark-color "green"
+                               :mark-size 200
+                               :mark-opacity 0.1})
+    (haclo/layer-line #:haclo{:mark-color "purple"}))
 
 ;; We can also skip the base and have everything in the layer:
-(-> iris
-    (haclo/layer-point #:haclo{:x :sepal-width
-                               :y :sepal-length
-                               :mark-size 200}))
 
-;; This allows us to create aesthetic differences between layers:
-
-(-> iris
-    (haclo/base #:haclo{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal-width
-                        :y :sepal-length})
-    (haclo/layer-line #:haclo{:mark-size 4
-                              :mark-color "brown"})
-    (haclo/layer-point #:haclo{:mark-size 200}))
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/layer-line #:haclo{:x :date
+                              :y :value
+                              :mark-color "purple"}))
 
 ;; ## Updating data
 
@@ -257,15 +286,15 @@
 ;; This functionality is inspired by [ggbuilder](https://github.com/mjskay/ggbuilder)
 ;; and [metamorph](https://github.com/scicloj/metamorph).
 
-(-> iris
-    (haclo/base #:haclo{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal-width
-                        :y :sepal-length})
-    (haclo/layer-line #:haclo{:mark-size 4
-                              :mark-color "brown"})
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base #:haclo{:x :date
+                        :y :value})
+
+    (haclo/layer-line #:haclo{:mark-color "purple"})
     (haclo/update-data tc/random 5)
-    (haclo/layer-point #:haclo{:mark-size 200}))
+    (haclo/layer-point #:haclo{:mark-color "green"
+                               :mark-size 200}))
 
 ;; You see, we have lots of data for the lines,
 ;; but only five random points.
@@ -276,15 +305,15 @@
 ;; to apply the Hanami transform and realize the
 ;; `Vega-Lite` spec.
 
-(-> iris
-    (haclo/base #:haclo{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal-width
-                        :y :sepal-length})
-    (haclo/layer-line #:haclo{:mark-size 4
-                              :mark-color "brown"})
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base #:haclo{:x :date
+                        :y :value})
+
+    (haclo/layer-line #:haclo{:mark-color "purple"})
     (haclo/update-data tc/random 5)
-    (haclo/layer-point #:haclo{:mark-size 200})
+    (haclo/layer-point #:haclo{:mark-color "green"
+                               :mark-size 200})
     haclo/plot
     kind/pprint)
 
@@ -292,15 +321,15 @@
 ;; it allows us to keep editing it as a Vega-Lite spec.
 ;; For example, let us change the backgound colour this way:
 
-(-> iris
-    (haclo/base #:haclo{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal-width
-                        :y :sepal-length})
-    (haclo/layer-line #:haclo{:mark-size 4
-                              :mark-color "brown"})
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base #:haclo{:x :date
+                        :y :value})
+
+    (haclo/layer-line #:haclo{:mark-color "purple"})
     (haclo/update-data tc/random 5)
-    (haclo/layer-point #:haclo{:mark-size 200})
+    (haclo/layer-point #:haclo{:mark-color "green"
+                               :mark-size 200})
     haclo/plot
     (assoc :background "lightgrey"))
 
@@ -370,23 +399,64 @@
 ;; Here is a slighly more elaborate example
 ;; inpired by the London Clojurians [talk](https://www.youtube.com/watch?v=eUFf3-og_-Y)
 ;; mentioned in the preface.
-;; We use the same regression line for the
-;; `Past` and `Future` groups.
-;; The line is affected only by the past,
-;; since in the Future, `:y` is missing.
 
-(-> iris
-    (tc/concat (tc/dataset {:sepal-width (range 4 10)
-                            :sepal-length (repeat 6 nil)}))
-    (tc/map-columns :relative-time
-                    [:sepal-length]
-                    #(if % "Past" "Future"))
-    (haclo/base #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color "relative-time"
-                        :group []})
-    haclo/layer-point
-    haclo/layer-smooth)
+;; Assume we wish to predict the unemployment rate for 96 months.
+;; Let us add those months to our dataset,
+;; and mark them as `Future` (considering the original data as `Past`):
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (tc/add-column :relative-time "Past")
+    (tc/concat (tc/dataset {:date (-> economics-long
+                                      :date
+                                      last
+                                      (datetime/plus-temporal-amount (range 96) :days))
+                            :relative-time "Future"})))
+
+;; Let us represent our dates as numbers, so that we can use them in linear regression:
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (tc/add-column :relative-time "Past")
+    (tc/concat (tc/dataset {:date (-> economics-long
+                                      :date
+                                      last
+                                      (datetime/plus-temporal-amount (range 96) :months))
+                            :relative-time "Future"}))
+    (tc/add-column :year #(datetime/long-temporal-field :years (:date %)))
+    (tc/add-column :month #(datetime/long-temporal-field :months (:date %)))
+    (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y)))))
+
+;; Let us use the same regression line for the `Past` and `Future` groups.
+;; To do this, we avoid grouping by assigning  `[]` to `:haclo/group`.
+;; The line is affected only by the past, since in the Future, `:y` is missing.
+;; We use the numerical field `:yearmonth` as the regression predictor,
+;; but for plotting, we still use the `:temporal` field `:date`.
+
+(-> economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (tc/add-column :relative-time "Past")
+    (tc/concat (tc/dataset {:date (-> economics-long
+                                      :date
+                                      last
+                                      (datetime/plus-temporal-amount (range 96) :months))
+                            :relative-time "Future"}))
+    (tc/add-column :year #(datetime/long-temporal-field :years (:date %)))
+    (tc/add-column :month #(datetime/long-temporal-field :months (:date %)))
+    (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y))))
+    (haclo/base #:haclo{:x :date
+                        :y :value})
+    (haclo/layer-smooth #:haclo{:color "relative-time"
+                                :mark-size 10
+                                :group []
+                                :predictors [:yearmonth]})
+    ;; Keep only the past for the following layer:
+    (haclo/update-data (fn [dataset]
+                         (-> dataset
+                             (tc/select-rows (fn [row]
+                                               (-> row :relative-time (= "Past")))))))
+    (haclo/layer-line #:haclo{:mark-color "purple"
+                              :mark-size 3}))
 
 ;; ## Histograms
 
@@ -399,22 +469,3 @@
 (-> iris
     (haclo/layer-histogram #:haclo{:x :sepal-width
                                    :histogram-nbins 30}))
-
-;; ## Time series
-
-;; Let us plot a time series:
-
-(-> economics-long
-    (tc/select-rows #(-> % :variable (= "pop")))
-    (haclo/layer-line #:haclo{:x :date
-                              :y :value}))
-
-;; You see, the `:date` field was correctly inferred to be
-;; of the `:temporal` kind.
-
-(-> economics-long
-    (tc/select-rows #(-> % :variable (= "pop")))
-    (haclo/layer-line #:haclo{:x :date
-                              :y :value})
-    haclo/plot
-    kind/pprint)
