@@ -324,6 +324,9 @@
 
 (dag/defn-with-deps histogram-stat
   [dataset x histogram-nbins]
+  (when-not (@dataset x)
+    (throw (ex-info "missing x column"
+                    {:missing-column-name x})))
   (let [{:keys [bins max step]} (-> @dataset
                                     (get x)
                                     (fastmath.stats/histogram
