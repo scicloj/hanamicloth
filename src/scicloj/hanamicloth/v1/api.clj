@@ -264,6 +264,21 @@
 
 (dag/defn-with-deps smooth-stat
   [dataset y predictors group]
+  (when-not (@dataset y)
+    (throw (ex-info "missing y column"
+                    {:missing-column-name y})))
+  (->> predictors
+       (run! (fn [p]
+               (when-not (@dataset p)
+                 (throw (ex-info "missing predictor column"
+                                 {:predictors predictors
+                                  :missing-column-name p}))))))
+  (->> group
+       (run! (fn [g]
+               (when-not (@dataset g)
+                 (throw (ex-info "missing group column"
+                                 {:group group
+                                  :missing-column-name g}))))))
   (let [predictions-fn (fn [ds]
                          (let [nonmissing-y (-> ds
                                                 (tc/drop-missing [y]))
