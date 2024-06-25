@@ -139,6 +139,12 @@
                         :x-type :nominal
                         :y :disp}))
 
+(-> datasets/mtcars
+    (haclo/plot ht/boxplot-chart
+                {:X :cyl
+                 :XTYPE :nominal
+                 :Y :disp}))
+
 (-> datasets/iris
     (haclo/plot haclo/rule-chart
                 #:haclo{:x :sepal-width
@@ -148,6 +154,16 @@
                         :mark-opacity 0.5
                         :mark-size 3
                         :color :species}))
+
+(-> datasets/iris
+    (haclo/plot ht/rule-chart
+                {:X :sepal-width
+                 :Y :sepal-length
+                 :X2 :petal-width
+                 :Y2 :petal-length
+                 :OPACITY 0.5
+                 :SIZE 3
+                 :COLOR "species"}))
 
 ;; ## Time series
 
