@@ -57,6 +57,7 @@ April 2024 talk at London Clojurians:
 - Still have the option of using the original Hanami templates.
 - Still be able to use all of Vega-Lite in its raw format for the highest flexibility.
 
+In the longer term, this project is part of the Scicloj effort to create a grammar-of-graphics visualization library in Clojure.
 
 ## Discussion
 - development - topic threads under [#hanamicloth-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-hanamicloth-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/hanamicloth/issues)
