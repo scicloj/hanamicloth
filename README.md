@@ -1,7 +1,17 @@
 # Hanamicloth
 
-Hanamicloth is a composition of Hanami data visualizations and Tablecloth datasets.
 [![Clojars Project](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
+
+Hanamicloth is a composition of
+[Hanami](https://github.com/jsa-aerial/hanami) data visualization [templates](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations)
+and [Tablecloth](https://scicloj.github.io/tablecloth/) datasets.
+
+It adds a simplified set of Hanami templates and defaults alongside those of Hanami,
+as well as a set of template-processing functions
+inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
+[layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html).
+
+A more comprehensive documentation is coming soon.
 
 [Documentation](https://scicloj.github.io/hanamicloth/)
 
