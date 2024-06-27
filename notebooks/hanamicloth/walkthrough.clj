@@ -460,3 +460,12 @@
 (-> datasets/iris
     (haclo/layer-histogram #:haclo{:x :sepal-width
                                    :histogram-nbins 30}))
+
+
+;; ### Coming soon
+
+;; ## Facets
+
+;; ## Coordinates
+
+;; ## Scales
