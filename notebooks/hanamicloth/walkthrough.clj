@@ -8,6 +8,7 @@
 ;; as well as those of [Hanami](https://github.com/jsa-aerial/hanami),
 ;; [Tablecloth](https://scicloj.github.io/tablecloth/),
 ;; the `datetime` namespace of [dtype-next](https://github.com/cnuernber/dtype-next),
+;; the `print` namespace [tech.ml.dataset](https://github.com/techascent/tech.ml.dataset) for customized dataset printing,
 ;; and also [Kindly](https://scicloj.github.io/kindly-noted/)
 ;; (which allows us to specify how values should be visualized).
 ;; We will use the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html).
@@ -17,6 +18,7 @@
             [aerial.hanami.templates :as ht]
             [tablecloth.api :as tc]
             [tech.v3.datatype.datetime :as datetime]
+            [tech.v3.dataset.print :as print]
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
@@ -402,7 +404,8 @@
                                       :date
                                       last
                                       (datetime/plus-temporal-amount (range 96) :days))
-                            :relative-time "Future"})))
+                            :relative-time "Future"}))
+    (print/print-range 6))
 
 ;; Let us represent our dates as numbers, so that we can use them in linear regression:
 
@@ -416,7 +419,8 @@
                             :relative-time "Future"}))
     (tc/add-column :year #(datetime/long-temporal-field :years (:date %)))
     (tc/add-column :month #(datetime/long-temporal-field :months (:date %)))
-    (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y)))))
+    (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y))))
+    (print/print-range 6))
 
 ;; Let us use the same regression line for the `Past` and `Future` groups.
 ;; To do this, we avoid grouping by assigning  `[]` to `:haclo/group`.
