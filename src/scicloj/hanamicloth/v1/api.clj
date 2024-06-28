@@ -44,11 +44,7 @@
 
 
 (defn submap->field-type [colname-key]
-  (let [dataset-key (if (-> colname-key
-                            name
-                            (str/ends-with? "after-stat"))
-                      :haclo/dataset-after-stat
-                      :haclo/dataset)]
+  (let [dataset-key :haclo/dataset]
     (dag/fn-with-deps-keys
      [colname-key dataset-key]
      (fn [submap]
@@ -61,6 +57,42 @@
                  (tcc/typeof? column :datetime) :temporal
                  :else :nominal))
          hc/RMV)))))
+
+(defn submap->field-type-after-stat [colname-key]
+  (let [dataset-key :haclo/dataset-after-stat
+        colname-key-before-stat (-> colname-key
+                                    name
+                                    (str/replace #"-after-stat" "")
+                                    (->> (keyword "haclo")))
+        colname-key-type-before-stat (-> colname-key-before-stat
+                                         name
+                                         (str "-type")
+                                         (->> (keyword "haclo")))]
+    (dag/fn-with-deps-keys
+     [colname-key
+      colname-key-before-stat
+      colname-key-type-before-stat
+      dataset-key]
+     (fn [submap]
+       (if-let [colname (submap colname-key)]
+         (let [column (-> submap
+                          (get dataset-key)
+                          deref
+                          (get colname))
+               colname-before-stat (submap
+                                    colname-key-before-stat)]
+           (or (when (= colname colname-before-stat)
+                 (submap colname-key-type-before-stat))
+               (cond (tcc/typeof? column :numerical) :quantitative
+                     (tcc/typeof? column :datetime) :temporal
+                     :else :nominal)))
+         hc/RMV)))))
+
+(dag/defn-with-deps submap->group [color color-type size size-type]
+  (concat (when (= color-type :nominal)
+            [color])
+          (when (= size-type :nominal)
+            [size])))
 
 (dag/defn-with-deps submap->group [color color-type size size-type]
   (concat (when (= color-type :nominal)
@@ -91,13 +123,14 @@
   {;; defaults for original Hanami templates
    :VALDATA :haclo/csv-data
    :DFMT {:type "csv"}
+
    ;; defaults for hanamicloth templates
    :haclo/stat hc/RMV
    :haclo/dataset hc/RMV
    :haclo/dataset-after-stat submap->dataset-after-stat
    :haclo/csv-data submap->csv
    :haclo/data {:values :haclo/csv-data
-                 :format {:type "csv"}}
+                :format {:type "csv"}}
    :haclo/opacity hc/RMV
    :haclo/row hc/RMV
    :haclo/column hc/RMV
@@ -112,29 +145,29 @@
    :haclo/color hc/RMV
    :haclo/size hc/RMV
    :haclo/x-type (submap->field-type :haclo/x)
-   :haclo/x-type-after-stat (submap->field-type :haclo/x-after-stat)
+   :haclo/x-type-after-stat (submap->field-type-after-stat :haclo/x-after-stat)
    :haclo/y-type (submap->field-type :haclo/y)
-   :haclo/y-type-after-stat (submap->field-type :haclo/y-after-stat)
+   :haclo/y-type-after-stat (submap->field-type-after-stat :haclo/y-after-stat)
    :haclo/x-title hc/RMV
    :haclo/y-title hc/RMV
    :haclo/x-bin hc/RMV
    :haclo/y-bin hc/RMV
    :haclo/x2-encoding (dag/fn-with-deps [x2-after-stat
-                                          x-type-after-stat]
-                         (if x2-after-stat
-                           (-> xy-encoding
-                               :x
-                               (assoc :field x2-after-stat
-                                      :type x-type-after-stat))
-                           hc/RMV))
+                                         x-type-after-stat]
+                        (if x2-after-stat
+                          (-> xy-encoding
+                              :x
+                              (assoc :field x2-after-stat
+                                     :type x-type-after-stat))
+                          hc/RMV))
    :haclo/y2-encoding (dag/fn-with-deps [y2-after-stat
-                                          y-type-after-stat]
-                         (if y2-after-stat
-                           (-> xy-encoding
-                               :y
-                               (assoc :field y2-after-stat
-                                      :type y-type-after-stat))
-                           hc/RMV))
+                                         y-type-after-stat]
+                        (if y2-after-stat
+                          (-> xy-encoding
+                              :y
+                              (assoc :field y2-after-stat
+                                     :type y-type-after-stat))
+                          hc/RMV))
    :haclo/color-type (submap->field-type :haclo/color)
    :haclo/size-type (submap->field-type :haclo/size)
    :haclo/renderer :svg
