@@ -462,10 +462,10 @@
                                    :histogram-nbins 30}))
 
 
-;; ### Coming soon
+;; ## Coming soon
 
-;; ## Facets
+;; ### Facets
 
-;; ## Coordinates
+;; ### Coordinates
 
-;; ## Scales
+;; ### Scales
