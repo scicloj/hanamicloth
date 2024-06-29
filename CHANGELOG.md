@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [1-alpha4-SNAPSHOT] - unreleased
+- simplified CSV writing
+
 ## [1-alpha3-SNAPSHOT] - 2024-06-28
 - catching common problems
 - bugfix (#1) of type inference after stat

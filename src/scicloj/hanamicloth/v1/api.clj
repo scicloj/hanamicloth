@@ -2,7 +2,6 @@
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]
             [scicloj.kindly.v4.kind :as kind]
-            [scicloj.tempfiles.api :as tempfiles]
             [tablecloth.api :as tc]
             [tablecloth.column.api :as tcc]
             [tech.v3.dataset :as ds]
@@ -20,11 +19,10 @@
 
 (defn dataset->csv [dataset]
   (when dataset
-    (let [{:keys [path _]}
-          (tempfiles/tempfile! ".csv")]
+    (let [w (java.io.StringWriter.)]
       (-> dataset
-          (ds/write! path))
-      (slurp path))))
+          (tc/write! w {:file-type :csv}))
+      (.toString w))))
 
 (def submap->dataset-after-stat
   (dag/fn-with-deps-keys
