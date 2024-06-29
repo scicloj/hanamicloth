@@ -130,8 +130,6 @@
    :haclo/data {:values :haclo/csv-data
                 :format {:type "csv"}}
    :haclo/opacity hc/RMV
-   :haclo/row hc/RMV
-   :haclo/column hc/RMV
    :haclo/x :x
    :haclo/x-after-stat :haclo/x
    :haclo/y :y
