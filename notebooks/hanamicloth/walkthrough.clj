@@ -125,8 +125,6 @@
 
 ;; This can be overridden:
 
-;; (currently buggy, to be fixed soon [#1](https://github.com/scicloj/hanamicloth/issues/1))
-
 (-> datasets/mtcars
     (haclo/plot haclo/point-chart
                 #:haclo{:x :mpg
