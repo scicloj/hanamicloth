@@ -32,6 +32,11 @@
           (tc/write! w {:file-type :csv}))
       (.toString w))))
 
+(dag/defn-with-deps submap->dataset [base-dataset layer-dataset layer?]
+  (if layer?
+    layer-dataset
+    base-dataset))
+
 (def submap->dataset-after-stat
   (dag/fn-with-deps-keys
    [:haclo/dataset :haclo/stat]
@@ -132,7 +137,10 @@
 
    ;; defaults for hanamicloth templates
    :haclo/stat hc/RMV
-   :haclo/dataset hc/RMV
+   :haclo/base-dataset hc/RMV
+   :haclo/layer-dataset hc/RMV
+   :haclo/layer? hc/RMV
+   :haclo/dataset submap->dataset
    :haclo/dataset-after-stat submap->dataset-after-stat
    :haclo/csv-data submap->csv
    :haclo/data {:values :haclo/csv-data
@@ -222,10 +230,10 @@
 (def rule-chart (mark-based-chart "rule"))
 
 
-
-
 (defn dataset->defaults [dataset]
-  {:haclo/dataset (->WrappedValue dataset)})
+  (let [w (->WrappedValue dataset)]
+    {:haclo/base-dataset w
+     :haclo/layer-dataset w}))
 
 (defn vega-lite-xform [template]
   (dag/with-clean-cache
@@ -276,10 +284,15 @@
                        (update :haclo/layer
                                (comp vec conj)
                                (assoc template
-                                      :data :haclo/data
+                                      :data (if (and (= @(:haclo/layer-dataset defaults)
+                                                        @(:haclo/base-dataset defaults))
+                                                     (not (:haclo/stat defaults)))
+                                              hc/RMV
+                                              :haclo/data)
                                       ::ht/defaults (merge
                                                      standard-defaults
                                                      defaults
+                                                     {:haclo/layer? true}
                                                      submap))))))))))
 
 
@@ -351,7 +364,7 @@
 
 (defn update-data [template dataset-fn & submap]
   (-> template
-      (update-in [::ht/defaults :haclo/dataset]
+      (update-in [::ht/defaults :haclo/layer-dataset]
                  (fn [wrapped-data]
                    (->WrappedValue
                     (apply dataset-fn

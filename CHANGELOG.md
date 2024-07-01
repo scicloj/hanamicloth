@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file. This change
 
 ## [1-alpha4-SNAPSHOT] - unreleased
 - simplified CSV writing
+- more careful handling of datasets - avoiding layer data when they can reuse the toplevel data
+- related refactoring
 
 ## [1-alpha3-SNAPSHOT] - 2024-06-28
 - catching common problems
