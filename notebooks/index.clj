@@ -8,7 +8,7 @@
             [clojure.string :as string]
             [scicloj.clay.v2.api :as clay]
             [scicloj.hanamicloth.v1.api :as haclo]
-            [hanamicloth.datasets :as datasets]))
+            [hanamicloth-book.datasets :as datasets]))
 
 ^:kindly/hide-code
 (def md
