@@ -6,19 +6,19 @@
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [clojure.string :as string]
-            [scicloj.clay.v2.api :as clay]))
+            [scicloj.clay.v2.api :as clay]
+            [scicloj.hanamicloth.v1.api :as haclo]
+            [hanamicloth.datasets :as datasets]))
 
 ^:kindly/hide-code
 (def md
   (comp kindly/hide-code kind/md))
 
+
+
+
 (md
- "**Source:** [![(GiuHub repo)](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scicloj/hanamicloth)
-
-**Artifact:** [![(Clojars coordinates)](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
-
-**Status:** initial draft
-
+ "
 Hanamicloth is a composition of
 [Hanami](https://github.com/jsa-aerial/hanami) data visualization [templates](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations)
 and [Tablecloth](https://scicloj.github.io/tablecloth/) datasets.
@@ -28,10 +28,16 @@ as well as a set of template-processing functions
 inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
 [layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html).
 
-A more comprehensive documentation is coming soon.
-
 The current draft was written by Daniel Slutsky,
 mentored by jsa-aerial (Hanami author) and Kira McLean.
+
+**Source:** [![(GiuHub repo)](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scicloj/hanamicloth)
+
+**Artifact:** [![(Clojars coordinates)](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
+
+**Status:** initial draft
+
+-------------------
 
 An early version of this library was demonstrated in Kira Mclean's
 April 2024 talk at London Clojurians:
