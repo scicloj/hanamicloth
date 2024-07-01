@@ -76,7 +76,7 @@ In the longer term, this project is part of the Scicloj effort to create a gramm
 ^:kindly/hide-code
 (defn chapter->title [chapter]
   (or (some->> chapter
-               (format "notebooks/hanamicloth/%s.clj")
+               (format "notebooks/hanamicloth_book/%s.clj")
                slurp
                str/split-lines
                (filter #(re-matches #"^;; # .*" %))
@@ -89,7 +89,7 @@ In the longer term, this project is part of the Scicloj effort to create a gramm
      clojure.edn/read-string
      (map (fn [chapter]
             (prn [chapter (chapter->title chapter)])
-            (format "\n- [%s](hanamicloth.%s.html)\n"
+            (format "\n- [%s](hanamicloth_book.%s.html)\n"
                     (chapter->title chapter)
                     chapter)))
      (string/join "\n")

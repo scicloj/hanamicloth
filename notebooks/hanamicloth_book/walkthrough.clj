@@ -13,7 +13,7 @@
 ;; (which allows us to specify how values should be visualized).
 ;; We will use the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html).
 
-(ns hanamicloth.walkthrough
+(ns hanamicloth-book.walkthrough
   (:require [scicloj.hanamicloth.v1.api :as haclo]
             [aerial.hanami.templates :as ht]
             [tablecloth.api :as tc]

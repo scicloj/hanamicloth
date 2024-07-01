@@ -6,7 +6,7 @@
              :source-path (->> "notebooks/chapters.edn"
                                slurp
                                clojure.edn/read-string
-                               (map #(format "hanamicloth/%s.clj" %))
+                               (map #(format "hanamicloth_book/%s.clj" %))
                                (cons "index.clj"))
              :base-target-path "docs"
              :book {:title "Hanamicloth"}
