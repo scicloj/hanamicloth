@@ -1,5 +1,7 @@
 # Hanamicloth
 
+Easy layered graphics with Hanami & Tablecloth
+
 [![Clojars Project](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
 
 Hanamicloth is a composition of
