@@ -22,7 +22,7 @@
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
-            [hanamicloth.datasets :as datasets])
+            [hanamicloth-book.datasets :as datasets])
   (:import java.time.LocalDate))
 
 ;; ## Basic usage
