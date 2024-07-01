@@ -1,4 +1,5 @@
-;; # Preface
+
+;; Easy layered graphics with Hanami & Tablecloth
 
 ^:kindly/hide-code
 (ns index
@@ -8,14 +9,23 @@
             [clojure.string :as string]
             [scicloj.clay.v2.api :as clay]
             [scicloj.hanamicloth.v1.api :as haclo]
-            [hanamicloth-book.datasets :as datasets]))
+            [hanamicloth-book.datasets :as datasets]
+            [tablecloth.api :as tc]))
 
 ^:kindly/hide-code
 (def md
   (comp kindly/hide-code kind/md))
 
+(-> datasets/economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base #:haclo{:x :date
+                        :y :value})
+    (haclo/layer-point #:haclo{:mark-color "green"
+                               :mark-size 200
+                               :mark-opacity 0.1})
+    (haclo/layer-line #:haclo{:mark-color "purple"}))
 
-
+;; # Preface
 
 (md
  "
