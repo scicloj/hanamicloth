@@ -15,7 +15,15 @@
 ;; in order to prevent Hanami from trying to walk throug them.
 (deftype WrappedValue [value]
   clojure.lang.IDeref
-  (deref [this] value))
+  (deref [this] value)
+
+  Object
+  (hashCode [this]
+    (hash value))
+  (equals [this other]
+    (and (-> other class (= WrappedValue))
+         (= value @other))))
+
 
 (defn dataset->csv [dataset]
   (when dataset
