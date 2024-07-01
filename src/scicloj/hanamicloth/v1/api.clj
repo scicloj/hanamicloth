@@ -53,7 +53,6 @@
 (dag/defn-with-deps submap->csv [dataset-after-stat]
   (dataset->csv @dataset-after-stat))
 
-
 (defn submap->field-type [colname-key]
   (let [dataset-key :haclo/dataset]
     (dag/fn-with-deps-keys
@@ -403,3 +402,10 @@
                   :haclo/x-title :haclo/x
                   :haclo/x-bin {:binned true}}
                  submap))))
+
+(defn facet [context facet-config]
+  (-> context
+      (dissoc :encoding :layer)
+      (assoc :spec (-> context
+                       (select-keys [:encoding :layer]))
+             :facet facet-config)))

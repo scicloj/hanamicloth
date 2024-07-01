@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 - simplified CSV writing
 - more careful handling of datasets - avoiding layer data when they can reuse the toplevel data
 - related refactoring
+- facets support - WIP
 
 ## [1-alpha3-SNAPSHOT] - 2024-06-28
 - catching common problems
