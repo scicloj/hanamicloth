@@ -19,7 +19,7 @@ A more comprehensive documentation is coming soon.
 
 ## Status
 
-initial draft
+initial draft, your feedback would help
 
 ## Discussion
 
