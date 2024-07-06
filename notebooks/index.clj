@@ -26,7 +26,7 @@
     (haclo/layer-point #:haclo{:mark-color "green"
                                :mark-size 200}))
 
-(md "[Walkthrough](./hanamicloth_book.walkthrough.html)")
+(md "See more examples in the 👣 [Walkthrough](./hanamicloth_book.walkthrough.html).")
 
 ;; # Preface
 
