@@ -26,6 +26,8 @@
     (haclo/layer-point #:haclo{:mark-color "green"
                                :mark-size 200}))
 
+[Walkthrough]()
+
 ;; # Preface
 
 (md
