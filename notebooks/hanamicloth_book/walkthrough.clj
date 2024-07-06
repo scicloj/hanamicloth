@@ -22,7 +22,8 @@
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
-            [hanamicloth-book.datasets :as datasets])
+            [hanamicloth-book.datasets :as datasets]
+            [aerial.hanami.common :as hc])
   (:import java.time.LocalDate))
 
 ;; ## Basic usage
@@ -37,6 +38,10 @@
                         :y :sepal-length
                         :color :species
                         :mark-size 200}))
+
+;; Soon, the Hanamicloth will offer some introductions to the use of
+;; Hanami templates and substitution keys.
+;; For now, please see the [Hanami documentation](https://github.com/jsa-aerial/hanami).
 
 ;; While Hanamicloth allows using the classic Hanami templates and substitution keys,
 ;; it also offers its own sets of templates, that we just used here.
