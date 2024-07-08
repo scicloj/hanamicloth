@@ -7,6 +7,8 @@
             [clojure.string :as str]
             [scicloj.kindly.v4.kind :as kind]))
 
+;; A convenience function for fetching a dataset and taking care of its column names:
+
 (defn fetch-dataset [dataset-name]
   (-> dataset-name
       (->> (format "https://vincentarelbundock.github.io/Rdatasets/csv/%s.csv"))
@@ -16,6 +18,8 @@
                                  (str/replace #"\." "-")
                                  keyword))})
       (tc/set-dataset-name dataset-name)))
+
+;; A convenience function for showing a dataset in a compact way:
 
 (defn compact-view [dataset]
   (-> dataset
