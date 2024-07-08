@@ -53,8 +53,7 @@
 ;; While Hanamicloth allows using the classic Hanami templates and substitution keys,
 ;; it also offers its own sets of templates, that we just used here.
 
-;; Compared to Hanami's original templates, the ones of Hanamicloth are similar but less sophisticated.
-;; Also, they supports a layered grammar which is demonstrated later in this document.
+;; The templates of Hanamicloth also support a layered grammar which is demonstrated later in this document.
 
 ;; (Here is how we can express the same plot with the layered grammar:)
 
@@ -78,10 +77,10 @@
 
 ;; By looking at the `:values` key above,
 ;; you can see that the dataset was implicitly represented as CSV,
-;; and that it is defined to be rendered as `:svg` by default.
+;; and that it was defined to be rendered as `:svg` by default.
 
 ;; The resulting plot is displayed correctly,
-;; as it is annotated by Kindly:
+;; as it is annotated by Kindly as a Vega-lite plot:
 
 (-> datasets/iris
     (haclo/plot haclo/point-chart
