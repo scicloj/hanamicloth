@@ -4,14 +4,21 @@
 
 ;; ## Setup
 
-;; Here we require Hanamicloth's main API namepace
-;; as well as those of [Hanami](https://github.com/jsa-aerial/hanami),
-;; [Tablecloth](https://scicloj.github.io/tablecloth/),
-;; the [datetime namespace](https://cnuernber.github.io/dtype-next/tech.v3.datatype.datetime.html) of [dtype-next](https://github.com/cnuernber/dtype-next),
-;; the [print namespace](https://techascent.github.io/tech.ml.dataset/tech.v3.dataset.print.html) of [tech.ml.dataset](https://github.com/techascent/tech.ml.dataset) for customized dataset printing,
-;; and also [Kindly](https://scicloj.github.io/kindly-noted/)
-;; (which allows us to specify how values should be visualized).
-;; We will use the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html).
+;; Here we require:
+
+;; * Hanamicloth's main API namepace
+
+;; * [Hanami](https://github.com/jsa-aerial/hanami)
+
+;; * [Tablecloth](https://scicloj.github.io/tablecloth/)
+
+;; * the [datetime namespace](https://cnuernber.github.io/dtype-next/tech.v3.datatype.datetime.html) of [dtype-next](https://github.com/cnuernber/dtype-next),
+
+;; * the [print namespace](https://techascent.github.io/tech.ml.dataset/tech.v3.dataset.print.html) of [tech.ml.dataset](https://github.com/techascent/tech.ml.dataset) for customized dataset printing,
+
+;; * [Kindly](https://scicloj.github.io/kindly-noted/) (which allows us to specify how values should be visualized).
+
+;; * the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html).
 
 (ns hanamicloth-book.walkthrough
   (:require [scicloj.hanamicloth.v1.api :as haclo]
