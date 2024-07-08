@@ -170,17 +170,23 @@
 
 ;; ## More examples
 
+;; A Hanamicloth boxplot:
+
 (-> datasets/mtcars
     (haclo/plot haclo/boxplot-chart
                 #:haclo{:x :cyl
                         :x-type :nominal
                         :y :disp}))
 
+;; An original Hanami boxplot:
+
 (-> datasets/mtcars
     (haclo/plot ht/boxplot-chart
                 {:X :cyl
                  :XTYPE :nominal
                  :Y :disp}))
+
+;; Plotting segments with Hanamicloth:
 
 (-> datasets/iris
     (haclo/plot haclo/rule-chart
@@ -191,6 +197,8 @@
                         :mark-opacity 0.5
                         :mark-size 3
                         :color :species}))
+
+;; Plotting segments with original Hanami:
 
 (-> datasets/iris
     (haclo/plot ht/rule-chart
