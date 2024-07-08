@@ -112,9 +112,8 @@
 
 ;; ## Inferring and overriding field types
 
-;; Field [types](https://vega.github.io/vega-lite/docs/type.html) are inferred from the Column type.
-;; Here, for example, `:haclo/x` and `:haclo/y` are `:quantitative`, and
-;; `:haclo/color` is `:nominal`
+;; Field [types](https://vega.github.io/vega-lite/docs/type.html) are inferred from the dataset's column type.
+;; Here, for example, `x` and `y` are `:quantitative`, and `color` is `:nominal`
 ;; (and is thus coloured with distinct colours rather than a gradient).
 
 (-> datasets/iris
@@ -124,8 +123,16 @@
                         :color :species
                         :mark-size 200}))
 
+(-> datasets/iris
+    (haclo/plot haclo/point-chart
+                #:haclo{:x :sepal-width
+                        :y :sepal-length
+                        :color :species
+                        :mark-size 200})
+    kind/pprint)
+
 ;; On the other hand, in the following example,
-;; `:color` is `:quantitative`:
+;; `color` is `:quantitative`:
 
 (-> datasets/mtcars
     (haclo/plot haclo/point-chart
@@ -134,7 +141,15 @@
                         :color :cyl
                         :mark-size 200}))
 
-;; This can be overridden:
+(-> datasets/mtcars
+    (haclo/plot haclo/point-chart
+                #:haclo{:x :mpg
+                        :y :disp
+                        :color :cyl
+                        :mark-size 200})
+    kind/pprint)
+
+;; This can be overridden to define `color` as `:noninal`:
 
 (-> datasets/mtcars
     (haclo/plot haclo/point-chart
@@ -143,6 +158,15 @@
                         :color :cyl
                         :color-type :nominal
                         :mark-size 200}))
+
+(-> datasets/mtcars
+    (haclo/plot haclo/point-chart
+                #:haclo{:x :mpg
+                        :y :disp
+                        :color :cyl
+                        :color-type :nominal
+                        :mark-size 200})
+    kind/pprint)
 
 ;; ## More examples
 
