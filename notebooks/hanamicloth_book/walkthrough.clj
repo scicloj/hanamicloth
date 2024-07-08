@@ -46,7 +46,7 @@
                         :color :species
                         :mark-size 200}))
 
-;; Soon, the Hanamicloth will offer some introductions to the use of
+;; Soon, the Hanamicloth docs will offer an introduction to the use of
 ;; Hanami templates and substitution keys.
 ;; For now, please see the [Hanami documentation](https://github.com/jsa-aerial/hanami).
 
