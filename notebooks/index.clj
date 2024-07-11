@@ -20,7 +20,6 @@
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base {:=x :date
                  :=y :value})
-
     (haclo/layer-line {:=mark-color "purple"})
     (haclo/update-data tc/random 5)
     (haclo/layer-point {:=mark-color "green"
