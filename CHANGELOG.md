@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [1-alpha4-SNAPSHOT] - unreleased
+- breaking change: substitution keys are `:=abcd`-style rather than `:haclo/abcd`-style
 - simplified CSV writing
 - more careful handling of datasets - avoiding layer data when they can reuse the toplevel data
 - related refactoring
