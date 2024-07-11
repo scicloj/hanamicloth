@@ -41,10 +41,10 @@
 
 (-> datasets/iris
     (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color :species
-                        :mark-size 200}))
+                {:=x :sepal-width
+                 :=y :sepal-length
+                 :=color :species
+                 :=mark-size 200}))
 
 ;; Soon, the Hanamicloth docs will offer an introduction to the use of
 ;; Hanami templates and substitution keys.
@@ -59,20 +59,20 @@
 
 (-> datasets/iris
     (haclo/layer-point
-     #:haclo{:x :sepal-width
-             :y :sepal-length
-             :color :species
-             :mark-size 200}))
+     {:=x :sepal-width
+      :=y :sepal-length
+      :=color :species
+      :=mark-size 200}))
 
 ;; The value returned by a `haclo/plot` function
 ;; is a [Vega-Lite](https://vega.github.io/vega-lite/) spec:
 
 (-> datasets/iris
     (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color :species
-                        :mark-size 200})
+                {:=x :sepal-width
+                 :=y :sepal-length
+                 :=color :species
+                 :=mark-size 200})
     kind/pprint)
 
 ;; By looking at the `:values` key above,
@@ -84,10 +84,10 @@
 
 (-> datasets/iris
     (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color :species
-                        :mark-size 200})
+                {:=x :sepal-width
+                 :=y :sepal-length
+                 :=color :species
+                 :=mark-size 200})
     meta)
 
 ;; ## Using classic Hanami templates and defaults
@@ -118,17 +118,17 @@
 
 (-> datasets/iris
     (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color :species
-                        :mark-size 200}))
+                {:=x :sepal-width
+                 :=y :sepal-length
+                 :=color :species
+                 :=mark-size 200}))
 
 (-> datasets/iris
     (haclo/plot haclo/point-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :color :species
-                        :mark-size 200})
+                {:=x :sepal-width
+                 :=y :sepal-length
+                 :=color :species
+                 :=mark-size 200})
     kind/pprint)
 
 ;; On the other hand, in the following example,
@@ -136,36 +136,36 @@
 
 (-> datasets/mtcars
     (haclo/plot haclo/point-chart
-                #:haclo{:x :mpg
-                        :y :disp
-                        :color :cyl
-                        :mark-size 200}))
+                {:=x :mpg
+                 :=y :disp
+                 :=color :cyl
+                 :=mark-size 200}))
 
 (-> datasets/mtcars
     (haclo/plot haclo/point-chart
-                #:haclo{:x :mpg
-                        :y :disp
-                        :color :cyl
-                        :mark-size 200})
+                {:=x :mpg
+                 :=y :disp
+                 :=color :cyl
+                 :=mark-size 200})
     kind/pprint)
 
 ;; This can be overridden to define `color` as `:noninal`:
 
 (-> datasets/mtcars
     (haclo/plot haclo/point-chart
-                #:haclo{:x :mpg
-                        :y :disp
-                        :color :cyl
-                        :color-type :nominal
-                        :mark-size 200}))
+                {:=x :mpg
+                 :=y :disp
+                 :=color :cyl
+                 :=color-type :nominal
+                 :=mark-size 200}))
 
 (-> datasets/mtcars
     (haclo/plot haclo/point-chart
-                #:haclo{:x :mpg
-                        :y :disp
-                        :color :cyl
-                        :color-type :nominal
-                        :mark-size 200})
+                {:=x :mpg
+                 :=y :disp
+                 :=color :cyl
+                 :=color-type :nominal
+                 :=mark-size 200})
     kind/pprint)
 
 ;; ## More examples
@@ -174,9 +174,9 @@
 
 (-> datasets/mtcars
     (haclo/plot haclo/boxplot-chart
-                #:haclo{:x :cyl
-                        :x-type :nominal
-                        :y :disp}))
+                {:=x :cyl
+                 :=x-type :nominal
+                 :=y :disp}))
 
 ;; An original Hanami boxplot:
 
@@ -190,13 +190,13 @@
 
 (-> datasets/iris
     (haclo/plot haclo/rule-chart
-                #:haclo{:x :sepal-width
-                        :y :sepal-length
-                        :x2 :petal-width
-                        :y2 :petal-length
-                        :mark-opacity 0.5
-                        :mark-size 3
-                        :color :species}))
+                {:=x :sepal-width
+                 :=y :sepal-length
+                 :=x2 :petal-width
+                 :=y2 :petal-length
+                 :=mark-opacity 0.5
+                 :=mark-size 3
+                 :=color :species}))
 
 ;; Plotting segments with original Hanami:
 
@@ -217,9 +217,9 @@
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/plot haclo/line-chart
-                #:haclo{:x :date
-                        :y :value
-                        :mark-color "purple"}))
+                {:=x :date
+                 :=y :value
+                 :=mark-color "purple"}))
 
 ;; You see, the `:date` field was correctly inferred to be
 ;; of the `:temporal` kind.
@@ -227,9 +227,9 @@
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/plot haclo/line-chart
-                #:haclo{:x :date
-                        :y :value
-                        :mark-color "purple"})
+                {:=x :date
+                 :=y :value
+                 :=mark-color "purple"})
     kind/pprint)
 
 ;; ## Delayed transformation
@@ -240,9 +240,9 @@
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base haclo/line-chart
-                #:haclo{:x :date
-                        :y :value
-                        :mark-color "purple"}))
+                {:=x :date
+                 :=y :value
+                 :=mark-color "purple"}))
 
 ;; The result is displayed the same way, but the internal representation
 ;; delays the Hanami transformation of templates.
@@ -252,17 +252,17 @@
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/plot haclo/line-chart
-                #:haclo{:x :date
-                        :y :value
-                        :mark-color "purple"})
+                {:=x :date
+                 :=y :value
+                 :=mark-color "purple"})
     kind/pprint)
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (haclo/base haclo/line-chart
-                #:haclo{:x :date
-                        :y :value
-                        :mark-color "purple"})
+                {:=x :date
+                 :=y :value
+                 :=mark-color "purple"})
     kind/pprint)
 
 ;; The structure returned by `haclo/base` is a Hanami template
@@ -280,37 +280,37 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base #:haclo{:x :date
-                        :y :value
-                        :mark-color "purple"})
+    (haclo/base {:=x :date
+                 :=y :value
+                 :=mark-color "purple"})
     haclo/layer-line)
 
 ;; The substitution keys can also be specified on the layer level:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base #:haclo{:x :date
-                        :y :value})
-    (haclo/layer-line #:haclo{:mark-color "purple"}))
+    (haclo/base {:=x :date
+                 :=y :value})
+    (haclo/layer-line {:=mark-color "purple"}))
 
 ;; This allows us to create, e.g., aesthetic differences between layers:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base #:haclo{:x :date
-                        :y :value})
-    (haclo/layer-point #:haclo{:mark-color "green"
-                               :mark-size 200
-                               :mark-opacity 0.1})
-    (haclo/layer-line #:haclo{:mark-color "purple"}))
+    (haclo/base {:=x :date
+                 :=y :value})
+    (haclo/layer-point {:=mark-color "green"
+                        :=mark-size 200
+                        :=mark-opacity 0.1})
+    (haclo/layer-line {:=mark-color "purple"}))
 
 ;; We can also skip the base and have everything in the layer:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/layer-line #:haclo{:x :date
-                              :y :value
-                              :mark-color "purple"}))
+    (haclo/layer-line {:=x :date
+                       :=y :value
+                       :=mark-color "purple"}))
 
 ;; ## Updating data
 
@@ -322,13 +322,12 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base #:haclo{:x :date
-                        :y :value})
-
-    (haclo/layer-line #:haclo{:mark-color "purple"})
+    (haclo/base {:=x :date
+                 :=y :value})
+    (haclo/layer-line {:=mark-color "purple"})
     (haclo/update-data tc/random 5)
-    (haclo/layer-point #:haclo{:mark-color "green"
-                               :mark-size 200}))
+    (haclo/layer-point {:=mark-color "green"
+                        :=mark-size 200}))
 
 ;; You see, we have lots of data for the lines,
 ;; but only five random points.
@@ -341,13 +340,12 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base #:haclo{:x :date
-                        :y :value})
-
-    (haclo/layer-line #:haclo{:mark-color "purple"})
+    (haclo/base {:=x :date
+                 :=y :value})
+    (haclo/layer-line {:=mark-color "purple"})
     (haclo/update-data tc/random 5)
-    (haclo/layer-point #:haclo{:mark-color "green"
-                               :mark-size 200})
+    (haclo/layer-point {:=mark-color "green"
+                        :=mark-size 200})
     haclo/plot
     kind/pprint)
 
@@ -357,13 +355,12 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base #:haclo{:x :date
-                        :y :value})
-
-    (haclo/layer-line #:haclo{:mark-color "purple"})
+    (haclo/base {:=x :date
+                 :=y :value})
+    (haclo/layer-line {:=mark-color "purple"})
     (haclo/update-data tc/random 5)
-    (haclo/layer-point #:haclo{:mark-color "green"
-                               :mark-size 200})
+    (haclo/layer-point {:=mark-color "green"
+                        :=mark-size 200})
     haclo/plot
     (assoc :background "lightgrey"))
 
@@ -377,12 +374,12 @@
 ;; Soon we will add more ways of modelling the data.
 
 (-> datasets/iris
-    (haclo/base #:haclo{:title "dummy"
-                        :mark-color "green"
-                        :x :sepal-width
-                        :y :sepal-length})
+    (haclo/base {:=title "dummy"
+                 :=mark-color "green"
+                 :=x :sepal-width
+                 :=y :sepal-length})
     haclo/layer-point
-    (haclo/layer-smooth #:haclo{:mark-color "orange"}))
+    (haclo/layer-smooth {:=mark-color "orange"}))
 
 ;; By default, the regression is computed with only one predictor variable,
 ;; which is `:haclo/x`.
@@ -390,11 +387,11 @@
 ;; We may compute a regression with more than one predictor.
 
 (-> datasets/iris
-    (haclo/base #:haclo{:x :sepal-width
-                        :y :sepal-length})
+    (haclo/base {:=x :sepal-width
+                 :=y :sepal-length})
     haclo/layer-point
-    (haclo/layer-smooth #:haclo{:predictors [:petal-width
-                                             :petal-length]}))
+    (haclo/layer-smooth {:=predictors [:petal-width
+                                       :petal-length]}))
 
 ;; ## Grouping
 
@@ -405,10 +402,10 @@
 ;; each for every species.
 
 (-> datasets/iris
-    (haclo/base #:haclo{:title "dummy"
-                        :color :species
-                        :x :sepal-width
-                        :y :sepal-length})
+    (haclo/base {:=title "dummy"
+                 :=color :species
+                 :=x :sepal-width
+                 :=y :sepal-length})
     haclo/layer-point
     haclo/layer-smooth)
 
@@ -419,12 +416,12 @@
 ;; For example, let us avoid grouping:
 
 (-> datasets/iris
-    (haclo/base #:haclo{:title "dummy"
-                        :mark-color "green"
-                        :color :species
-                        :group []
-                        :x :sepal-width
-                        :y :sepal-length})
+    (haclo/base {:=title "dummy"
+                 :=mark-color "green"
+                 :=color :species
+                 :=group []
+                 :=x :sepal-width
+                 :=y :sepal-length})
     haclo/layer-point
     haclo/layer-smooth)
 
@@ -480,19 +477,19 @@
     (tc/add-column :year #(datetime/long-temporal-field :years (:date %)))
     (tc/add-column :month #(datetime/long-temporal-field :months (:date %)))
     (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y))))
-    (haclo/base #:haclo{:x :date
-                        :y :value})
-    (haclo/layer-smooth #:haclo{:color :relative-time
-                                :mark-size 10
-                                :group []
-                                :predictors [:yearmonth]})
+    (haclo/base {:=x :date
+                 :=y :value})
+    (haclo/layer-smooth {:=color :relative-time
+                         :=mark-size 10
+                         :=group []
+                         :=predictors [:yearmonth]})
     ;; Keep only the past for the following layer:
     (haclo/update-data (fn [dataset]
                          (-> dataset
                              (tc/select-rows (fn [row]
                                                (-> row :relative-time (= "Past")))))))
-    (haclo/layer-line #:haclo{:mark-color "purple"
-                              :mark-size 3}))
+    (haclo/layer-line {:=mark-color "purple"
+                       :=mark-size 3}))
 
 ;; ## Histograms
 
@@ -500,11 +497,11 @@
 ;; with statistical processing:
 
 (-> datasets/iris
-    (haclo/layer-histogram #:haclo{:x :sepal-width}))
+    (haclo/layer-histogram {:=x :sepal-width}))
 
 (-> datasets/iris
-    (haclo/layer-histogram #:haclo{:x :sepal-width
-                                   :histogram-nbins 30}))
+    (haclo/layer-histogram {:=x :sepal-width
+                            :=histogram-nbins 30}))
 
 
 ;; ## Coming soon
