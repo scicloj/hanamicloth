@@ -18,13 +18,13 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base #:haclo{:x :date
-                        :y :value})
+    (haclo/base {:=x :date
+                 :=y :value})
 
-    (haclo/layer-line #:haclo{:mark-color "purple"})
+    (haclo/layer-line {:=mark-color "purple"})
     (haclo/update-data tc/random 5)
-    (haclo/layer-point #:haclo{:mark-color "green"
-                               :mark-size 200}))
+    (haclo/layer-point {:=mark-color "green"
+                        :=mark-size 200}))
 
 (md "See more examples in the 👣 [Walkthrough](./hanamicloth_book.walkthrough.html).")
 

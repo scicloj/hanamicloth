@@ -53,6 +53,11 @@
 ;; While Hanamicloth allows using the classic Hanami templates and substitution keys,
 ;; it also offers its own sets of templates, that we just used here.
 
+;; Unlike the classic Hanami keys of using
+;; capital letter substitution keys (e.g. `:COLOR`)
+;; Hanamicloth uses the convention of
+;; substitution keys beginning with `=` (e.g. `:=color`)
+
 ;; The templates of Hanamicloth also support a layered grammar which is demonstrated later in this document.
 
 ;; (Here is how we can express the same plot with the layered grammar:)
@@ -370,7 +375,7 @@
 ;; processing to the dataset to model it as a smooth shape.
 ;; It is inspired by ggplot's [geom_smooth](https://ggplot2.tidyverse.org/reference/geom_smooth.html).
 
-;; At the moment, it can only be used to model `:haclo/y` by linear regression.
+;; At the moment, it can only be used to model `:=y` by linear regression.
 ;; Soon we will add more ways of modelling the data.
 
 (-> datasets/iris
@@ -382,7 +387,7 @@
     (haclo/layer-smooth {:=mark-color "orange"}))
 
 ;; By default, the regression is computed with only one predictor variable,
-;; which is `:haclo/x`.
+;; which is `:=x`.
 ;; But this can be overriden using the `:predictors` key.
 ;; We may compute a regression with more than one predictor.
 
@@ -461,8 +466,8 @@
     (print/print-range 6))
 
 ;; Let us use the same regression line for the `Past` and `Future` groups.
-;; To do this, we avoid grouping by assigning  `[]` to `:haclo/group`.
-;; The line is affected only by the past, since in the Future, `:y` is missing.
+;; To do this, we avoid grouping by assigning  `[]` to `:=group`.
+;; The line is affected only by the past, since in the Future, `:=y` is missing.
 ;; We use the numerical field `:yearmonth` as the regression predictor,
 ;; but for plotting, we still use the `:temporal` field `:date`.
 
