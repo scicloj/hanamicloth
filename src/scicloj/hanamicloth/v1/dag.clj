@@ -40,17 +40,18 @@
   For example:
 
   ```clj
-  (with-clean-cache
-    (dotimes [i 2]
-      (prn
-       (cached-xform-k :B
-                       {:A 9
-                        :B (fn [{:keys [A]}]
-                             (prn \"computing ...\")
-                             (inc A))}))))
+  (let [verbose-inc (fn [{:keys [A]}]
+                       (prn :computing)
+                       (inc A))]
+    (with-clean-cache
+      (dotimes [i 2]
+        (prn
+         (cached-xform-k :B
+                         {:A 9
+                          :B verbose-inc})))))
   ;; printed output:
 
-  \"computing ...\"
+  :computing
   10
   10
   ```
@@ -73,28 +74,28 @@
 
   ```clj
   (with-clean-cache
-    (-> {:b :haclo/B
-         :c :haclo/C
-         ::ht/defaults {:haclo/B (fn-with-deps-keys
-                                 [:haclo/A]
-                                 (fn [{:keys [haclo/A]}] (inc A)))
-                        :haclo/C (fn-with-deps-keys
-                                 [:haclo/B]
-                                 (fn [{:keys [haclo/B]}] (inc B)))}}
-        (hc/xform :haclo/A 9)))
+    (-> {:b :B
+         :c :C
+         ::ht/defaults {:B (fn-with-deps-keys
+                                 [:A]
+                                 (fn [{:keys [A]}] (inc A)))
+                        :C (fn-with-deps-keys
+                                 [:B]
+                                 (fn [{:keys [B]}] (inc B)))}}
+        (hc/xform :A 9)))
 
   => {:b 10 :c 11}
 
   (with-clean-cache
-    (-> {:b :haclo/B
-         :c :haclo/C
-         ::ht/defaults {:haclo/B (fn-with-deps-keys
-                                 [:haclo/A]
-                                 (fn [{:keys [haclo/A]}] (inc A)))
-                        :haclo/C (fn-with-deps-keys
-                                 [:haclo/A :haclo/B]
-                                 (fn [{:keys [haclo/A haclo/B]}] (+ A B)))}}
-        (hc/xform :haclo/A 9)))
+    (-> {:b :B
+         :c :C
+         ::ht/defaults {:B (fn-with-deps-keys
+                                 [:A]
+                                 (fn [{:keys [A]}] (inc A)))
+                        :C (fn-with-deps-keys
+                                 [:A :B]
+                                 (fn [{:keys [A B]}] (+ A B)))}}
+        (hc/xform :A 9)))
 
   => {:b 10 :c 19}
   ```
@@ -113,20 +114,28 @@
   For example:
 
   ```clj
-  (with-clean-cache
-    (-> {:b :haclo/B
-         :c :haclo/C
-         ::ht/defaults #:haclo{:B (fn-with-deps [A] (inc A))
-                               :C (fn-with-deps [B] (inc B))}}
-        (hc/xform :haclo/A 9)))
+  (macroexpand
+    '(fn-with-deps [A B] (+ A B)))
 
-    => {:b 10 :c 11}
+  =>
+  (scicloj.hanamicloth.v1.dag/fn-with-deps-keys
+   [:A :B]
+   (clojure.core/fn [{:keys [A B]}] (+ A B)))
+
+  (with-clean-cache
+    (-> {:b :B
+         :c :C
+         ::ht/defaults {:B (fn-with-deps [A] (inc A))
+                        :C (fn-with-deps [B] (inc B))}}
+        (hc/xform :A 9)))
+
+  => {:b 10 :c 11}
   ```
   "
   [dep-symbols & forms]
   `(fn-with-deps-keys
-    ~(mapv #(keyword "haclo" (name %)) dep-symbols)
-    (fn [{:keys ~(mapv #(symbol "haclo" (name %)) dep-symbols)}]
+    ~(mapv #(keyword (name %)) dep-symbols)
+    (fn [{:keys ~dep-symbols}]
       ~@forms)))
 
 (defmacro defn-with-deps
@@ -135,20 +144,27 @@
   For example:
 
   ```clj
+  (macroexpand
+    '(defn-with-deps A+B [A B] (+ A B)))
+
+  =>
+  (def A+B
+    (scicloj.hanamicloth.v1.dag/fn-with-deps [A B] (+ A B)))
+
   (defn-with-deps B->C [B] (inc B))
   (defn-with-deps A->B [A] (inc A))
 
   (with-clean-cache
-    (-> {:b :haclo/B
-         :c :haclo/C
-         ::ht/defaults #:haclo{:B A->B
-                                :C B->C}}
-        (hc/xform :haclo/A 9)))
+    (-> {:b :B
+         :c :C
+         ::ht/defaults {:B A->B
+                        :C B->C}}
+        (hc/xform :A 9)))
 
-    => {:b 10 :c 11}
+  => {:b 10 :c 11}
   ```
   "
   [fsymbol dep-symbols & forms]
   `(def ~fsymbol
      (fn-with-deps ~dep-symbols
-                   ~@forms)))
+       ~@forms)))

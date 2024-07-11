@@ -32,29 +32,29 @@
           (tc/write! w {:file-type :csv}))
       (.toString w))))
 
-(dag/defn-with-deps submap->dataset [base-dataset layer-dataset layer?]
-  (if layer?
-    layer-dataset
-    base-dataset))
+(dag/defn-with-deps submap->dataset [=base-dataset =layer-dataset =layer?]
+  (if =layer?
+    =layer-dataset
+    =base-dataset))
 
 (def submap->dataset-after-stat
   (dag/fn-with-deps-keys
-   [:haclo/dataset :haclo/stat]
+   [:=dataset :=stat]
    (fn [{:as submap
-         :keys [haclo/dataset haclo/stat]}]
-     (when-not (tc/dataset? @dataset)
-       (throw (ex-info "missing :haclo/dataset"
+         :keys [=dataset =stat]}]
+     (when-not (tc/dataset? @=dataset)
+       (throw (ex-info "missing :=dataset"
                        submap)))
-     (if stat
+     (if =stat
        (->WrappedValue
-        (@stat submap))
-       dataset))))
+        (@=stat submap))
+       =dataset))))
 
-(dag/defn-with-deps submap->csv [dataset-after-stat]
-  (dataset->csv @dataset-after-stat))
+(dag/defn-with-deps submap->csv [=dataset-after-stat]
+  (dataset->csv @=dataset-after-stat))
 
 (defn submap->field-type [colname-key]
-  (let [dataset-key :haclo/dataset]
+  (let [dataset-key :=dataset]
     (dag/fn-with-deps-keys
      [colname-key dataset-key]
      (fn [submap]
@@ -69,15 +69,15 @@
          hc/RMV)))))
 
 (defn submap->field-type-after-stat [colname-key]
-  (let [dataset-key :haclo/dataset-after-stat
+  (let [dataset-key :=dataset-after-stat
         colname-key-before-stat (-> colname-key
                                     name
                                     (str/replace #"-after-stat" "")
-                                    (->> (keyword "haclo")))
+                                    keyword)
         colname-key-type-before-stat (-> colname-key-before-stat
                                          name
                                          (str "-type")
-                                         (->> (keyword "haclo")))]
+                                         keyword)]
     (dag/fn-with-deps-keys
      [colname-key
       colname-key-before-stat
@@ -98,123 +98,117 @@
                      :else :nominal)))
          hc/RMV)))))
 
-(dag/defn-with-deps submap->group [color color-type size size-type]
-  (concat (when (= color-type :nominal)
-            [color])
-          (when (= size-type :nominal)
-            [size])))
-
-(dag/defn-with-deps submap->group [color color-type size size-type]
-  (concat (when (= color-type :nominal)
-            [color])
-          (when (= size-type :nominal)
-            [size])))
+(dag/defn-with-deps submap->group [=color =color-type =size =size-type]
+  (concat (when (= =color-type :nominal)
+            [=color])
+          (when (= =size-type :nominal)
+            [=size])))
 
 (def encoding-base
-  {:color {:field :haclo/color
-           :type :haclo/color-type}
-   :size {:field :haclo/size
-          :type :haclo/size-type}})
+  {:color {:field :=color
+           :type :=color-type}
+   :size {:field :=size
+          :type :=size-type}})
 
 (def xy-encoding
   (assoc encoding-base
-         :x {:field :haclo/x-after-stat
-             :type :haclo/x-type-after-stat
-             :title :haclo/x-title
-             :bin :haclo/x-bin}
-         :y {:field :haclo/y-after-stat
-             :type :haclo/y-type-after-stat
-             :title :haclo/y-title
-             :bin :haclo/y-bin}
-         :x2 :haclo/x2-encoding
-         :y2 :haclo/y2-encoding))
+         :x {:field :=x-after-stat
+             :type :=x-type-after-stat
+             :title :=x-title
+             :bin :=x-bin}
+         :y {:field :=y-after-stat
+             :type :=y-type-after-stat
+             :title :=y-title
+             :bin :=y-bin}
+         :x2 :=x2-encoding
+         :y2 :=y2-encoding))
 
 (def standard-defaults
   {;; defaults for original Hanami templates
-   :VALDATA :haclo/csv-data
+   :VALDATA :=csv-data
    :DFMT {:type "csv"}
 
    ;; defaults for hanamicloth templates
-   :haclo/stat hc/RMV
-   :haclo/base-dataset hc/RMV
-   :haclo/layer-dataset hc/RMV
-   :haclo/layer? hc/RMV
-   :haclo/dataset submap->dataset
-   :haclo/dataset-after-stat submap->dataset-after-stat
-   :haclo/csv-data submap->csv
-   :haclo/data {:values :haclo/csv-data
-                :format {:type "csv"}}
-   :haclo/opacity hc/RMV
-   :haclo/x :x
-   :haclo/x-after-stat :haclo/x
-   :haclo/y :y
-   :haclo/y-after-stat :haclo/y
-   :haclo/x2 hc/RMV
-   :haclo/x2-after-stat :haclo/x2
-   :haclo/y2 hc/RMV
-   :haclo/y2-after-stat :haclo/y2
-   :haclo/color hc/RMV
-   :haclo/size hc/RMV
-   :haclo/x-type (submap->field-type :haclo/x)
-   :haclo/x-type-after-stat (submap->field-type-after-stat :haclo/x-after-stat)
-   :haclo/y-type (submap->field-type :haclo/y)
-   :haclo/y-type-after-stat (submap->field-type-after-stat :haclo/y-after-stat)
-   :haclo/x-title hc/RMV
-   :haclo/y-title hc/RMV
-   :haclo/x-bin hc/RMV
-   :haclo/y-bin hc/RMV
-   :haclo/x2-encoding (dag/fn-with-deps [x2-after-stat
-                                         x-type-after-stat]
-                        (if x2-after-stat
-                          (-> xy-encoding
-                              :x
-                              (assoc :field x2-after-stat
-                                     :type x-type-after-stat))
-                          hc/RMV))
-   :haclo/y2-encoding (dag/fn-with-deps [y2-after-stat
-                                         y-type-after-stat]
-                        (if y2-after-stat
-                          (-> xy-encoding
-                              :y
-                              (assoc :field y2-after-stat
-                                     :type y-type-after-stat))
-                          hc/RMV))
-   :haclo/color-type (submap->field-type :haclo/color)
-   :haclo/size-type (submap->field-type :haclo/size)
-   :haclo/renderer :svg
-   :haclo/usermeta {:embedOptions {:renderer :haclo/renderer}}
-   :haclo/title hc/RMV
-   :haclo/encoding xy-encoding
-   :haclo/height 300
-   :haclo/width 400
-   :haclo/background "floralwhite"
-   :haclo/mark "circle"
-   :haclo/mark-color hc/RMV
-   :haclo/mark-size hc/RMV
-   :haclo/mark-opacity hc/RMV
-   :haclo/mark-tooltip true
-   :haclo/layer []
-   :haclo/group submap->group
-   :haclo/predictors [:haclo/x]
-   :haclo/histogram-nbins 10})
+   :=stat hc/RMV
+   :=base-dataset hc/RMV
+   :=layer-dataset hc/RMV
+   :=layer? hc/RMV
+   :=dataset submap->dataset
+   :=dataset-after-stat submap->dataset-after-stat
+   :=csv-data submap->csv
+   :=data {:values :=csv-data
+           :format {:type "csv"}}
+   :=opacity hc/RMV
+   :=x :x
+   :=x-after-stat :=x
+   :=y :y
+   :=y-after-stat :=y
+   :=x2 hc/RMV
+   :=x2-after-stat :=x2
+   :=y2 hc/RMV
+   :=y2-after-stat :=y2
+   :=color hc/RMV
+   :=size hc/RMV
+   :=x-type (submap->field-type :=x)
+   :=x-type-after-stat (submap->field-type-after-stat :=x-after-stat)
+   :=y-type (submap->field-type :=y)
+   :=y-type-after-stat (submap->field-type-after-stat :=y-after-stat)
+   :=x-title hc/RMV
+   :=y-title hc/RMV
+   :=x-bin hc/RMV
+   :=y-bin hc/RMV
+   :=x2-encoding (dag/fn-with-deps [=x2-after-stat
+                                    =x-type-after-stat]
+                   (if =x2-after-stat
+                     (-> xy-encoding
+                         :x
+                         (assoc :field =x2-after-stat
+                                :type =x-type-after-stat))
+                     hc/RMV))
+   :=y2-encoding (dag/fn-with-deps [=y2-after-stat
+                                    =y-type-after-stat]
+                   (if =y2-after-stat
+                     (-> xy-encoding
+                         :y
+                         (assoc :field =y2-after-stat
+                                :type =y-type-after-stat))
+                     hc/RMV))
+   :=color-type (submap->field-type :=color)
+   :=size-type (submap->field-type :=size)
+   :=renderer :svg
+   :=usermeta {:embedOptions {:renderer :=renderer}}
+   :=title hc/RMV
+   :=encoding xy-encoding
+   :=height 300
+   :=width 400
+   :=background "floralwhite"
+   :=mark "circle"
+   :=mark-color hc/RMV
+   :=mark-size hc/RMV
+   :=mark-opacity hc/RMV
+   :=mark-tooltip true
+   :=layer []
+   :=group submap->group
+   :=predictors [:=x]
+   :=histogram-nbins 10})
 
 
 (def view-base
-  {:usermeta :haclo/usermeta
-   :title :haclo/title
-   :height :haclo/height
-   :width :haclo/width
-   :background :haclo/background
-   :data :haclo/data
-   :encoding :haclo/encoding
-   :layer :haclo/layer})
+  {:usermeta :=usermeta
+   :title :=title
+   :height :=height
+   :width :=width
+   :background :=background
+   :data :=data
+   :encoding :=encoding
+   :layer :=layer})
 
 (def mark-base
-  {:type :haclo/mark,
-   :color :haclo/mark-color
-   :size :haclo/mark-size
-   :opacity :haclo/mark-opacity
-   :tooltip :haclo/mark-tooltip})
+  {:type :=mark,
+   :color :=mark-color
+   :size :=mark-size
+   :opacity :=mark-opacity
+   :tooltip :=mark-tooltip})
 
 (defn mark-based-chart [mark]
   (assoc view-base
@@ -231,8 +225,8 @@
 
 (defn dataset->defaults [dataset]
   (let [w (->WrappedValue dataset)]
-    {:haclo/base-dataset w
-     :haclo/layer-dataset w}))
+    {:=base-dataset w
+     :=layer-dataset w}))
 
 (defn vega-lite-xform [template]
   (dag/with-clean-cache
@@ -280,18 +274,18 @@
          (update ::ht/defaults
                  (fn [defaults]
                    (-> defaults
-                       (update :haclo/layer
+                       (update :=layer
                                (comp vec conj)
                                (assoc template
-                                      :data (if (and (= @(:haclo/layer-dataset defaults)
-                                                        @(:haclo/base-dataset defaults))
-                                                     (not (:haclo/stat defaults)))
+                                      :data (if (and (= @(:=layer-dataset defaults)
+                                                        @(:=base-dataset defaults))
+                                                     (not (:=stat defaults)))
                                               hc/RMV
-                                              :haclo/data)
+                                              :=data)
                                       ::ht/defaults (merge
                                                      standard-defaults
                                                      defaults
-                                                     {:haclo/layer? true}
+                                                     {:=layer? true}
                                                      submap))))))))))
 
 
@@ -302,8 +296,8 @@
     ([context submap]
      (layer context
             {:mark mark-base
-             :encoding :haclo/encoding}
-            (merge {:haclo/mark mark}
+             :encoding :=encoding}
+            (merge {:=mark mark}
                    submap)))))
 
 (def layer-point (mark-based-layer "circle"))
@@ -312,41 +306,41 @@
 (def layer-area (mark-based-layer "area"))
 
 (dag/defn-with-deps smooth-stat
-  [dataset y predictors group]
-  (when-not (@dataset y)
-    (throw (ex-info "missing y column"
-                    {:missing-column-name y})))
-  (->> predictors
+  [=dataset =y =predictors =group]
+  (when-not (@=dataset =y)
+    (throw (ex-info "missing =y column"
+                    {:missing-column-name =y})))
+  (->> =predictors
        (run! (fn [p]
-               (when-not (@dataset p)
+               (when-not (@=dataset p)
                  (throw (ex-info "missing predictor column"
-                                 {:predictors predictors
+                                 {:predictors =predictors
                                   :missing-column-name p}))))))
-  (->> group
+  (->> =group
        (run! (fn [g]
-               (when-not (@dataset g)
-                 (throw (ex-info "missing group column"
-                                 {:group group
+               (when-not (@=dataset g)
+                 (throw (ex-info "missing =group column"
+                                 {:group =group
                                   :missing-column-name g}))))))
   (let [predictions-fn (fn [ds]
                          (let [nonmissing-y (-> ds
-                                                (tc/drop-missing [y]))
+                                                (tc/drop-missing [=y]))
                                model (regression/glm (-> nonmissing-y
-                                                         (get y))
+                                                         (get =y))
                                                      (-> nonmissing-y
-                                                         (tc/select-columns predictors)
+                                                         (tc/select-columns =predictors)
                                                          tc/rows))]
                            (-> ds
-                               (tc/select-columns predictors)
+                               (tc/select-columns =predictors)
                                tc/rows
                                (->> (map (partial regression/predict model))))))]
-    (if group
-      (-> @dataset
-          (tc/group-by group)
-          (tc/add-or-replace-column y predictions-fn)
+    (if =group
+      (-> @=dataset
+          (tc/group-by =group)
+          (tc/add-or-replace-column =y predictions-fn)
           tc/ungroup)
-      (-> @dataset
-          (tc/add-or-replace-column y predictions-fn)))))
+      (-> @=dataset
+          (tc/add-or-replace-column =y predictions-fn)))))
 
 (defn layer-smooth
   ([context]
@@ -354,16 +348,16 @@
   ([context submap]
    (layer context
           {:mark mark-base
-           :encoding :haclo/encoding}
-          (merge {:haclo/stat (->WrappedValue smooth-stat)
-                  :haclo/mark :line}
+           :encoding :=encoding}
+          (merge {:=stat (->WrappedValue smooth-stat)
+                  :=mark :line}
                  submap))))
 
 
 
 (defn update-data [template dataset-fn & submap]
   (-> template
-      (update-in [::ht/defaults :haclo/layer-dataset]
+      (update-in [::ht/defaults :=layer-dataset]
                  (fn [wrapped-data]
                    (->WrappedValue
                     (apply dataset-fn
@@ -372,14 +366,14 @@
 
 
 (dag/defn-with-deps histogram-stat
-  [dataset x histogram-nbins]
-  (when-not (@dataset x)
-    (throw (ex-info "missing x column"
-                    {:missing-column-name x})))
-  (let [{:keys [bins max step]} (-> @dataset
-                                    (get x)
+  [=dataset =x =histogram-nbins]
+  (when-not (@=dataset =x)
+    (throw (ex-info "missing =x column"
+                    {:missing-column-name =x})))
+  (let [{:keys [bins max step]} (-> @=dataset
+                                    (get =x)
                                     (fastmath.stats/histogram
-                                     histogram-nbins))
+                                     =histogram-nbins))
         left (map first bins)]
     (-> {:left left
          :right (concat (rest left)
@@ -393,14 +387,14 @@
   ([context submap]
    (layer context
           {:mark mark-base
-           :encoding :haclo/encoding}
-          (merge {:haclo/stat (->WrappedValue histogram-stat)
-                  :haclo/mark :bar
-                  :haclo/x-after-stat :left
-                  :haclo/x2-after-stat :right
-                  :haclo/y-after-stat :count
-                  :haclo/x-title :haclo/x
-                  :haclo/x-bin {:binned true}}
+           :encoding :=encoding}
+          (merge {:=stat (->WrappedValue histogram-stat)
+                  :=mark :bar
+                  :=x-after-stat :left
+                  :=x2-after-stat :right
+                  :=y-after-stat :count
+                  :=x-title :=x
+                  :=x-bin {:binned true}}
                  submap))))
 
 (defn facet [context facet-config]
