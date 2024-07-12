@@ -1,10 +1,12 @@
 ;; # Walkthrough
 
-;; In this walkthrough, we will demonstrate its main functionality.
+;; In this walkthrough, we will demonstrate the main functionality of Hanamicloth.
+
+;; Soon, we will provide more in-depth explanations in additional chapters.
 
 ;; ## Setup
 
-;; Here we require:
+;; For this tutorial, we require:
 
 ;; * Hanamicloth's main API namepace
 
