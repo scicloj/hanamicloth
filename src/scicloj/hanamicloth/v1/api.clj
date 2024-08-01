@@ -8,29 +8,8 @@
             [fastmath.stats]
             [fastmath.ml.regression :as regression]
             [scicloj.hanamicloth.v1.dag :as dag]
-            [clojure.string :as str]))
-
-
-;; We wrap certain values with this datatype
-;; in order to prevent Hanami from trying to walk throug them.
-(deftype WrappedValue [value]
-  clojure.lang.IDeref
-  (deref [this] value)
-
-  Object
-  (hashCode [this]
-    (hash value))
-  (equals [this other]
-    (and (-> other class (= WrappedValue))
-         (= value @other))))
-
-
-(defn dataset->csv [dataset]
-  (when dataset
-    (let [w (java.io.StringWriter.)]
-      (-> dataset
-          (tc/write! w {:file-type :csv}))
-      (.toString w))))
+            [clojure.string :as str]
+            [scicloj.hanamicloth.v1.util :as util]))
 
 (dag/defn-with-deps submap->dataset [=base-dataset =layer-dataset =layer?]
   (if =layer?
@@ -46,12 +25,12 @@
        (throw (ex-info "missing :=dataset"
                        submap)))
      (if =stat
-       (->WrappedValue
+       (util/->WrappedValue
         (@=stat submap))
        =dataset))))
 
 (dag/defn-with-deps submap->csv [=dataset-after-stat]
-  (dataset->csv @=dataset-after-stat))
+  (util/dataset->csv @=dataset-after-stat))
 
 (defn submap->field-type [colname-key]
   (let [dataset-key :=dataset]
@@ -224,7 +203,7 @@
 
 
 (defn dataset->defaults [dataset]
-  (let [w (->WrappedValue dataset)]
+  (let [w (util/->WrappedValue dataset)]
     {:=base-dataset w
      :=layer-dataset w}))
 
@@ -349,7 +328,7 @@
    (layer context
           {:mark mark-base
            :encoding :=encoding}
-          (merge {:=stat (->WrappedValue smooth-stat)
+          (merge {:=stat (util/->WrappedValue smooth-stat)
                   :=mark :line}
                  submap))))
 
@@ -359,7 +338,7 @@
   (-> template
       (update-in [::ht/defaults :=layer-dataset]
                  (fn [wrapped-data]
-                   (->WrappedValue
+                   (util/->WrappedValue
                     (apply dataset-fn
                            @wrapped-data
                            submap))))))
@@ -388,7 +367,7 @@
    (layer context
           {:mark mark-base
            :encoding :=encoding}
-          (merge {:=stat (->WrappedValue histogram-stat)
+          (merge {:=stat (util/->WrappedValue histogram-stat)
                   :=mark :bar
                   :=x-after-stat :left
                   :=x2-after-stat :right
