@@ -47,7 +47,7 @@ mentored by jsa-aerial (Hanami author) and Kira McLean.
 
 **Artifact:** [![(Clojars coordinates)](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
 
-**Status:** initial draft
+**Status:** The existing API will soon move to beta stage, but still lacks some important features.
 
 -------------------
 
