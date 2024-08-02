@@ -33,3 +33,6 @@
       (-> dataset
           (tc/write! w {:file-type :csv}))
       (.toString w))))
+
+(def conjv
+  (comp vec conj))

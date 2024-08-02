@@ -254,7 +254,7 @@
                  (fn [defaults]
                    (-> defaults
                        (update :=layer
-                               (comp vec conj)
+                               util/conjv
                                (assoc template
                                       :data (if (and (= @(:=layer-dataset defaults)
                                                         @(:=base-dataset defaults))
