@@ -519,4 +519,4 @@
 
 ;; ### Scales
 
-;; ### Generating [Apache Echarts](https://echarts.apache.org/en/index.html) plots
+;; ### Generating [Plotly](https://plotly.com/javascript/) plots
