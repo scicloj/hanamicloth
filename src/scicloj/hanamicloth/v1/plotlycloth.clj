@@ -100,6 +100,14 @@
           (when (= =size-type :category)
             [=size])))
 
+(defn mark->mode [mark]
+  (case mark
+    :point :markers
+    :line :lines))
+
+(dag/defn-with-deps submap->mode [=mark]
+  (mark->mode =mark))
+
 (def standard-defaults
   {:=stat hc/RMV
    :=dataset hc/RMV
@@ -116,7 +124,8 @@
    :=data-y-after-stat (submap->data :=y-after-stat)
    :=background "#ebebeb"
    :=type :scatter
-   :=mode :markers
+   :=mark :point
+   :=mode submap->mode
    :=name hc/RMV
    :=traces []
    :=group submap->group
@@ -131,7 +140,6 @@
 
 
 
-
 (def view-base
   {:data :=traces
    :layout {:width :=width
@@ -140,14 +148,12 @@
             :yaxis {:gridcolor :=yaxis-gridcolor}
             :title :=title}})
 
-
 (def layer-base
   {:x :=data-x-after-stat
    :y :=data-y-after-stat
    :mode :=mode
    :name :=name
    :type :=type})
-
 
 (defn plotly-xform [template]
   (dag/with-clean-cache
@@ -206,20 +212,30 @@
                                                      defaults
                                                      submap))))))))))
 
+(defn mark-based-layer [mark]
+  (fn f
+    ([context]
+     (f context {}))
+    ([context submap]
+     (layer context
+            layer-base
+            (merge {:=mark mark}
+                   submap)))))
+
+(def layer-point (mark-based-layer :point))
+(def layer-line (mark-based-layer :line))
 
 
-(-> {:ABCD (range 1 11)
-     :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]}
-    tc/dataset
-    (layer (assoc layer-base
-                  :mode :markers)
-           {:=title "IJKL MNOP"
-            :=x :ABCD
-            :=y :EFGH
-            :=name "QRST"})
-    (layer (assoc layer-base
-                  :mode :lines)
-           {:=title "IJKL MNOP"
-            :=x :ABCD
-            :=y :ABCD
-            :=name "QRST"}))
+(delay
+  (-> {:ABCD (range 1 11)
+       :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]}
+      tc/dataset
+      (layer-point {:=title "IJKL MNOP"
+                    :=x :ABCD
+                    :=y :EFGH
+                    :=name "QRST"})
+      (layer-line
+       {:=title "IJKL MNOP"
+        :=x :ABCD
+        :=y :ABCD
+        :=name "QRST"})))
