@@ -61,6 +61,11 @@ April 2024 talk at London Clojurians:
 
 (md "
 
+## Near term plan
+- Add support for generating Plotly.js plots.
+- Make the Plotly.js API more comprehensive than the Vega-Lite one (e.g., support ggplot-like coordinates and facets).
+- Stabilize both as Beta stage.
+
 ## Goals
 
 - Have a functional grammar for common plotting tasks (but not all tasks).
