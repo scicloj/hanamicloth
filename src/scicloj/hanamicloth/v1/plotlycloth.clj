@@ -110,18 +110,30 @@
   (mark->mode =mark))
 
 
-(def palette
+(def colors-palette
   ;; In R:
   ;; library(RColorBrewer)
   ;; brewer.pal(n = 8, name = "Dark2")
   ["#1B9E77" "#D95F02" "#7570B3" "#E7298A" "#66A61E" "#E6AB02" "#A6761D"
    "#666666"])
 
-(dag/defn-with-deps submap->data-color [=color-type =data-color-category]
-  (when =data-color-category
+(dag/defn-with-deps submap->marker-color [=color-type =data-color]
+  (when =data-color
     (case =color-type
-      :nominal (mapv #(cache/cached-assignment % palette ::color)
-                     =data-color-category))))
+      :nominal (mapv #(cache/cached-assignment % colors-palette ::color)
+                     =data-color))))
+
+(def sizes-palette
+  (->> 1
+       (iterate (partial * 2))
+       (take 8)
+       vec))
+
+(dag/defn-with-deps submap->marker-size [=size-type =data-size]
+  (when =data-size
+    (case =size-type
+      :nominal (mapv #(cache/cached-assignment % sizes-palette ::size)
+                     =data-size))))
 
 (def standard-defaults
   {:=stat hc/RMV
@@ -132,15 +144,19 @@
    :=y :y
    :=y-after-stat :=y
    :=color hc/RMV
+   :=size hc/RMV
    :=x-type (submap->field-type :=x)
    :=x-type-after-stat (submap->field-type-after-stat :=x-after-stat)
    :=y-type (submap->field-type :=y)
    :=y-type-after-stat (submap->field-type-after-stat :=y-after-stat)
    :=color-type (submap->field-type :=color)
+   :=size-type (submap->field-type :=size)
    :=data-x-after-stat (submap->data :=x-after-stat)
    :=data-y-after-stat (submap->data :=y-after-stat)
-   :=data-color-category (submap->data :=color)
-   :=data-color submap->data-color
+   :=data-color (submap->data :=color)
+   :=data-size (submap->data :=size)
+   :=marker-color submap->marker-color
+   :=marker-size submap->marker-size
    :=background "#ebebeb"
    :=type :scatter
    :=mark :point
@@ -170,7 +186,8 @@
 (def layer-base
   {:x :=data-x-after-stat
    :y :=data-y-after-stat
-   :marker {:color :=data-color}
+   :marker {:color :=marker-color
+            :size :=marker-size}
    :mode :=mode
    :name :=name
    :type :=type})
@@ -256,6 +273,7 @@
                   :=x :ABCD
                   :=y :EFGH
                   :=color :IJKL
+                  :=size :IJKL
                   :=name "QRST1"})
     ;; (layer-line
     ;;  {:=title "IJKL MNOP"
