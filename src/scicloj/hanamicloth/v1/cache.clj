@@ -13,3 +13,23 @@
      (let [result# ~form]
        (reset! *cache {})
        result#)))
+
+(defn cached-assignment [k values assignment-name]
+  (let [assignments (get-in @*cache
+                            [::assignments assignment-name])]
+    (or (when assignments
+          (assignments k))
+        (let [v (-> assignments
+                    count
+                    (rem (count values))
+                    values)]
+          (swap! *cache
+                 assoc-in
+                 [::assignments assignment-name k]
+                 v)
+          v))))
+
+(comment
+  (with-clean-cache
+    [(cached-assignment :A [1 2 3] :dummy)
+     (cached-assignment :B [1 2 3] :dummy)]))
