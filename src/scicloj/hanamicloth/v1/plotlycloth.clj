@@ -124,16 +124,77 @@
                      =data-color))))
 
 (def sizes-palette
-  (->> 1
-       (iterate (partial * 2))
+  (->> 5
+       (iterate (partial * 1.5))
        (take 8)
-       vec))
+       (mapv int)))
 
 (dag/defn-with-deps submap->marker-size [=size-type =data-size]
   (when =data-size
     (case =size-type
       :nominal (mapv #(cache/cached-assignment % sizes-palette ::size)
                      =data-size))))
+
+
+(def view-base
+  {:data :=traces
+   :layout {:width :=width
+            :plot_bgcolor :=plot-bgcolor
+            :xaxis {:gridcolor :=xaxis-gridcolor}
+            :yaxis {:gridcolor :=yaxis-gridcolor}
+            :title :=title}})
+
+(def layer-base
+  {:dataset :=dataset-after-stat
+   :x :=x
+   :y :=y
+   :color :=color
+   :color-type :=color-type
+   :size :=size
+   :size-type :=size-type
+   :group :=group
+   :trace-base {:mode :=mode
+                :type :=type}
+   :name :=name})
+
+
+(dag/defn-with-deps submap->traces [=layers]
+  (->> =layers
+       (mapcat
+        (fn [{:as layer
+              :keys [dataset
+                     x y
+                     color color-type
+                     size size-type
+                     group
+                     trace-base]}]
+          (let [group-kvs (if group
+                            (-> @dataset
+                                (tc/group-by group {:result-type :as-map}))
+                            {nil @dataset})]
+            (-> group-kvs
+                (->> (map
+                      (fn [[group-key group-dataset]]
+                        (let [marker (merge
+                                      (when (= color-type :nominal)
+                                        {:color (cache/cached-assignment (color group-key)
+                                                                         colors-palette
+                                                                         ::color)})
+                                      (when (= size-type :nominal)
+                                        {:size (cache/cached-assignment (size group-key)
+                                                                        sizes-palette
+                                                                        ::size)}))]
+                          (merge trace-base
+                                 {:name (->> [(:name layer)
+                                              (some->> group-key
+                                                       vals
+                                                       (str/join " "))]
+                                             (remove nil?)
+                                             (str/join " "))
+                                  :x (vec (group-dataset x))
+                                  :y (vec (group-dataset y))}
+                                 (when marker {:marker marker}))))))))))))
+
 
 (def standard-defaults
   {:=stat hc/RMV
@@ -162,7 +223,8 @@
    :=mark :point
    :=mode submap->mode
    :=name hc/RMV
-   :=traces []
+   :=layers []
+   :=traces submap->traces
    :=group submap->group
    :=predictors [:=x]
    :=histogram-nbins 10
@@ -175,22 +237,6 @@
 
 
 
-(def view-base
-  {:data :=traces
-   :layout {:width :=width
-            :plot_bgcolor :=plot-bgcolor
-            :xaxis {:gridcolor :=xaxis-gridcolor}
-            :yaxis {:gridcolor :=yaxis-gridcolor}
-            :title :=title}})
-
-(def layer-base
-  {:x :=data-x-after-stat
-   :y :=data-y-after-stat
-   :marker {:color :=marker-color
-            :size :=marker-size}
-   :mode :=mode
-   :name :=name
-   :type :=type})
 
 (defn plotly-xform [template]
   (cache/with-clean-cache
@@ -241,7 +287,7 @@
          (update ::ht/defaults
                  (fn [defaults]
                    (-> defaults
-                       (update :=traces
+                       (update :=layers
                                util/conjv
                                (assoc template
                                       ::ht/defaults (merge
@@ -266,18 +312,18 @@
 
 (-> {:ABCD (range 1 11)
      :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]
-     :IJKL (concat (repeat 5 :A)
-                   (repeat 5 :B))}
+     :IJKL [:A :A :A :A :A :B :B :B :B :B]
+     :MNOP [:C :D :C :D :C :D :C :D :C :D]}
     tc/dataset
     (layer-point {:=title "IJKLMNOP"
                   :=x :ABCD
                   :=y :EFGH
                   :=color :IJKL
-                  :=size :IJKL
+                  :=size :MNOP
                   :=name "QRST1"})
-    ;; (layer-line
-    ;;  {:=title "IJKL MNOP"
-    ;;   :=x :ABCD
-    ;;   :=y :ABCD
-    ;;   :=name "QRST2"})
+    (layer-line
+     {:=title "IJKL MNOP"
+      :=x :ABCD
+      :=y :ABCD
+      :=name "QRST2"})
     plot)
