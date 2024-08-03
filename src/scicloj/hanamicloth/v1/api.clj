@@ -9,7 +9,8 @@
             [fastmath.ml.regression :as regression]
             [scicloj.hanamicloth.v1.dag :as dag]
             [clojure.string :as str]
-            [scicloj.hanamicloth.v1.util :as util]))
+            [scicloj.hanamicloth.v1.util :as util]
+            [scicloj.hanamicloth.v1.cache :as cache]))
 
 (dag/defn-with-deps submap->dataset [=base-dataset =layer-dataset =layer?]
   (if =layer?
@@ -208,7 +209,7 @@
      :=layer-dataset w}))
 
 (defn vega-lite-xform [template]
-  (dag/with-clean-cache
+  (cache/with-clean-cache
     (-> template
         hc/xform
         kind/vega-lite

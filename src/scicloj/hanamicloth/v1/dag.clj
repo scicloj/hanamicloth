@@ -1,18 +1,7 @@
 (ns scicloj.hanamicloth.v1.dag
   (:require [aerial.hanami.common :as hc]
-            [aerial.hanami.templates :as ht]))
-
-(def *cache (atom {}))
-
-(defmacro with-clean-cache
-  "Evaluate a form,
-  resetting the cache before and after the eval."
-  [form]
-  `(do
-     (reset! *cache {})
-     (let [result# ~form]
-       (reset! *cache {})
-       result#)))
+            [aerial.hanami.templates :as ht]
+            [scicloj.hanamicloth.v1.cache :as cache]))
 
 (defn xform-k
   "Apply Hanami xform
@@ -43,7 +32,7 @@
   (let [verbose-inc (fn [{:keys [A]}]
                        (prn :computing)
                        (inc A))]
-    (with-clean-cache
+    (cache/with-clean-cache
       (dotimes [i 2]
         (prn
          (cached-xform-k :B
@@ -58,10 +47,10 @@
   "
   [k submap]
   (let [id [k submap]]
-    (if-let [result (@*cache id)]
+    (if-let [result (@cache/*cache id)]
       result
       (let [computed-result (xform-k k submap)]
-        (swap! *cache
+        (swap! cache/*cache
                assoc id computed-result)
         computed-result))))
 
@@ -73,7 +62,7 @@
   For example:
 
   ```clj
-  (with-clean-cache
+  (cache/with-clean-cache
     (-> {:b :B
          :c :C
          ::ht/defaults {:B (fn-with-deps-keys
@@ -86,7 +75,7 @@
 
   => {:b 10 :c 11}
 
-  (with-clean-cache
+  (cache/with-clean-cache
     (-> {:b :B
          :c :C
          ::ht/defaults {:B (fn-with-deps-keys
@@ -122,7 +111,7 @@
    [:A :B]
    (clojure.core/fn [{:keys [A B]}] (+ A B)))
 
-  (with-clean-cache
+  (cache/with-clean-cache
     (-> {:b :B
          :c :C
          ::ht/defaults {:B (fn-with-deps [A] (inc A))
@@ -154,7 +143,7 @@
   (defn-with-deps B->C [B] (inc B))
   (defn-with-deps A->B [A] (inc A))
 
-  (with-clean-cache
+  (cache/with-clean-cache
     (-> {:b :B
          :c :C
          ::ht/defaults {:B A->B
