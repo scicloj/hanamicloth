@@ -9,7 +9,8 @@
             [fastmath.ml.regression :as regression]
             [scicloj.hanamicloth.v1.dag :as dag]
             [clojure.string :as str]
-            [scicloj.hanamicloth.v1.util :as util]))
+            [scicloj.hanamicloth.v1.util :as util]
+            [scicloj.hanamicloth.v1.cache :as cache]))
 
 (def submap->dataset-after-stat
   (dag/fn-with-deps-keys
@@ -36,7 +37,7 @@
                           (get colname))]
            (cond (tcc/typeof? column :numerical) :value
                  (tcc/typeof? column :datetime) :time
-                 :else :category))
+                 :else :nominal))
          hc/RMV)))))
 
 (defn submap->field-type-after-stat [colname-key]
@@ -64,9 +65,9 @@
                                     colname-key-before-stat)]
            (or (when (= colname colname-before-stat)
                  (submap colname-key-type-before-stat))
-               (cond (tcc/typeof? column :numerical) :value
-                     (tcc/typeof? column :datetime) :time
-                     :else :category)))
+               (cond (tcc/typeof? column :numerical) :quantitative
+                     (tcc/typeof? column :datetime) :temporal
+                     :else :nominal)))
          hc/RMV)))))
 
 
@@ -95,9 +96,9 @@
 
 
 (dag/defn-with-deps submap->group [=color =color-type =size =size-type]
-  (concat (when (= =color-type :category)
+  (concat (when (= =color-type :nominal)
             [=color])
-          (when (= =size-type :category)
+          (when (= =size-type :nominal)
             [=size])))
 
 (defn mark->mode [mark]
@@ -108,6 +109,20 @@
 (dag/defn-with-deps submap->mode [=mark]
   (mark->mode =mark))
 
+
+(def palette
+  ;; In R:
+  ;; library(RColorBrewer)
+  ;; brewer.pal(n = 8, name = "Dark2")
+  ["#1B9E77" "#D95F02" "#7570B3" "#E7298A" "#66A61E" "#E6AB02" "#A6761D"
+   "#666666"])
+
+(dag/defn-with-deps submap->data-color [=color-type =data-color-category]
+  (when =data-color-category
+    (case =color-type
+      :nominal (mapv #(cache/cached-assignment % palette ::color)
+                     =data-color-category))))
+
 (def standard-defaults
   {:=stat hc/RMV
    :=dataset hc/RMV
@@ -116,12 +131,16 @@
    :=x-after-stat :=x
    :=y :y
    :=y-after-stat :=y
+   :=color hc/RMV
    :=x-type (submap->field-type :=x)
    :=x-type-after-stat (submap->field-type-after-stat :=x-after-stat)
    :=y-type (submap->field-type :=y)
    :=y-type-after-stat (submap->field-type-after-stat :=y-after-stat)
+   :=color-type (submap->field-type :=color)
    :=data-x-after-stat (submap->data :=x-after-stat)
    :=data-y-after-stat (submap->data :=y-after-stat)
+   :=data-color-category (submap->data :=color)
+   :=data-color submap->data-color
    :=background "#ebebeb"
    :=type :scatter
    :=mark :point
@@ -151,12 +170,13 @@
 (def layer-base
   {:x :=data-x-after-stat
    :y :=data-y-after-stat
+   :marker {:color :=data-color}
    :mode :=mode
    :name :=name
    :type :=type})
 
 (defn plotly-xform [template]
-  (dag/with-clean-cache
+  (cache/with-clean-cache
     (-> template
         hc/xform
         kind/plotly
@@ -226,16 +246,20 @@
 (def layer-line (mark-based-layer :line))
 
 
-(delay
-  (-> {:ABCD (range 1 11)
-       :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]}
-      tc/dataset
-      (layer-point {:=title "IJKL MNOP"
-                    :=x :ABCD
-                    :=y :EFGH
-                    :=name "QRST"})
-      (layer-line
-       {:=title "IJKL MNOP"
-        :=x :ABCD
-        :=y :ABCD
-        :=name "QRST"})))
+
+(-> {:ABCD (range 1 11)
+     :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]
+     :IJKL (concat (repeat 5 :A)
+                   (repeat 5 :B))}
+    tc/dataset
+    (layer-point {:=title "IJKLMNOP"
+                  :=x :ABCD
+                  :=y :EFGH
+                  :=color :IJKL
+                  :=name "QRST1"})
+    ;; (layer-line
+    ;;  {:=title "IJKL MNOP"
+    ;;   :=x :ABCD
+    ;;   :=y :ABCD
+    ;;   :=name "QRST2"})
+    plot)
