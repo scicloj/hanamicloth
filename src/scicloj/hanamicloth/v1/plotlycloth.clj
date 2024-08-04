@@ -148,12 +148,12 @@
 (def layer-base
   {:dataset :=dataset-after-stat
    :mark :=mark
-   :x :=x
-   :y :=y
-   :x0 :=x0
-   :y0 :=y0
-   :x1 :=x1
-   :y1 :=y1
+   :x :=x-after-stat
+   :y :=y-after-stat
+   :x0 :=x0-after-stat
+   :y0 :=y0-after-stat
+   :x1 :=x1-after-stat
+   :y1 :=y1-after-stat
    :color :=color
    :color-type :=color-type
    :size :=size
@@ -357,6 +357,64 @@
 (def layer-boxplot (mark-based-layer :box))
 (def layer-segment (mark-based-layer :segment))
 
+
+(dag/defn-with-deps smooth-stat
+  [=dataset =y =predictors =group]
+  (when-not (@=dataset =y)
+    (throw (ex-info "missing =y column"
+                    {:missing-column-name =y})))
+  (->> =predictors
+       (run! (fn [p]
+               (when-not (@=dataset p)
+                 (throw (ex-info "missing predictor column"
+                                 {:predictors =predictors
+                                  :missing-column-name p}))))))
+  (->> =group
+       (run! (fn [g]
+               (when-not (@=dataset g)
+                 (throw (ex-info "missing =group column"
+                                 {:group =group
+                                  :missing-column-name g}))))))
+  (let [predictions-fn (fn [ds]
+                         (let [nonmissing-y (-> ds
+                                                (tc/drop-missing [=y]))
+                               model (regression/glm (-> nonmissing-y
+                                                         (get =y))
+                                                     (-> nonmissing-y
+                                                         (tc/select-columns =predictors)
+                                                         tc/rows))]
+                           (-> ds
+                               (tc/select-columns =predictors)
+                               tc/rows
+                               (->> (map (partial regression/predict model))))))]
+    (if =group
+      (-> @=dataset
+          (tc/group-by =group)
+          (tc/add-or-replace-column =y predictions-fn)
+          tc/ungroup)
+      (-> @=dataset
+          (tc/add-or-replace-column =y predictions-fn)))))
+
+
+(defn mark-based-layer [mark]
+  (fn f
+    ([context]
+     (f context {}))
+    ([context submap]
+     (layer context
+            layer-base
+            (merge {:=mark mark}
+                   submap)))))
+
+(defn layer-smooth
+  ([context]
+   (layer-smooth context {}))
+  ([context submap]
+   (layer context
+          layer-base
+          (merge {:=stat (util/->WrappedValue smooth-stat)
+                  :=mark :line}
+                 submap))))
 
 
 (defn update-data [template dataset-fn & submap]
