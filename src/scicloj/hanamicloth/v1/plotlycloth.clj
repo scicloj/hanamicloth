@@ -429,3 +429,36 @@
                     (apply dataset-fn
                            @wrapped-data
                            submap))))))
+
+
+
+(dag/defn-with-deps histogram-stat
+  [=dataset =x =histogram-nbins]
+  (when-not (@=dataset =x)
+    (throw (ex-info "missing =x column"
+                    {:missing-column-name =x})))
+  (let [{:keys [bins max step]} (-> @=dataset
+                                    (get =x)
+                                    (fastmath.stats/histogram
+                                     =histogram-nbins))
+        left (map first bins)]
+    (-> {:left left
+         :right (concat (rest left)
+                        [max])
+         :count (map second bins)}
+        tc/dataset)))
+
+(defn layer-histogram
+  ([context]
+   (layer-histogram context {}))
+  ([context submap]
+   (layer context
+          layer-base
+          (merge {:=stat (util/->WrappedValue histogram-stat)
+                  :=mark :bar
+                  :=x0-after-stat :left
+                  :=x1-after-stat :right
+                  :=y-after-stat :count
+                  :=x-title :=x
+                  :=x-bin {:binned true}}
+                 submap))))
