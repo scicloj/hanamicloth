@@ -139,6 +139,7 @@
 (def view-base
   {:data :=traces
    :layout {:width :=width
+            :height :=height
             :plot_bgcolor :=plot-bgcolor
             :xaxis {:gridcolor :=xaxis-gridcolor}
             :yaxis {:gridcolor :=yaxis-gridcolor}
@@ -146,8 +147,13 @@
 
 (def layer-base
   {:dataset :=dataset-after-stat
+   :mark :=mark
    :x :=x
    :y :=y
+   :x0 :=x0
+   :y0 :=y0
+   :x1 :=x1
+   :y1 :=y1
    :color :=color
    :color-type :=color-type
    :size :=size
@@ -163,56 +169,73 @@
 
 
 (dag/defn-with-deps submap->traces [=layers]
-  (->> =layers
-       (mapcat
-        (fn [{:as layer
-              :keys [dataset
-                     x y
-                     color color-type
-                     size size-type
-                     marker-override
-                     group
-                     trace-base]}]
-          (let [group-kvs (if group
-                            (-> @dataset
-                                (tc/group-by group {:result-type :as-map}))
-                            {nil @dataset})]
-            (-> group-kvs
-                (->> (map
-                      (fn [[group-key group-dataset]]
-                        (let [marker (merge
-                                      (when color
-                                        (case color-type
-                                          :nominal {:color (cache/cached-assignment (color group-key)
-                                                                                    colors-palette
-                                                                                    ::color)}
-                                          :quantitative {:color (-> group-dataset color vec)}))
-                                      (when size
-                                        (case size-type
-                                          :nominal {:size (cache/cached-assignment (size group-key)
-                                                                                   sizes-palette
-                                                                                   ::size)}
-                                          :quantitative {:size (-> group-dataset size vec)}))
-                                      marker-override)]
-                          (merge trace-base
-                                 {:name (->> [(:name layer)
-                                              (some->> group-key
-                                                       vals
-                                                       (str/join " "))]
-                                             (remove nil?)
-                                             (str/join " "))
-                                  :x (-> group-dataset x vec)
-                                  :y (-> group-dataset y vec)}
-                                 (when marker
-                                   (let [marker-key (case (:mode trace-base)
-                                                      :markers :marker
-                                                      :lines :line
-                                                      nil (case (:type trace-base)
-                                                            :box :marker
-                                                            :bar :marker
-                                                            :line :line))]
-                                     {marker-key marker})))))))))))
-       vec))
+  (->>
+   =layers
+   (mapcat
+    (fn [{:as layer
+          :keys [dataset
+                 mark
+                 x y
+                 x0 y0 x1 y1
+                 color color-type
+                 size size-type
+                 marker-override
+                 group
+                 trace-base]}]
+      (let [group-kvs (if group
+                        (-> @dataset
+                            (tc/group-by group {:result-type :as-map}))
+                        {nil @dataset})]
+        (-> group-kvs
+            (->> (map
+                  (fn [[group-key group-dataset]]
+                    (let [marker (merge
+                                  (when color
+                                    (case color-type
+                                      :nominal {:color (cache/cached-assignment (color group-key)
+                                                                                colors-palette
+                                                                                ::color)}
+                                      :quantitative {:color (-> group-dataset color vec)}))
+                                  (when size
+                                    (case size-type
+                                      :nominal {:size (cache/cached-assignment (size group-key)
+                                                                               sizes-palette
+                                                                               ::size)}
+                                      :quantitative {:size (-> group-dataset size vec)}))
+                                  marker-override)]
+                      (merge trace-base
+                             {:name (->> [(:name layer)
+                                          (some->> group-key
+                                                   vals
+                                                   (str/join " "))]
+                                         (remove nil?)
+                                         (str/join " "))}
+                             (if (= mark :segment)
+                               {:x (vec
+                                    (interleave (group-dataset x0)
+                                                (group-dataset x1)
+                                                (repeat nil)))
+                                :y (vec
+                                    (interleave (group-dataset y0)
+                                                (group-dataset y1)
+                                                (repeat nil)))}
+                               ;; else
+                               {:x (-> x group-dataset vec)
+                                :y (-> y group-dataset vec)})
+                             (when marker
+                               (let [marker-key (case (:mode trace-base)
+                                                  :markers :marker
+                                                  :lines :line
+                                                  nil (case (:type trace-base)
+                                                        :box :marker
+                                                        :bar :marker
+                                                        :line :line))]
+                                 {marker-key marker})))))))))))
+   vec))
+
+
+
+
 
 (def standard-defaults
   {:=stat hc/RMV
@@ -222,6 +245,14 @@
    :=x-after-stat :=x
    :=y :y
    :=y-after-stat :=y
+   :=x0 hc/RMV
+   :=x0-after-stat :=x0
+   :=y0 hc/RMV
+   :=y0-after-stat :=y0
+   :=x1 hc/RMV
+   :=x1-after-stat :=x1
+   :=y1 hc/RMV
+   :=y1-after-stat :=y1
    :=color hc/RMV
    :=size hc/RMV
    :=x-type (submap->field-type :=x)
@@ -234,20 +265,18 @@
    :=mark-size hc/RMV
    :=mark-width hc/RMV
    :=mark-opacity hc/RMV
-   :=data-x-after-stat (submap->data :=x-after-stat)
-   :=data-y-after-stat (submap->data :=y-after-stat)
    :=background "#ebebeb"
-   :=type :scatter
    :=mark :point
    :=mode submap->mode
+   :=type submap->type
    :=name hc/RMV
    :=layers []
    :=traces submap->traces
    :=group submap->group
    :=predictors [:=x]
    :=histogram-nbins 10
-   :=height 300
-   :=width 400
+   :=height hc/RMV
+   :=width hc/RMV
    :=title hc/RMV
    :=plot-bgcolor "rgb(229,229,229)"
    :=xaxis-gridcolor "rgb(255,255,255)"
