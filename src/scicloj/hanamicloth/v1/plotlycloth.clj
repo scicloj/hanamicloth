@@ -140,7 +140,7 @@
   {:data :=traces
    :layout {:width :=width
             :height :=height
-            :plot_bgcolor :=plot-bgcolor
+            :plot_bgcolor :=background
             :xaxis {:gridcolor :=xaxis-gridcolor}
             :yaxis {:gridcolor :=yaxis-gridcolor}
             :title :=title}})
@@ -265,7 +265,6 @@
    :=mark-size hc/RMV
    :=mark-width hc/RMV
    :=mark-opacity hc/RMV
-   :=background "#ebebeb"
    :=mark :point
    :=mode submap->mode
    :=type submap->type
@@ -278,7 +277,7 @@
    :=height hc/RMV
    :=width hc/RMV
    :=title hc/RMV
-   :=plot-bgcolor "rgb(229,229,229)"
+   :=background "rgb(229,229,229)"
    :=xaxis-gridcolor "rgb(255,255,255)"
    :=yaxis-gridcolor "rgb(255,255,255)"})
 
