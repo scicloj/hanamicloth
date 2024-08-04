@@ -145,6 +145,11 @@
             :yaxis {:gridcolor :=yaxis-gridcolor}
             :title :=title}})
 
+(dag/defn-with-deps submap->marker-size-key [=mode =type]
+  (if (or (= =mode :lines)
+          (= =type :line)) :width
+      :size))
+
 (def layer-base
   {:dataset :=dataset-after-stat
    :mark :=mark
@@ -160,8 +165,7 @@
    :size-type :=size-type
    :group :=group
    :marker-override {:color :=mark-color
-                     :size :=mark-size
-                     :width :=mark-width}
+                     :=marker-size-key :=mark-size}
    :trace-base {:mode :=mode
                 :type :=type
                 :opacity :=mark-opacity}
@@ -263,7 +267,7 @@
    :=size-type (submap->field-type :=size)
    :=mark-color hc/RMV
    :=mark-size hc/RMV
-   :=mark-width hc/RMV
+   :=marker-size-key submap->marker-size-key
    :=mark-opacity hc/RMV
    :=mark :point
    :=mode submap->mode
@@ -425,26 +429,3 @@
                     (apply dataset-fn
                            @wrapped-data
                            submap))))))
-
-
-
-(-> {:ABCD (range 1 11)
-     :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]
-     :IJKL [:A :A :A :A :A :B :B :B :B :B]
-     :MNOP [:C :D :C :D :C :D :C :D :C :D]}
-    tc/dataset
-    (base {:=title "IJKLMNOP"})
-    (layer-point {:=x :ABCD
-                  :=y :EFGH
-                  :=color :IJKL
-                  :=size :MNOP
-                  :=name "QRST1"})
-    (layer-line
-     {:=title "IJKL MNOP"
-      :=x :ABCD
-      :=y :ABCD
-      :=name "QRST2"
-      :=mark-color "magenta"
-      :=mark-width 20
-      :=mark-opacity 0.2})
-    plot)
