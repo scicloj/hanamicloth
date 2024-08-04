@@ -35,8 +35,8 @@
                           (get dataset-key)
                           deref
                           (get colname))]
-           (cond (tcc/typeof? column :numerical) :value
-                 (tcc/typeof? column :datetime) :time
+           (cond (tcc/typeof? column :numerical) :quantitative
+                 (tcc/typeof? column :datetime) :temporal
                  :else :nominal))
          hc/RMV)))))
 
@@ -168,14 +168,18 @@
                 (->> (map
                       (fn [[group-key group-dataset]]
                         (let [marker (merge
-                                      (when (= color-type :nominal)
-                                        {:color (cache/cached-assignment (color group-key)
-                                                                         colors-palette
-                                                                         ::color)})
-                                      (when (= size-type :nominal)
-                                        {:size (cache/cached-assignment (size group-key)
-                                                                        sizes-palette
-                                                                        ::size)})
+                                      (when color
+                                        (case color-type
+                                          :nominal {:color (cache/cached-assignment (color group-key)
+                                                                                    colors-palette
+                                                                                    ::color)}
+                                          :quantitative {:color (-> group-dataset color vec)}))
+                                      (when size
+                                        (case size-type
+                                          :nominal {:size (cache/cached-assignment (size group-key)
+                                                                                   sizes-palette
+                                                                                   ::size)}
+                                          :quantitative {:size (-> group-dataset size vec)}))
                                       marker-override)]
                           (merge trace-base
                                  {:name (->> [(:name layer)
@@ -184,8 +188,8 @@
                                                        (str/join " "))]
                                              (remove nil?)
                                              (str/join " "))
-                                  :x (vec (group-dataset x))
-                                  :y (vec (group-dataset y))}
+                                  :x (-> group-dataset x vec)
+                                  :y (-> group-dataset y vec)}
                                  (when marker {(case (:mode trace-base)
                                                  :markers :marker
                                                  :lines :line) marker}))))))))))
@@ -303,6 +307,8 @@
 
 (def layer-point (mark-based-layer :point))
 (def layer-line (mark-based-layer :line))
+(def layer-bar (mark-based-layer :bar))
+(def layer-boxplot (mark-based-layer :boxplot))
 
 
 
