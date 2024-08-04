@@ -117,24 +117,11 @@
   ["#1B9E77" "#D95F02" "#7570B3" "#E7298A" "#66A61E" "#E6AB02" "#A6761D"
    "#666666"])
 
-(dag/defn-with-deps submap->marker-color [=color-type =data-color]
-  (when =data-color
-    (case =color-type
-      :nominal (mapv #(cache/cached-assignment % colors-palette ::color)
-                     =data-color))))
-
 (def sizes-palette
   (->> 5
-       (iterate (partial * 1.5))
+       (iterate (partial * 1.4))
        (take 8)
        (mapv int)))
-
-(dag/defn-with-deps submap->marker-size [=size-type =data-size]
-  (when =data-size
-    (case =size-type
-      :nominal (mapv #(cache/cached-assignment % sizes-palette ::size)
-                     =data-size))))
-
 
 (def view-base
   {:data :=traces
@@ -214,10 +201,6 @@
    :=size-type (submap->field-type :=size)
    :=data-x-after-stat (submap->data :=x-after-stat)
    :=data-y-after-stat (submap->data :=y-after-stat)
-   :=data-color (submap->data :=color)
-   :=data-size (submap->data :=size)
-   :=marker-color submap->marker-color
-   :=marker-size submap->marker-size
    :=background "#ebebeb"
    :=type :scatter
    :=mark :point
@@ -315,8 +298,8 @@
      :IJKL [:A :A :A :A :A :B :B :B :B :B]
      :MNOP [:C :D :C :D :C :D :C :D :C :D]}
     tc/dataset
-    (layer-point {:=title "IJKLMNOP"
-                  :=x :ABCD
+    (base {:=title "IJKLMNOP"})
+    (layer-point {:=x :ABCD
                   :=y :EFGH
                   :=color :IJKL
                   :=size :MNOP
