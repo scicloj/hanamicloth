@@ -104,10 +104,23 @@
 (defn mark->mode [mark]
   (case mark
     :point :markers
-    :line :lines))
+    :line :lines
+    :box nil
+    :bar :nil
+    :segment nil))
 
 (dag/defn-with-deps submap->mode [=mark]
   (mark->mode =mark))
+
+(defn mark->type [mark]
+  (case mark
+    :box :box
+    :bar :bar
+    :segment :line
+    :scatter))
+
+(dag/defn-with-deps submap->type [=mark]
+  (mark->type =mark))
 
 
 (def colors-palette
@@ -190,11 +203,16 @@
                                              (str/join " "))
                                   :x (-> group-dataset x vec)
                                   :y (-> group-dataset y vec)}
-                                 (when marker {(case (:mode trace-base)
-                                                 :markers :marker
-                                                 :lines :line) marker}))))))))))
+                                 (when marker
+                                   (let [marker-key (case (:mode trace-base)
+                                                      :markers :marker
+                                                      :lines :line
+                                                      nil (case (:type trace-base)
+                                                            :box :marker
+                                                            :bar :marker
+                                                            :line :line))]
+                                     {marker-key marker})))))))))))
        vec))
-
 
 (def standard-defaults
   {:=stat hc/RMV
@@ -308,9 +326,8 @@
 (def layer-point (mark-based-layer :point))
 (def layer-line (mark-based-layer :line))
 (def layer-bar (mark-based-layer :bar))
-(def layer-boxplot (mark-based-layer :boxplot))
-
-
+(def layer-boxplot (mark-based-layer :box))
+(def layer-segment (mark-based-layer :segment))
 
 (-> {:ABCD (range 1 11)
      :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]
