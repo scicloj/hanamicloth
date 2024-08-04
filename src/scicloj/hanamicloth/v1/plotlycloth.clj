@@ -140,8 +140,12 @@
    :size :=size
    :size-type :=size-type
    :group :=group
+   :marker-override {:color :=mark-color
+                     :size :=mark-size
+                     :width :=mark-width}
    :trace-base {:mode :=mode
-                :type :=type}
+                :type :=type
+                :opacity :=mark-opacity}
    :name :=name})
 
 
@@ -153,6 +157,7 @@
                      x y
                      color color-type
                      size size-type
+                     marker-override
                      group
                      trace-base]}]
           (let [group-kvs (if group
@@ -170,7 +175,8 @@
                                       (when (= size-type :nominal)
                                         {:size (cache/cached-assignment (size group-key)
                                                                         sizes-palette
-                                                                        ::size)}))]
+                                                                        ::size)})
+                                      marker-override)]
                           (merge trace-base
                                  {:name (->> [(:name layer)
                                               (some->> group-key
@@ -180,7 +186,10 @@
                                              (str/join " "))
                                   :x (vec (group-dataset x))
                                   :y (vec (group-dataset y))}
-                                 (when marker {:marker marker}))))))))))))
+                                 (when marker {(case (:mode trace-base)
+                                                 :markers :marker
+                                                 :lines :line) marker}))))))))))
+       vec))
 
 
 (def standard-defaults
@@ -199,6 +208,10 @@
    :=y-type-after-stat (submap->field-type-after-stat :=y-after-stat)
    :=color-type (submap->field-type :=color)
    :=size-type (submap->field-type :=size)
+   :=mark-color hc/RMV
+   :=mark-size hc/RMV
+   :=mark-width hc/RMV
+   :=mark-opacity hc/RMV
    :=data-x-after-stat (submap->data :=x-after-stat)
    :=data-y-after-stat (submap->data :=y-after-stat)
    :=background "#ebebeb"
@@ -308,5 +321,8 @@
      {:=title "IJKL MNOP"
       :=x :ABCD
       :=y :ABCD
-      :=name "QRST2"})
+      :=name "QRST2"
+      :=mark-color "magenta"
+      :=mark-width 20
+      :=mark-opacity 0.2})
     plot)
