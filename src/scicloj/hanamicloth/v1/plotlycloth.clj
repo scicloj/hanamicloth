@@ -358,6 +358,19 @@
 (def layer-boxplot (mark-based-layer :box))
 (def layer-segment (mark-based-layer :segment))
 
+
+
+(defn update-data [template dataset-fn & submap]
+  (-> template
+      (update-in [::ht/defaults :=dataset]
+                 (fn [wrapped-data]
+                   (util/->WrappedValue
+                    (apply dataset-fn
+                           @wrapped-data
+                           submap))))))
+
+
+
 (-> {:ABCD (range 1 11)
      :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]
      :IJKL [:A :A :A :A :A :B :B :B :B :B]
