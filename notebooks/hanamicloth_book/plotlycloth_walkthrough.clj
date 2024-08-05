@@ -159,6 +159,30 @@
 
 ;; ## Multiple layers
 
+;; We can draw more than one layer:
+
+(-> datasets/economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (ploclo/layer-point {:=x :date
+                         :=y :value
+                         :=mark-color "green"
+                         :=mark-size 20
+                         :=mark-opacity 0.5})
+    (ploclo/layer-line {:=x :date
+                        :=y :value
+                        :=mark-color "purple"}))
+
+;; We can also use the `base` function for the common parameters
+;; across layers:
+
+(-> datasets/economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (ploclo/base {:=x :date
+                  :=y :value})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=mark-size 20
+                         :=mark-opacity 0.5})
+    (ploclo/layer-line {:=mark-color "purple"}))
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
