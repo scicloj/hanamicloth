@@ -138,12 +138,7 @@
 
 (def view-base
   {:data :=traces
-   :layout {:width :=width
-            :height :=height
-            :plot_bgcolor :=background
-            :xaxis {:gridcolor :=xaxis-gridcolor}
-            :yaxis {:gridcolor :=yaxis-gridcolor}
-            :title :=title}})
+   :layout :=layout})
 
 (dag/defn-with-deps submap->marker-size-key [=mode =type]
   (if (or (= =mode :lines)
@@ -159,6 +154,8 @@
    :y0 :=y0-after-stat
    :x1 :=x1-after-stat
    :y1 :=y1-after-stat
+   :x-title :=x-title
+   :y-title :=y-title
    :color :=color
    :color-type :=color-type
    :size :=size
@@ -238,6 +235,40 @@
    vec))
 
 
+(dag/defn-with-deps submap->layout
+  [=width =height =background =title
+   =xaxis-gridcolor =yaxis-gridcolor
+   =x-after-stat =y-after-stat
+   =x-title =y-title
+   =layers]
+  (let [final-x-title (or (->> =layers
+                               (map :x-title)
+                               (cons =x-title)
+                               (remove nil?)
+                               last)
+                          (->> =layers
+                               (map :x)
+                               (cons =x-after-stat)
+                               (remove nil?)
+                               last))
+        final-y-title (or (->> =layers
+                               (map :y-title)
+                               (cons =y-title)
+                               (remove nil?)
+                               last)
+                          (->> =layers
+                               (map :y)
+                               (cons =y-after-stat)
+                               (remove nil?)
+                               last))]
+    {:width =width
+     :height =height
+     :plot_bgcolor =background
+     :xaxis {:gridcolor =xaxis-gridcolor
+             :title final-x-title}
+     :yaxis {:gridcolor =yaxis-gridcolor
+             :title final-y-title}
+     :title =title}))
 
 
 
@@ -275,17 +306,18 @@
    :=name hc/RMV
    :=layers []
    :=traces submap->traces
+   :=layout submap->layout
    :=group submap->group
    :=predictors [:=x]
    :=histogram-nbins 10
    :=height hc/RMV
    :=width hc/RMV
+   :=x-title hc/RMV
+   :=y-title hc/RMV
    :=title hc/RMV
    :=background "rgb(229,229,229)"
    :=xaxis-gridcolor "rgb(255,255,255)"
    :=yaxis-gridcolor "rgb(255,255,255)"})
-
-
 
 
 (defn plotly-xform [template]
@@ -460,5 +492,6 @@
                   :=x1-after-stat :right
                   :=y-after-stat :count
                   :=x-title :=x
+                  :=y-title "count"
                   :=x-bin {:binned true}}
                  submap))))
