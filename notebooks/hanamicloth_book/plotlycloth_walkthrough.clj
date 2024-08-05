@@ -94,72 +94,84 @@
 ;; It is annotated as `kind/plotly`, so that visual tools know how to
 ;; render it.
 
-(-> datasets/iris
+(-> example1
+    ploclo/plot
+    meta)
+
+;; ## Field type inference
+
+;; Plotlycloth infers the type of relevant fields from the data.
+
+;; The example above was colored as it were since `:species`
+;; column was nominal.
+
+;; In the following example, the coloring is by a quantitative
+;; column, so a color gradient is used:
+
+(-> datasets/mtcars
     (ploclo/layer-point
-     {:=x :sepal-width
-      :=y :sepal-length
-      :=group [:species]
-      :=mark-size 20
-      :=mark-opacity 0.6}))
+     {:=x :mpg
+      :=y :disp
+      :=color :cyl
+      :=mark-size 20}))
+
+;; We can override the inferred types and thus affect the generated plot:
 
 (-> datasets/mtcars
-(ploclo/layer-point
- {:=x :mpg
-  :=y :disp
-  :=color :cyl
-  :=mark-size 20}))
+    (ploclo/layer-point
+     {:=x :mpg
+      :=y :disp
+      :=color :cyl
+      :=color-type :nominal
+      :=mark-size 20}))
+
+;; ## More examples
+
+
 
 (-> datasets/mtcars
-(ploclo/layer-point
- {:=x :mpg
-  :=y :disp
-  :=color :cyl
-  :=color-type :nominal
-  :=mark-size 20}))
-
-(-> datasets/mtcars
-(ploclo/layer-boxplot
- {:=x :cyl
-  :=y :disp}))
+    (ploclo/layer-boxplot
+     {:=x :cyl
+      :=y :disp}))
 
 (-> datasets/iris
-(ploclo/layer-segment
- {:=x0 :sepal-width
-  :=y0 :sepal-length
-  :=x1 :petal-width
-  :=y1 :petal-length
-  :=mark-opacity 0.4
-  :=mark-size 3
-  :=color :species}))
+    (ploclo/layer-segment
+     {:=x0 :sepal-width
+      :=y0 :sepal-length
+      :=x1 :petal-width
+      :=y1 :petal-length
+      :=mark-opacity 0.4
+      :=mark-size 3
+      :=color :species}))
 
 (-> datasets/economics-long
-(tc/select-rows #(-> % :variable (= "unemploy")))
-(ploclo/layer-line
- {:=x :date
-  :=y :value
-  :=mark-color "purple"}))
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (ploclo/layer-line
+     {:=x :date
+      :=y :value
+      :=mark-color "purple"}))
 
 (-> datasets/economics-long
-(tc/select-rows #(-> % :variable (= "unemploy")))
-(ploclo/base {:=x :date
-              :=y :value
-              :=mark-color "purple"})
-ploclo/layer-line)
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (ploclo/base {:=x :date
+                  :=y :value
+                  :=mark-color "purple"})
+    ploclo/layer-line)
 
 (-> datasets/economics-long
-(tc/select-rows #(-> % :variable (= "unemploy")))
-(ploclo/base {:=x :date
-              :=y :value})
-(ploclo/layer-line {:=mark-color "purple"}))
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (ploclo/base {:=x :date
+                  :=y :value})
+    (ploclo/layer-line {:=mark-color "purple"}))
 
 (-> datasets/economics-long
-(tc/select-rows #(-> % :variable (= "unemploy")))
-(ploclo/base {:=x :date
-              :=y :value})
-(ploclo/layer-point {:=mark-color "green"
-                     :=mark-size 20
-                     :=mark-opacity 0.5})
-(ploclo/layer-line {:=mark-color "purple"}))
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (ploclo/base {:=x :date
+                  :=y :value})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=mark-size 20
+                         :=mark-opacity 0.5})
+    (ploclo/layer-line {:=mark-color "purple"}))
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
