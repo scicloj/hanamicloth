@@ -51,9 +51,9 @@
       :=mark-size 20
       :=mark-opacity 0.6}))
 
-;; ## What is happening here
+;; ## For the curious: what is happening here
 
-;; (You do neet need to understand these details for basic usage.)
+;; (💡 You do neet need to understand these details for basic usage.)
 
 ;; Technically, the parameter maps contain [Hanami substitution keys](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations),
 ;; which means they are processed by a [simple set of rules](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#basic-transformation-rules),
@@ -62,15 +62,37 @@
 ;; The layer functions return a Hanami template. Let us print the resulting
 ;; structure of the previous plot.
 
-(-> datasets/iris
-    (tc/random 10 {:seed 1})
-    (ploclo/layer-point
-     {:=x :sepal-width
-      :=y :sepal-length
-      :=color :species
-      :=mark-size 20
-      :=mark-opacity 0.6})
+(def example1
+  (-> datasets/iris
+      (tc/random 10 {:seed 1})
+      (ploclo/layer-point
+       {:=x :sepal-width
+        :=y :sepal-length
+        :=color :species
+        :=mark-size 20
+        :=mark-opacity 0.6})))
+
+(kind/pprint example1)
+
+;; This template has all the necessary knowledge, including the substitution
+;; keys, to turn into a plot. This happens when your visual tool (e.g., Clay)
+;; displays the plot. The tool knows what to do thanks to the Kindly metadata
+;; and a special function attached to the plot.
+
+(meta example1)
+
+(:kindly/f example1)
+
+;; If you wish to see the resulting plot specification before displaying it
+;; as a plot, you can use the `plot` function. In this case,
+;; it generates a Plotly.js plot:
+
+(-> example1
+    ploclo/plot
     kind/pprint)
+
+;; It is annotated as `kind/plotly`, so that visual tools know how to
+;; render it.
 
 (-> datasets/iris
     (ploclo/layer-point
