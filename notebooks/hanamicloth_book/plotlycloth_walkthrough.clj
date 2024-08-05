@@ -1,17 +1,32 @@
 ;; # Plotlycloth Walkthrough
 
+;; Plotlycloth is a Clojure API for creating [Plotly.js](https://plotly.com/javascript/) plots through layered pipelines. It is part of the Hanamicloth library.
+
+;; Here, we provide a walkthrough of the API.
+
+;; Soon, we will provide more in-depth explanations in additional chapters.
+
+;; * The plotlycloth API namepace
+
+;; * [Tablecloth](https://scicloj.github.io/tablecloth/) for dataset processing
+
+;; * the [datetime namespace](https://cnuernber.github.io/dtype-next/tech.v3.datatype.datetime.html) of [dtype-next](https://github.com/cnuernber/dtype-next)
+
+;; * the [print namespace](https://techascent.github.io/tech.ml.dataset/tech.v3.dataset.print.html) of [tech.ml.dataset](https://github.com/techascent/tech.ml.dataset) for customized dataset printing
+
+;; * [Kindly](https://scicloj.github.io/kindly-noted/) (to specify how certaiun values should be visualized)
+
+;; * the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html)
+
 (ns hanamicloth-book.plotlycloth-walkthrough
   (:require [scicloj.hanamicloth.v1.plotlycloth :as ploclo]
-            [aerial.hanami.templates :as ht]
             [tablecloth.api :as tc]
             [tech.v3.datatype.datetime :as datetime]
             [tech.v3.dataset.print :as print]
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
-            [hanamicloth-book.datasets :as datasets]
-            [aerial.hanami.common :as hc])
-  (:import java.time.LocalDate))
+            [hanamicloth-book.datasets :as datasets]))
 
 (-> datasets/iris
     (ploclo/layer-point
