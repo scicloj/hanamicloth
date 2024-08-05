@@ -6,6 +6,9 @@
 
 ;; Soon, we will provide more in-depth explanations in additional chapters.
 
+;; ## Setup
+;; For this tutorial, we require:
+
 ;; * The plotlycloth API namepace
 
 ;; * [Tablecloth](https://scicloj.github.io/tablecloth/) for dataset processing
@@ -28,13 +31,46 @@
             [scicloj.kindly.v4.api :as kindly]
             [hanamicloth-book.datasets :as datasets]))
 
+;; ## Basic usage
+
+;; Plotlycloth plots are created by passing datasets to a pipeline
+;; of layer functions.
+
+;; Additional parameters to the functions are passed as maps.
+;; By convention, the map keys begin with `=` (e.g., `:=color`).
+
+;; For example, let us plot a scatterplot (a layer of points)
+;; of 10 random items from the Iris dataset.
+
 (-> datasets/iris
+    (tc/random 10 {:seed 1})
     (ploclo/layer-point
      {:=x :sepal-width
       :=y :sepal-length
       :=color :species
       :=mark-size 20
       :=mark-opacity 0.6}))
+
+;; ## What is happening here
+
+;; (You do neet need to understand these details for basic usage.)
+
+;; Technically, the parameter maps contain [Hanami substitution keys](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations),
+;; which means they are processed by a [simple set of rules](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#basic-transformation-rules),
+;; but you do not need to understand what this means yet.
+
+;; The layer functions return a Hanami template. Let us print the resulting
+;; structure of the previous plot.
+
+(-> datasets/iris
+    (tc/random 10 {:seed 1})
+    (ploclo/layer-point
+     {:=x :sepal-width
+      :=y :sepal-length
+      :=color :species
+      :=mark-size 20
+      :=mark-opacity 0.6})
+    kind/pprint)
 
 (-> datasets/iris
     (ploclo/layer-point
@@ -45,63 +81,63 @@
       :=mark-opacity 0.6}))
 
 (-> datasets/mtcars
-    (ploclo/layer-point
-     {:=x :mpg
-      :=y :disp
-      :=color :cyl
-      :=mark-size 20}))
+(ploclo/layer-point
+ {:=x :mpg
+  :=y :disp
+  :=color :cyl
+  :=mark-size 20}))
 
 (-> datasets/mtcars
-    (ploclo/layer-point
-     {:=x :mpg
-      :=y :disp
-      :=color :cyl
-      :=color-type :nominal
-      :=mark-size 20}))
+(ploclo/layer-point
+ {:=x :mpg
+  :=y :disp
+  :=color :cyl
+  :=color-type :nominal
+  :=mark-size 20}))
 
 (-> datasets/mtcars
-    (ploclo/layer-boxplot
-     {:=x :cyl
-      :=y :disp}))
+(ploclo/layer-boxplot
+ {:=x :cyl
+  :=y :disp}))
 
 (-> datasets/iris
-    (ploclo/layer-segment
-     {:=x0 :sepal-width
-      :=y0 :sepal-length
-      :=x1 :petal-width
-      :=y1 :petal-length
-      :=mark-opacity 0.4
-      :=mark-size 3
-      :=color :species}))
+(ploclo/layer-segment
+ {:=x0 :sepal-width
+  :=y0 :sepal-length
+  :=x1 :petal-width
+  :=y1 :petal-length
+  :=mark-opacity 0.4
+  :=mark-size 3
+  :=color :species}))
 
 (-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/layer-line
-     {:=x :date
-      :=y :value
-      :=mark-color "purple"}))
+(tc/select-rows #(-> % :variable (= "unemploy")))
+(ploclo/layer-line
+ {:=x :date
+  :=y :value
+  :=mark-color "purple"}))
 
 (-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
-                  :=y :value
-                  :=mark-color "purple"})
-    ploclo/layer-line)
+(tc/select-rows #(-> % :variable (= "unemploy")))
+(ploclo/base {:=x :date
+              :=y :value
+              :=mark-color "purple"})
+ploclo/layer-line)
 
 (-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
-                  :=y :value})
-    (ploclo/layer-line {:=mark-color "purple"}))
+(tc/select-rows #(-> % :variable (= "unemploy")))
+(ploclo/base {:=x :date
+              :=y :value})
+(ploclo/layer-line {:=mark-color "purple"}))
 
 (-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
-                  :=y :value})
-    (ploclo/layer-point {:=mark-color "green"
-                         :=mark-size 20
-                         :=mark-opacity 0.5})
-    (ploclo/layer-line {:=mark-color "purple"}))
+(tc/select-rows #(-> % :variable (= "unemploy")))
+(ploclo/base {:=x :date
+              :=y :value})
+(ploclo/layer-point {:=mark-color "green"
+                     :=mark-size 20
+                     :=mark-opacity 0.5})
+(ploclo/layer-line {:=mark-color "purple"}))
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
