@@ -127,12 +127,14 @@
 
 ;; ## More examples
 
-
+;; ### Boxplot
 
 (-> datasets/mtcars
     (ploclo/layer-boxplot
      {:=x :cyl
       :=y :disp}))
+
+;; ### Segment plot
 
 (-> datasets/iris
     (ploclo/layer-segment
@@ -144,12 +146,19 @@
       :=mark-size 3
       :=color :species}))
 
+;; ## Time series
+
+;; Date and time fields are handle appropriately
+
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
     (ploclo/layer-line
      {:=x :date
       :=y :value
       :=mark-color "purple"}))
+
+;; ## Multiple layers
+
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
