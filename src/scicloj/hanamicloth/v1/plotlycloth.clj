@@ -112,15 +112,15 @@
 (dag/defn-with-deps submap->mode [=mark]
   (mark->mode =mark))
 
-(defn mark->type [mark]
-  (case mark
+(dag/defn-with-deps submap->type [=mark =coordinates]
+  (case =mark
     :box :box
     :bar :bar
     :segment :line
-    :scatter))
-
-(dag/defn-with-deps submap->type [=mark]
-  (mark->type =mark))
+    ;; else
+    (if (= =coordinates :polar)
+      :scatterpolar
+      :scatter)))
 
 
 (def colors-palette
@@ -154,6 +154,9 @@
    :y0 :=y0-after-stat
    :x1 :=x1-after-stat
    :y1 :=y1-after-stat
+   :r :=r
+   :theta :=theta
+   :coordinates :=coordinates
    :x-title :=x-title
    :y-title :=y-title
    :color :=color
@@ -179,6 +182,8 @@
                  mark
                  x y
                  x0 y0 x1 y1
+                 r theta
+                 coordinates
                  color color-type
                  size size-type
                  marker-override
@@ -212,6 +217,7 @@
                                                    (str/join " "))]
                                          (remove nil?)
                                          (str/join " "))}
+                             (if (= coordinate))
                              (if (= mark :segment)
                                {:x (vec
                                     (interleave (group-dataset x0)
@@ -295,6 +301,8 @@
    :=x-type-after-stat (submap->field-type-after-stat :=x-after-stat)
    :=y-type (submap->field-type :=y)
    :=y-type-after-stat (submap->field-type-after-stat :=y-after-stat)
+   :=r hc/RMV
+   :=theta hc/RMV
    :=color-type (submap->field-type :=color)
    :=size-type (submap->field-type :=size)
    :=mark-color hc/RMV
@@ -312,6 +320,7 @@
    :=group :=inferred-group
    :=predictors [:=x]
    :=histogram-nbins 10
+   :=coordinates hc/RMV
    :=height 500
    :=width 500
    :=x-title hc/RMV
