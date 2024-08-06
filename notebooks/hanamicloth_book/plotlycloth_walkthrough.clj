@@ -34,6 +34,12 @@
             [scicloj.kindly.v4.api :as kindly]
             [hanamicloth-book.datasets :as datasets]))
 
+;; ## Known issues
+
+;; - Plot legends are missing in some cases.
+
+;; - We need to come up with reasonable defaults for `:=width` and `:=height`.
+
 ;; ## Basic usage
 
 ;; Plotlycloth plots are created by passing datasets to a pipeline

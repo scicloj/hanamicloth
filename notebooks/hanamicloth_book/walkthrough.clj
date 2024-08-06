@@ -33,12 +33,6 @@
             [scicloj.kindly.v4.api :as kindly]
             [hanamicloth-book.datasets :as datasets]))
 
-;; ## Known issues
-
-;; - Plot legends are missing in some cases.
-
-;; - We need to come up with reasonable defaults for `:=width` and `:=height`.
-
 ;; ## Basic usage
 
 ;; Let us create a scatter plot from the Iris dataset.
