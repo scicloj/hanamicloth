@@ -160,6 +160,7 @@
    :color-type :=color-type
    :size :=size
    :size-type :=size-type
+   :inferred-group :=inferred-group
    :group :=group
    :marker-override {:color :=mark-color
                      :=marker-size-key :=mark-size}
@@ -181,11 +182,11 @@
                  color color-type
                  size size-type
                  marker-override
-                 group
+                 inferred-group
                  trace-base]}]
-      (let [group-kvs (if group
+      (let [group-kvs (if inferred-group
                         (-> @dataset
-                            (tc/group-by group {:result-type :as-map}))
+                            (tc/group-by inferred-group {:result-type :as-map}))
                         {nil @dataset})]
         (-> group-kvs
             (->> (map
@@ -307,7 +308,8 @@
    :=layers []
    :=traces submap->traces
    :=layout submap->layout
-   :=group submap->group
+   :=inferred-group submap->group
+   :=group :=inferred-group
    :=predictors [:=x]
    :=histogram-nbins 10
    :=height hc/RMV
