@@ -9,6 +9,14 @@
 
 ;; Soon, we will provide more in-depth explanations in additional chapters.
 
+;; ## Known issues
+
+;; - Plot legends are missing in some cases.
+
+;; - We need to come up with reasonable defaults for `:=width` and `:=height`.
+
+;; - Breaking changes are expected.
+
 ;; ## Setup
 ;; For this tutorial, we require:
 
@@ -33,12 +41,6 @@
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
             [hanamicloth-book.datasets :as datasets]))
-
-;; ## Known issues
-
-;; - Plot legends are missing in some cases.
-
-;; - We need to come up with reasonable defaults for `:=width` and `:=height`.
 
 ;; ## Basic usage
 
