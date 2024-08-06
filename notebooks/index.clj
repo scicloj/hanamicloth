@@ -29,7 +29,7 @@
 
 * [main API Walkthrough](./hanamicloth_book.walkthrough.html) 👣
 
-* [plotlycloth Walkthrough](./hanamicloth_book.plotlycloth_walkthrough.html) - experimental 🛠")
+* [plotlycloth Walkthrough](./hanamicloth_book.plotlycloth_walkthrough.html) 👣 - experimental 🛠")
 
 ;; # Preface
 
