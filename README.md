@@ -19,7 +19,8 @@ A more comprehensive documentation is coming soon.
 
 ## Status
 
-initial draft, your feedback would help
+The `api` namespace will soon move to beta stage, but still lacks some important features. The `plotlycloth` namespace is still experimental.
+User feedback will be appreciated on our path to stabilizing it.
 
 ## Discussion
 
