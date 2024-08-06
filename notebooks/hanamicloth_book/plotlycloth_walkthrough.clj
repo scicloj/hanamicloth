@@ -13,8 +13,6 @@
 
 ;; - Plot legends are missing in some cases.
 
-;; - We need to come up with reasonable defaults for `:=width` and `:=height`.
-
 ;; - Breaking changes are expected.
 
 ;; ## Setup
@@ -369,7 +367,7 @@
     (ploclo/base {:=x :date
                   :=y :value})
     (ploclo/layer-smooth {:=color :relative-time
-                          :=mark-size 20
+                          :=mark-size 15
                           :=group []
                           :=predictors [:yearmonth]})
     ;; Keep only the past for the following layer:
@@ -388,7 +386,6 @@
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width}))
 
-
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
@@ -397,5 +394,9 @@
 ;; ### Facets
 
 ;; ### Coordinates
+
+;; #### geo
+
+;; #### polar
 
 ;; ### Scales
