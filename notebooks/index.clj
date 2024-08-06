@@ -27,9 +27,9 @@
 
 (md "See more examples:
 
-* [main API Walkthrough](./hanamicloth_book.walkthrough.html) 👣
+* [Main API Walkthrough](./hanamicloth_book.walkthrough.html) 👣
 
-* [plotlycloth Walkthrough](./hanamicloth_book.plotlycloth_walkthrough.html) 👣 - experimental 🛠")
+* [Plotlycloth Walkthrough](./hanamicloth_book.plotlycloth_walkthrough.html) 👣 - experimental 🛠")
 
 ;; # Preface
 
@@ -70,7 +70,7 @@ Hanamicloth currently supports two APIs:
 
 - `scicloj.hanamicloth.v1.api` generates [Vega-Lite](https://vega.github.io/vega-lite/) plots.
 
--  `scicloj.hanamicloth.v1.plotlycloth` generates the [Plotly.js](https://plotly.com/javascript/) plots.
+- `scicloj.hanamicloth.v1.plotlycloth` generates the [Plotly.js](https://plotly.com/javascript/) plots.
 
 Each of these APIs builds upon the strengths of its target platform and partially uses its naming and concepts. Thus, the two APIs are not completely compatible. The Plotly-based API is expected to grow a little further in terms of its flexibility and the kinds of idioms it can express. ")
 
