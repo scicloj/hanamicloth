@@ -317,7 +317,7 @@
    :=x-title hc/RMV
    :=y-title hc/RMV
    :=title hc/RMV
-   :=background "rgb(229,229,229)"
+   :=background "rgb(235,235,235)"
    :=xaxis-gridcolor "rgb(255,255,255)"
    :=yaxis-gridcolor "rgb(255,255,255)"})
 
