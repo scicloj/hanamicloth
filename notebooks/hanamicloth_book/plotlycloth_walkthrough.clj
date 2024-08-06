@@ -1,4 +1,4 @@
-;; # Plotlycloth Walkthrough (experimental 🛠)
+;; # Plotlycloth Walkthrough 👣 - experimental 🛠
 
 ;; Plotlycloth is a Clojure API for creating [Plotly.js](https://plotly.com/javascript/) plots through layered pipelines. It is part of the Hanamicloth library.
 

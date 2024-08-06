@@ -1,4 +1,4 @@
-;; # Walkthrough
+;; # Walkthrough 👣
 
 ;; In this walkthrough, we will demonstrate the main functionality of Hanamicloth.
 
