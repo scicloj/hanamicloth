@@ -1,8 +1,11 @@
-;; # Plotlycloth Walkthrough
+;; # Plotlycloth Walkthrough (experimental 🛠)
 
 ;; Plotlycloth is a Clojure API for creating [Plotly.js](https://plotly.com/javascript/) plots through layered pipelines. It is part of the Hanamicloth library.
 
 ;; Here, we provide a walkthrough of the API.
+
+;; 🛠 This part of Hanamicloth is still in experimental stage.
+;; Some of the details will change soon. Feedback and comments will help.
 
 ;; Soon, we will provide more in-depth explanations in additional chapters.
 
@@ -51,7 +54,7 @@
       :=mark-size 20
       :=mark-opacity 0.6}))
 
-;; ## For the curious: what is happening here
+;; ## Templates and parameters
 
 ;; (💡 You do neet need to understand these details for basic usage.)
 
@@ -83,6 +86,8 @@
 
 (:kindly/f example1)
 
+;; ## Realizing the plot
+
 ;; If you wish to see the resulting plot specification before displaying it
 ;; as a plot, you can use the `plot` function. In this case,
 ;; it generates a Plotly.js plot:
@@ -98,12 +103,20 @@
     ploclo/plot
     meta)
 
+;; This can be useful if you wish to process the actual Plotly.js spec
+;; rather than use Plotlycloth's API. Let us change the background colour,
+;; for example:
+
+(-> example1
+    ploclo/plot
+    (assoc-in [:layout :plot_bgcolor] "#eeeedd"))
+
 ;; ## Field type inference
 
 ;; Plotlycloth infers the type of relevant fields from the data.
 
 ;; The example above was colored as it were since `:species`
-;; column was nominal.
+;; column was nominal, so it was assigned distinct colours.
 
 ;; In the following example, the coloring is by a quantitative
 ;; column, so a color gradient is used:
@@ -146,9 +159,33 @@
       :=mark-size 3
       :=color :species}))
 
+;; ## Varying color and size
+
+(-> {:ABCD (range 1 11)
+     :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]
+     :IJKL [:A :A :A :A :A :B :B :B :B :B]
+     :MNOP [:C :D :C :D :C :D :C :D :C :D]}
+    tc/dataset
+    (ploclo/base {:=title "IJKLMNOP"})
+    (ploclo/layer-point {:=x :ABCD
+                         :=y :EFGH
+                         :=color :IJKL
+                         :=size :MNOP
+                         :=name "QRST1"})
+    (ploclo/layer-line
+     {:=title "IJKL MNOP"
+      :=x :ABCD
+      :=y :ABCD
+      :=name "QRST2"
+      :=mark-color "magenta"
+      :=mark-size 20
+      :=mark-opacity 0.2})
+    ploclo/plot)
+
 ;; ## Time series
 
-;; Date and time fields are handle appropriately
+;; Date and time fields are handle appropriately.
+;; Let us, for example, draw the time series of unemployment counts.
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
@@ -184,33 +221,18 @@
                          :=mark-opacity 0.5})
     (ploclo/layer-line {:=mark-color "purple"}))
 
-(-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
-                  :=y :value
-                  :=mark-color "purple"})
-    ploclo/layer-line)
+;; ## Updating data
 
-(-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
-                  :=y :value})
-    (ploclo/layer-line {:=mark-color "purple"}))
+;; We can use the `update-data` function to vary the
+;; dataset along a plotting pipeline, affecting
+;; the layers that follow.
 
-(-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
-                  :=y :value})
-    (ploclo/layer-point {:=mark-color "green"
-                         :=mark-size 20
-                         :=mark-opacity 0.5})
-    (ploclo/layer-line {:=mark-color "purple"}))
+;; This functionality is inspired by [ggbuilder](https://github.com/mjskay/ggbuilder)
+;; and [metamorph](https://github.com/scicloj/metamorph).
 
-(-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/layer-line {:=x :date
-                        :=y :value
-                        :=mark-color "purple"}))
+;; Here, for example, we draw a line,
+;; then sample 5 data rows,
+;; and draw them as points:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
@@ -222,17 +244,14 @@
                          :=mark-size 15
                          :=mark-opacity 0.5}))
 
-(-> datasets/economics-long
-    (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
-                  :=y :value})
-    (ploclo/layer-line {:=mark-color "purple"})
-    (ploclo/update-data tc/random 5)
-    (ploclo/layer-point {:=mark-color "green"
-                         :=mark-size 15
-                         :=mark-opacity 0.5})
-    ploclo/plot
-    (assoc-in [:layout :plot_bgcolor] "#eeeedd"))
+;; ## Smoothing
+
+;; `layer-smooth` is a layer that applies some statistical
+;; processing to the dataset to model it as a smooth shape.
+;; It is inspired by ggplot's [geom_smooth](https://ggplot2.tidyverse.org/reference/geom_smooth.html).
+
+;; At the moment, it can only be used to model `:=y` by linear regression.
+;; Soon we will add more ways of modelling the data.
 
 (-> datasets/iris
     (ploclo/base {:=title "dummy"
@@ -243,6 +262,11 @@
     (ploclo/layer-smooth {:=mark-color "orange"})
     ploclo/plot)
 
+;; By default, the regression is computed with only one predictor variable,
+;; which is `:=x`.
+;; But this can be overriden using the `:predictors` key.
+;; We may compute a regression with more than one predictor.
+
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
                   :=y :sepal-length})
@@ -252,6 +276,13 @@
                           :=mark-opacity 0.5})
     ploclo/plot)
 
+;; ## Grouping
+
+;; The regression computed by `haclo/layer-smooth`
+;; is affected by the inferred grouping of the data.
+
+;; For example, here we recieve three regression lines,
+;; each for every species.
 
 (-> datasets/iris
     (ploclo/base {:=title "dummy"
@@ -261,16 +292,30 @@
     ploclo/layer-point
     ploclo/layer-smooth)
 
+;; This happened because the `:color` field was `:species`,
+;; which is of `:nominal` type.
+
+;; But we may override this using the `:group` key.
+;; For example, let us avoid grouping:
 
 (-> datasets/iris
     (ploclo/base {:=title "dummy"
-                  :=mark-color "green"
                   :=color :species
                   :=group []
                   :=x :sepal-width
                   :=y :sepal-length})
     ploclo/layer-point
     ploclo/layer-smooth)
+
+;; ## Example: out-of-sample predictions
+
+;; Here is a slighly more elaborate example
+;; inpired by the London Clojurians [talk](https://www.youtube.com/watch?v=eUFf3-og_-Y)
+;; mentioned in the preface.
+
+;; Assume we wish to predict the unemployment rate for 96 months.
+;; Let us add those months to our dataset,
+;; and mark them as `Future` (considering the original data as `Past`):
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
@@ -281,6 +326,8 @@
                                       (datetime/plus-temporal-amount (range 96) :days))
                             :relative-time "Future"}))
     (print/print-range 6))
+
+;; Let us represent our dates as numbers, so that we can use them in linear regression:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
@@ -294,6 +341,12 @@
     (tc/add-column :month #(datetime/long-temporal-field :months (:date %)))
     (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y))))
     (print/print-range 6))
+
+;; Let us use the same regression line for the `Past` and `Future` groups.
+;; To do this, we avoid grouping by assigning  `[]` to `:=group`.
+;; The line is affected only by the past, since in the Future, `:=y` is missing.
+;; We use the numerical field `:yearmonth` as the regression predictor,
+;; but for plotting, we still use the `:temporal` field `:date`.
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
@@ -320,6 +373,11 @@
     (ploclo/layer-line {:=mark-color "purple"
                         :=mark-size 3}))
 
+;; ## Histograms
+
+;; Histograms can also be represented as layers
+;; with statistical processing:
+
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width}))
 
@@ -327,26 +385,3 @@
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
-
-
-
-(-> {:ABCD (range 1 11)
-     :EFGH [5 2.5 5 7.5 5 2.5 7.5 4.5 5.5 5]
-     :IJKL [:A :A :A :A :A :B :B :B :B :B]
-     :MNOP [:C :D :C :D :C :D :C :D :C :D]}
-    tc/dataset
-    (ploclo/base {:=title "IJKLMNOP"})
-    (ploclo/layer-point {:=x :ABCD
-                         :=y :EFGH
-                         :=color :IJKL
-                         :=size :MNOP
-                         :=name "QRST1"})
-    (ploclo/layer-line
-     {:=title "IJKL MNOP"
-      :=x :ABCD
-      :=y :ABCD
-      :=name "QRST2"
-      :=mark-color "magenta"
-      :=mark-size 20
-      :=mark-opacity 0.2})
-    ploclo/plot)
