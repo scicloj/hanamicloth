@@ -312,8 +312,8 @@
    :=group :=inferred-group
    :=predictors [:=x]
    :=histogram-nbins 10
-   :=height hc/RMV
-   :=width hc/RMV
+   :=height 500
+   :=width 500
    :=x-title hc/RMV
    :=y-title hc/RMV
    :=title hc/RMV
