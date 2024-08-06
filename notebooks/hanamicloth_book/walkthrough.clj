@@ -507,14 +507,3 @@
 (-> datasets/iris
     (haclo/layer-histogram {:=x :sepal-width
                             :=histogram-nbins 30}))
-
-
-;; ## Coming soon
-
-;; ### Facets
-
-;; ### Coordinates
-
-;; ### Scales
-
-;; ### Generating [Plotly](https://plotly.com/javascript/) plots

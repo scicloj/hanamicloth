@@ -385,3 +385,10 @@
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
+;; ## Coming soon
+
+;; ### Facets
+
+;; ### Coordinates
+
+;; ### Scales
