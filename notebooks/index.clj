@@ -25,7 +25,11 @@
     (haclo/layer-point {:=mark-color "green"
                         :=mark-size 200}))
 
-(md "See more examples in the 👣 [Walkthrough](./hanamicloth_book.walkthrough.html).")
+(md "See more examples:
+
+* main API [Walkthrough](./hanamicloth_book.walkthrough.html) 👣
+
+* [plotlycloth Walkthrough](./hanamicloth_book.plotlycloth_walkthrough.html) - experimental 🛠")
 
 ;; # Preface
 
@@ -62,9 +66,7 @@ April 2024 talk at London Clojurians:
 (md "
 
 ## Near term plan
-- Add minor improvements to the current [Vega-Lite](https://vega.github.io/vega-lite/)-based API.
-- Add a [Plotly.js](https://plotly.com/javascript/)-based API.
-- Stabilize both as Beta stage.
+- Stabilize both the [Vega-Lite](https://vega.github.io/vega-lite/)-based API and the [Plotly.js](https://plotly.com/javascript/)-based API as Beta stage.
 - Keep developing main ly the Plotly.js-based API (as it will be more flexible to extend).
 
 ## Goals
