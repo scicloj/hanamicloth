@@ -27,7 +27,7 @@
 
 (md "See more examples:
 
-* main API [Walkthrough](./hanamicloth_book.walkthrough.html) 👣
+* [main API Walkthrough](./hanamicloth_book.walkthrough.html) 👣
 
 * [plotlycloth Walkthrough](./hanamicloth_book.plotlycloth_walkthrough.html) - experimental 🛠")
 
@@ -64,9 +64,20 @@ April 2024 talk at London Clojurians:
 {:youtube-id "eUFf3-og_-Y"}
 
 (md "
+## Two APIs
+
+Hanamicloth currently supports two APIs:
+
+- `scicloj.hanamicloth.v1.api` generates [Vega-Lite](https://vega.github.io/vega-lite/) plots.
+
+-  `scicloj.hanamicloth.v1.plotlycloth` generates the [Plotly.js](https://plotly.com/javascript/) plots.
+
+Each of these APIs builds upon the strengths of its target platform and partially uses its naming and concepts. Thus, the two APIs are not completely compatible. The Plotly-based API is expected to grow a little further in terms of its flexibility and the kinds of idioms it can express. ")
+
+(md "
 
 ## Near term plan
-- Stabilize both the [Vega-Lite](https://vega.github.io/vega-lite/)-based API and the [Plotly.js](https://plotly.com/javascript/)-based API as Beta stage.
+- Stabilize both the Vega-Lite-based API and the Plotly.js-based API as Beta stage.
 - Keep developing main ly the Plotly.js-based API (as it will be more flexible to extend).
 
 ## Goals
@@ -78,10 +89,10 @@ April 2024 talk at London Clojurians:
 - By default, infer relevant information from the data (e.g., field types).
 - Catch common errors using the data (e.g., missing fields).
 - Be able to use backend Clojure for relevant statistical tasks (e.g., smoothing by regression, histograms, density estimation).
-- Be able to rely on [Vega-Lite](https://vega.github.io/vega-lite/) for other some components of the pipeline (e.g., scales and coordinates).
+- Be able to rely on Vega-Lite/Plotly.js for other some components of the pipeline (e.g., scales and coordinates).
 - Provide simpler Hanami templates, compared to the original ones.
 - Still have the option of using the original Hanami templates.
-- Still be able to use all of Vega-Lite in its raw format for the highest flexibility.
+- Still be able to use all of Vega-Lite/Plotly.js in its raw format for the highest flexibility.
 
 In the longer term, this project is part of the Scicloj effort to create a grammar-of-graphics visualization library in Clojure.
 
