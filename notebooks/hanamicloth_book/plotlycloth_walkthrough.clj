@@ -40,7 +40,7 @@
 ;; of layer functions.
 
 ;; Additional parameters to the functions are passed as maps.
-;; By convention, the map keys begin with `=` (e.g., `:=color`).
+;; Plotlycloth map keys begin with `=` (e.g., `:=color`).
 
 ;; For example, let us plot a scatterplot (a layer of points)
 ;; of 10 random items from the Iris dataset.
