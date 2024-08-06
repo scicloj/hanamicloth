@@ -187,8 +187,7 @@
       :=name "QRST2"
       :=mark-color "magenta"
       :=mark-size 20
-      :=mark-opacity 0.2})
-    ploclo/plot)
+      :=mark-opacity 0.2}))
 
 ;; ## Time series
 
