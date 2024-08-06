@@ -217,19 +217,22 @@
                                                    (str/join " "))]
                                          (remove nil?)
                                          (str/join " "))}
-                             (if (= coordinate))
-                             (if (= mark :segment)
-                               {:x (vec
-                                    (interleave (group-dataset x0)
-                                                (group-dataset x1)
-                                                (repeat nil)))
-                                :y (vec
-                                    (interleave (group-dataset y0)
-                                                (group-dataset y1)
-                                                (repeat nil)))}
+                             (if (= coordinates :polar)
+                               {:r (-> r group-dataset vec)
+                                :theta (-> theta group-dataset vec)}
                                ;; else
-                               {:x (-> x group-dataset vec)
-                                :y (-> y group-dataset vec)})
+                               (if (= mark :segment)
+                                 {:x (vec
+                                      (interleave (group-dataset x0)
+                                                  (group-dataset x1)
+                                                  (repeat nil)))
+                                  :y (vec
+                                      (interleave (group-dataset y0)
+                                                  (group-dataset y1)
+                                                  (repeat nil)))}
+                                 ;; else
+                                 {:x (-> x group-dataset vec)
+                                  :y (-> y group-dataset vec)}))
                              (when marker
                                (let [marker-key (case (:mode trace-base)
                                                   :markers :marker
