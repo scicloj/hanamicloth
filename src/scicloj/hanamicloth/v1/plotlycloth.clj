@@ -324,7 +324,7 @@
    :=predictors [:=x]
    :=histogram-nbins 10
    :=coordinates hc/RMV
-   :=height 500
+   :=height 400
    :=width 500
    :=x-title hc/RMV
    :=y-title hc/RMV
