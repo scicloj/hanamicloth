@@ -18,7 +18,7 @@
 
 ;; * the [print namespace](https://techascent.github.io/tech.ml.dataset/tech.v3.dataset.print.html) of [tech.ml.dataset](https://github.com/techascent/tech.ml.dataset) for customized dataset printing
 
-;; * [Kindly](https://scicloj.github.io/kindly-noted/) (to specify how certaiun values should be visualized)
+;; * [Kindly](https://scicloj.github.io/kindly-noted/) (to specify how certain values should be visualized)
 
 ;; * the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html)
 
