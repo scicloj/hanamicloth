@@ -109,7 +109,7 @@
     ploclo/plot
     meta)
 
-;; This can be useful if you wish to process the actual Plotly.js spec
+;; This can be useful if you wish to process the Actual Plotly.js spec
 ;; rather than use Plotlycloth's API. Let us change the background colour,
 ;; for example:
 
@@ -226,6 +226,20 @@
                          :=mark-opacity 0.5})
     (ploclo/layer-line {:=mark-color "purple"}))
 
+
+;; Layers can be named:
+
+(-> datasets/economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (ploclo/base {:=x :date
+                  :=y :value})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=mark-size 20
+                         :=mark-opacity 0.5
+                         :=name "points"})
+    (ploclo/layer-line {:=mark-color "purple"
+                        :=name "line"}))
+
 ;; ## Updating data
 
 ;; We can use the `update-data` function to vary the
@@ -263,8 +277,9 @@
                   :=mark-color "green"
                   :=x :sepal-width
                   :=y :sepal-length})
-    ploclo/layer-point
-    (ploclo/layer-smooth {:=mark-color "orange"})
+    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-smooth {:=mark-color "orange"
+                          :=name "Predicted"})
     ploclo/plot)
 
 ;; By default, the regression is computed with only one predictor variable,
@@ -275,10 +290,11 @@
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
                   :=y :sepal-length})
-    ploclo/layer-point
+    (ploclo/layer-point {:=name "Actual"})
     (ploclo/layer-smooth {:=predictors [:petal-width
                                         :petal-length]
-                          :=mark-opacity 0.5})
+                          :=mark-opacity 0.5
+                          :=name "Predicted"})
     ploclo/plot)
 
 ;; ## Grouping
@@ -311,6 +327,17 @@
                   :=y :sepal-length})
     ploclo/layer-point
     ploclo/layer-smooth)
+
+;; Alternatively, we may assign the `:=color` only to the points layer
+;; without affecting the smoothing layer.
+
+(-> datasets/iris
+    (ploclo/base {:=title "dummy"
+                  :=x :sepal-width
+                  :=y :sepal-length})
+    (ploclo/layer-point {:=color :species})
+    (ploclo/layer-smooth {:=name "Predicted"
+                          :=mark-color "blue"}))
 
 ;; ## Example: out-of-sample predictions
 
@@ -376,7 +403,8 @@
                               (tc/select-rows (fn [row]
                                                 (-> row :relative-time (= "Past")))))))
     (ploclo/layer-line {:=mark-color "purple"
-                        :=mark-size 3}))
+                        :=mark-size 3
+                        :=name "Actual"}))
 
 ;; ## Histograms
 
@@ -389,13 +417,12 @@
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
+
 ;; ## Coming soon
 
 ;; ### Facets
 
 ;; ### Coordinates
-
-
 
 ;; #### geo
 
