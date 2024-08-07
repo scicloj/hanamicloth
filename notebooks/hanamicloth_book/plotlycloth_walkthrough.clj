@@ -33,6 +33,7 @@
 (ns hanamicloth-book.plotlycloth-walkthrough
   (:require [scicloj.hanamicloth.v1.plotlycloth :as ploclo]
             [tablecloth.api :as tc]
+            [tablecloth.column.api :as tcc]
             [tech.v3.datatype.datetime :as datetime]
             [tech.v3.dataset.print :as print]
             [scicloj.kindly.v4.kind :as kind]
@@ -152,6 +153,15 @@
     (ploclo/layer-boxplot
      {:=x :cyl
       :=y :disp}))
+
+;; ### Bar chart
+
+(-> datasets/mtcars
+    (tc/group-by [:cyl])
+    (tc/aggregate {:total-disp #(-> % :disp tcc/sum)})
+    (ploclo/layer-bar
+     {:=x :cyl
+      :=y :total-disp}))
 
 ;; ### Segment plot
 
