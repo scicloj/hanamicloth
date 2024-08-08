@@ -107,7 +107,7 @@
     :line :lines
     :box nil
     :bar :nil
-    :segment nil))
+    :segment :lines))
 
 (dag/defn-with-deps submap->mode [=mark]
   (mark->mode =mark))
@@ -116,7 +116,7 @@
   (case =mark
     :box :box
     :bar :bar
-    :segment :line
+    :segment :scatter
     ;; else
     (if (= =coordinates :polar)
       :scatterpolar

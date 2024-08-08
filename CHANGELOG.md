@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 - plotlylcoth - set default height and width
 - plotlycloth - changed default background color (for ggplot compatibility)
 - plotlycloth - polar coordinates - WIP
+- plotlycloth - simplified the inference of mode and type a bit
 
 ## [1-alpha5-SNAPSHOT] - 2024-08-06
 - added the `plotlycloth` API (experimental) generating [Plotly.js plots](https://plotly.com/javascript/)
