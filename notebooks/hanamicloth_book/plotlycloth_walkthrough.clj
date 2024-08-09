@@ -60,7 +60,8 @@
       :=y :sepal-length
       :=color :species
       :=mark-size 20
-      :=mark-opacity 0.6}))
+      :=mark-opacity 0.6})
+    ploclo/plot)
 
 ;; ## Templates and parameters
 
@@ -440,7 +441,14 @@
                          :=color :species})
     ploclo/dag)
 
-;; Viewing an intermediate value in the computational dag:
+;; Viewing intermediate values in the computational dag:
+
+(-> datasets/iris
+    (tc/random 10 {:seed 1})
+    (ploclo/layer-point {:=x :sepal-width
+                         :=y :sepal-length
+                         :=color :species})
+    (ploclo/debug :=layers))
 
 (-> datasets/iris
     (tc/random 10 {:seed 1})
@@ -460,6 +468,8 @@
 
 ;; #### polar (WIP)
 
+;; Monthly rain amounts
+
 (-> {:month [:Jan :Feb :Mar :Apr
              :May :Jun :Jul :Aug
              :Sep :Oct :Nov :Dec]
@@ -471,5 +481,22 @@
       :=coordinates :polar
       :=mark-size 20
       :=mark-opacity 0.6}))
+
+;; A polar random walk
+
+(let [n 600]
+  (-> {:r (->> (repeatedly n #(- (rand) 0.5))
+               (reductions +))
+       :theta (->> (repeatedly n rand)
+                   (reductions +)
+                   (map #(rem % 360)))
+       :color (range n)}
+      tc/dataset
+      (ploclo/layer-line
+       {:=r :r
+        :=theta :theta
+        :=coordinates :polar
+        :=mark-size 3
+        :=mark-opacity 0.6})))
 
 ;; ### Scales
