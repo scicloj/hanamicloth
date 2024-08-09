@@ -436,6 +436,18 @@
 
 ;; #### geo
 
-;; #### polar
+;; #### polar (WIP)
+
+(-> {:month [:Jan :Feb :Mar :Apr
+             :May :Jun :Jul :Aug
+             :Sep :Oct :Nov :Dec]
+     :rain (repeatedly #(rand-int 200))}
+    tc/dataset
+    (ploclo/layer-bar
+     {:=r :rain
+      :=theta :month
+      :=coordinates :polar
+      :=mark-size 20
+      :=mark-opacity 0.6}))
 
 ;; ### Scales
