@@ -457,16 +457,11 @@
                          :=color :species})
     (ploclo/debug :=traces))
 
-
-;; ## Coming soon
-
-;; ### Facets
-
-;; ### Coordinates
+;; ### Coordinates (WIP)
 
 ;; #### geo
 
-;; #### polar (WIP)
+;; #### polar
 
 ;; Monthly rain amounts
 
@@ -498,5 +493,10 @@
         :=coordinates :polar
         :=mark-size 3
         :=mark-opacity 0.6})))
+
+
+;; ## Coming soon
+
+;; ### Facets
 
 ;; ### Scales
