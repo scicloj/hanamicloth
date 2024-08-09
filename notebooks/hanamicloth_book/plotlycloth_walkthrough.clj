@@ -39,7 +39,8 @@
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
-            [hanamicloth-book.datasets :as datasets]))
+            [hanamicloth-book.datasets :as datasets]
+            [aerial.hanami.templates :as ht]))
 
 ;; ## Basic usage
 
@@ -427,6 +428,27 @@
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
+
+;; ## Debugging (WIP)
+
+;; Viewing the computational dag of substitution keys:
+
+(-> datasets/iris
+    (tc/random 10 {:seed 1})
+    (ploclo/layer-point {:=x :sepal-width
+                         :=y :sepal-length
+                         :=color :species})
+    ploclo/dag)
+
+;; Viewing an intermediate value in the computational dag:
+
+(-> datasets/iris
+    (tc/random 10 {:seed 1})
+    (ploclo/layer-point {:=x :sepal-width
+                         :=y :sepal-length
+                         :=color :species})
+    (ploclo/debug :=traces))
+
 
 ;; ## Coming soon
 
