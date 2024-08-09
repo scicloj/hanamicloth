@@ -106,21 +106,23 @@
     :point :markers
     :line :lines
     :box nil
-    :bar :nil
+    :bar nil
     :segment :lines))
 
 (dag/defn-with-deps submap->mode [=mark]
   (mark->mode =mark))
 
 (dag/defn-with-deps submap->type [=mark =coordinates]
-  (case =mark
-    :box :box
-    :bar :bar
-    :segment :scatter
-    ;; else
-    (if (= =coordinates :polar)
-      :scatterpolar
-      :scatter)))
+  (str (case =mark
+         :box "box"
+         :bar "bar"
+         ;; else
+         "scatter")
+       (case =coordinates
+         :polar "polar"
+         :geo "geo"
+         ;; else
+         nil)))
 
 
 (def colors-palette
@@ -217,30 +219,26 @@
                                                    (str/join " "))]
                                          (remove nil?)
                                          (str/join " "))}
-                             (if (= coordinates :polar)
-                               {:r (-> r group-dataset vec)
-                                :theta (-> theta group-dataset vec)}
+                             {:r (-> r group-dataset vec)
+                              :theta (-> theta group-dataset vec)}
+                             ;; else
+                             (if (= mark :segment)
+                               {:x (vec
+                                    (interleave (group-dataset x0)
+                                                (group-dataset x1)
+                                                (repeat nil)))
+                                :y (vec
+                                    (interleave (group-dataset y0)
+                                                (group-dataset y1)
+                                                (repeat nil)))}
                                ;; else
-                               (if (= mark :segment)
-                                 {:x (vec
-                                      (interleave (group-dataset x0)
-                                                  (group-dataset x1)
-                                                  (repeat nil)))
-                                  :y (vec
-                                      (interleave (group-dataset y0)
-                                                  (group-dataset y1)
-                                                  (repeat nil)))}
-                                 ;; else
-                                 {:x (-> x group-dataset vec)
-                                  :y (-> y group-dataset vec)}))
+                               {:x (-> x group-dataset vec)
+                                :y (-> y group-dataset vec)})
                              (when marker
-                               (let [marker-key (case (:mode trace-base)
-                                                  :markers :marker
-                                                  :lines :line
-                                                  nil (case (:type trace-base)
-                                                        :box :marker
-                                                        :bar :marker
-                                                        :line :line))]
+                               (let [marker-key (if (or (-> trace-base :mode (= :lines))
+                                                        (-> trace-base :type (= :line)))
+                                                  :line
+                                                  :marker)]
                                  {marker-key marker})))))))))))
    vec))
 

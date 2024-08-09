@@ -2,9 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [1-alpha6-SNAPSHOT] - unleased
-- plotlylcoth - set default height and width
-- plotlycloth - changed default background color (for ggplot compatibility)
-- plotlycloth - polar coordinates - WIP
+- plotlycloth - coordinates support - WIP
+- plotlylcoth - styling changes
 - plotlycloth - simplified the inference of mode and type a bit
 
 ## [1-alpha5-SNAPSHOT] - 2024-08-06
