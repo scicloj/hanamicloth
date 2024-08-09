@@ -90,12 +90,14 @@
   ```
   "
   [dep-ks f]
-  (fn [submap]
-    (->> dep-ks
-         (map (fn [k]
-                [k (cached-xform-k k submap)]))
-         (into submap)
-         f)))
+  (vary-meta
+   (fn [submap]
+     (->> dep-ks
+          (map (fn [k]
+                 [k (cached-xform-k k submap)]))
+          (into submap)
+          f))
+   assoc ::dep-ks dep-ks))
 
 (defmacro fn-with-deps
   "Shorthand notation for fn-with-deps-impl.

@@ -507,3 +507,42 @@
                   :=y-title "count"
                   :=x-bin {:binned true}}
                  submap))))
+
+
+(defn dag [template]
+  (let [edges (->> template
+                   ::ht/defaults
+                   (mapcat (fn [[k v]]
+                             (if (fn? v)
+                               (->> v
+                                    meta
+                                    :scicloj.hanamicloth.v1.dag/dep-ks
+                                    (map #(vector % k)))))))
+        nodes (flatten edges)]
+    (kind/cytoscape
+     {:elements {:nodes (->> nodes
+                             (map (fn [k]
+                                    {:data {:id k}})))
+                 :edges (->> edges
+                             (map (fn [[k0 k1]]
+                                    {:data {:id (str k0 k1)
+                                            :source k0
+                                            :target k1}})))}
+      :style [{:selector "node"
+               :css {:content "data(id)"
+                     :text-valign "center"
+                     :text-halign "center"}}
+              {:selector "parent"
+               :css {:text-valign "top"
+                     :text-halign "center"}}
+              {:selector "edge"
+               :css {:curve-style "bezier"
+                     :target-arrow-shape "triangle"}}]
+      :layout {:name "breadthfirst"
+               :padding 5}})))
+
+(defn debug [template k]
+  (-> template
+      (assoc ::debug k)
+      plot
+      ::debug))
