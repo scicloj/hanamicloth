@@ -500,21 +500,26 @@
 
 ;; A polar random walk
 
-(let [n 600]
+(let [n 50]
   (-> {:r (->> (repeatedly n #(- (rand) 0.5))
                (reductions +))
-       :theta (->> (repeatedly n rand)
+       :theta (->> (repeatedly n #(* 10 (rand)))
                    (reductions +)
                    (map #(rem % 360)))
        :color (range n)}
       tc/dataset
+      (ploclo/layer-point
+       {:=r :r
+        :=theta :theta
+        :=coordinates :polar
+        :=mark-size 10
+        :=mark-opacity 0.6})
       (ploclo/layer-line
        {:=r :r
         :=theta :theta
         :=coordinates :polar
         :=mark-size 3
         :=mark-opacity 0.6})))
-
 
 ;; ## Coming soon
 
