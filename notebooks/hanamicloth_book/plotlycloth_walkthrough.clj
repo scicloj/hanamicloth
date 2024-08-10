@@ -165,6 +165,27 @@
      {:=x :cyl
       :=y :total-disp}))
 
+;; ### Text
+
+(-> datasets/mtcars
+    (ploclo/layer-text
+     {:=x :mpg
+      :=y :disp
+      :=text :cyl
+      :=mark-size 20})
+    ploclo/plot)
+
+(-> datasets/mtcars
+    (ploclo/layer-text
+     {:=x :mpg
+      :=y :disp
+      :=text :cyl
+      :=textfont {:family "Courier New, monospace"
+                  :size 16
+                  :color :purple}
+      :=mark-size 20})
+    ploclo/plot)
+
 ;; ### Segment plot
 
 (-> datasets/iris
