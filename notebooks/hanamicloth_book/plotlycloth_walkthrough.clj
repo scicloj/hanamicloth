@@ -451,33 +451,6 @@
     (ploclo/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
 
-;; ## Debugging (WIP)
-
-;; Viewing the computational dag of substitution keys:
-
-(-> datasets/iris
-    (tc/random 10 {:seed 1})
-    (ploclo/layer-point {:=x :sepal-width
-                         :=y :sepal-length
-                         :=color :species})
-    ploclo/dag)
-
-;; Viewing intermediate values in the computational dag:
-
-(-> datasets/iris
-    (tc/random 10 {:seed 1})
-    (ploclo/layer-point {:=x :sepal-width
-                         :=y :sepal-length
-                         :=color :species})
-    (ploclo/debug :=layers))
-
-(-> datasets/iris
-    (tc/random 10 {:seed 1})
-    (ploclo/layer-point {:=x :sepal-width
-                         :=y :sepal-length
-                         :=color :species})
-    (ploclo/debug :=traces))
-
 ;; ### Coordinates (WIP)
 
 ;; #### geo
@@ -520,6 +493,33 @@
         :=coordinates :polar
         :=mark-size 3
         :=mark-opacity 0.6})))
+
+;; ## Debugging (WIP)
+
+;; Viewing the computational dag of substitution keys:
+
+(-> datasets/iris
+    (tc/random 10 {:seed 1})
+    (ploclo/layer-point {:=x :sepal-width
+                         :=y :sepal-length
+                         :=color :species})
+    ploclo/dag)
+
+;; Viewing intermediate values in the computational dag:
+
+(-> datasets/iris
+    (tc/random 10 {:seed 1})
+    (ploclo/layer-point {:=x :sepal-width
+                         :=y :sepal-length
+                         :=color :species})
+    (ploclo/debug :=layers))
+
+(-> datasets/iris
+    (tc/random 10 {:seed 1})
+    (ploclo/layer-point {:=x :sepal-width
+                         :=y :sepal-length
+                         :=color :species})
+    (ploclo/debug :=traces))
 
 ;; ## Coming soon
 
