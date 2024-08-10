@@ -496,7 +496,7 @@
 
 ;; ## Debugging (WIP)
 
-;; Viewing the computational dag of substitution keys:
+;; ### Viewing the computational dag of substitution keys:
 
 (def example-to-debug
   (-> datasets/iris
@@ -508,13 +508,19 @@
 (-> example-to-debug
     ploclo/dag)
 
-;; Viewing intermediate values in the computational dag:
+;; ### Viewing intermediate values in the computational dag:
+
+;; Layers (plotlycloth's intermediate data representation)
 
 (-> example-to-debug
     (ploclo/debug :=layers))
 
+;; Traces (part of the Plotly spec)
+
 (-> example-to-debug
     (ploclo/debug :=traces))
+
+;; Both
 
 (-> example-to-debug
     (ploclo/debug {:layers :=layers
