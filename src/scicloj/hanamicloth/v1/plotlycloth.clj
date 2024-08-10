@@ -104,6 +104,7 @@
 (defn mark->mode [mark]
   (case mark
     :point :markers
+    :text :text
     :line :lines
     :box nil
     :bar nil
@@ -165,13 +166,14 @@
    :color-type :=color-type
    :size :=size
    :size-type :=size-type
+   :text :=text
    :inferred-group :=inferred-group
-   :group :=group
-   :marker-override {:color :=mark-color
-                     :=marker-size-key :=mark-size}
+   :group :=group :marker-override {:color :=mark-color
+                                    :=marker-size-key :=mark-size}
    :trace-base {:mode :=mode
                 :type :=type
-                :opacity :=mark-opacity}
+                :opacity :=mark-opacity
+                :textfont :=textfont}
    :name :=name})
 
 
@@ -188,6 +190,7 @@
                  coordinates
                  color color-type
                  size size-type
+                 text
                  marker-override
                  inferred-group
                  trace-base]}]
@@ -219,8 +222,9 @@
                                                    (str/join " "))]
                                          (remove nil?)
                                          (str/join " "))}
-                             {:r (-> r group-dataset vec)
-                              :theta (-> theta group-dataset vec)}
+                             {:r (some-> r group-dataset vec)
+                              :theta (some-> theta group-dataset vec)}
+                             {:text (some-> text group-dataset vec)}
                              ;; else
                              (if (= mark :segment)
                                {:x (vec
@@ -310,6 +314,8 @@
    :=mark-size hc/RMV
    :=marker-size-key submap->marker-size-key
    :=mark-opacity hc/RMV
+   :=text hc/RMV
+   :=textfont hc/RMV
    :=mark :point
    :=mode submap->mode
    :=type submap->type
@@ -404,7 +410,7 @@
 (def layer-bar (mark-based-layer :bar))
 (def layer-boxplot (mark-based-layer :box))
 (def layer-segment (mark-based-layer :segment))
-
+(def layer-text (mark-based-layer :text))
 
 (dag/defn-with-deps smooth-stat
   [=dataset =y =predictors =group]

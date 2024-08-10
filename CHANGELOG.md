@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [1-alpha7-SNAPSHOT] - unreleased
+- plotlycloth - added text & font support
+
 ## [1-alpha6-SNAPSHOT] - 2024-08-09
 - plotlycloth - coordinates support - WIP
 - plotlylcoth - styling changes
