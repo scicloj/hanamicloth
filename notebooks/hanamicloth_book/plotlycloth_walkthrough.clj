@@ -498,28 +498,27 @@
 
 ;; Viewing the computational dag of substitution keys:
 
-(-> datasets/iris
-    (tc/random 10 {:seed 1})
-    (ploclo/layer-point {:=x :sepal-width
-                         :=y :sepal-length
-                         :=color :species})
+(def example-to-debug
+  (-> datasets/iris
+      (tc/random 10 {:seed 1})
+      (ploclo/layer-point {:=x :sepal-width
+                           :=y :sepal-length
+                           :=color :species})))
+
+(-> example-to-debug
     ploclo/dag)
 
 ;; Viewing intermediate values in the computational dag:
 
-(-> datasets/iris
-    (tc/random 10 {:seed 1})
-    (ploclo/layer-point {:=x :sepal-width
-                         :=y :sepal-length
-                         :=color :species})
+(-> example-to-debug
     (ploclo/debug :=layers))
 
-(-> datasets/iris
-    (tc/random 10 {:seed 1})
-    (ploclo/layer-point {:=x :sepal-width
-                         :=y :sepal-length
-                         :=color :species})
+(-> example-to-debug
     (ploclo/debug :=traces))
+
+(-> example-to-debug
+    (ploclo/debug {:layers :=layers
+                   :traces :=traces}))
 
 ;; ## Coming soon
 
