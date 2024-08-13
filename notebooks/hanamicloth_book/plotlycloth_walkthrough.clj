@@ -451,11 +451,12 @@
     (ploclo/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
 
-;; ### Coordinates (WIP)
+;; ## Coordinates
+;; (WIP)
 
-;; #### geo
+;; ### geo
 
-;; #### polar
+;; ### polar
 
 ;; Monthly rain amounts
 
