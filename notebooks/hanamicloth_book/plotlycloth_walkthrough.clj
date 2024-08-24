@@ -458,13 +458,16 @@
 
 ;; ### polar
 
-;; Monthly rain amounts
+;; Monthly rain amounts - polar bar-chart
 
-(-> {:month [:Jan :Feb :Mar :Apr
-             :May :Jun :Jul :Aug
-             :Sep :Oct :Nov :Dec]
-     :rain (repeatedly #(rand-int 200))}
-    tc/dataset
+(def rain-data
+  (tc/dataset
+   {:month [:Jan :Feb :Mar :Apr
+            :May :Jun :Jul :Aug
+            :Sep :Oct :Nov :Dec]
+    :rain (repeatedly #(rand-int 200))}))
+
+(-> rain-data
     (ploclo/layer-bar
      {:=r :rain
       :=theta :month
@@ -472,7 +475,26 @@
       :=mark-size 20
       :=mark-opacity 0.6}))
 
-;; A polar random walk
+;; Controlling the polar layout
+;; (by manipulating the raw Plotly.js spec):
+
+(-> rain-data
+    (ploclo/base
+     {})
+    (ploclo/layer-bar
+     {:=r :rain
+      :=theta :month
+      :=coordinates :polar
+      :=mark-size 20
+      :=mark-opacity 0.6})
+    ploclo/plot
+    (assoc-in [:layout :polar]
+              {:angularaxis {:tickfont {:size 16}
+                             :rotation 90
+                             :direction "counterclockwise"}
+               :sector [0 180]}))
+
+;; A polar random walk - polar line-chart
 
 (let [n 50]
   (-> {:r (->> (repeatedly n #(- (rand) 0.5))
