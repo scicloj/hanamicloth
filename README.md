@@ -20,6 +20,8 @@ User feedback will be appreciated on our path to stabilizing it.
 
 ## Discussion
 
+Do you wish to collaborate on building this library? Let us talk!
+
 Your feedback is needed at this experimental stage.
 
 - development - topic threads under [#hanamicloth-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-hanamicloth-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/hanamicloth/issues)
