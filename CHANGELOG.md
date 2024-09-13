@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file. This change
 
 ## [1-alpha7-SNAPSHOT] - 2024-08-10
 - plotlycloth - added text & font support
-- plotlycloth - fixed histograms (WIP)
+- plotlycloth - bugfix: broken x axis in histograms
 
 ## [1-alpha6-SNAPSHOT] - 2024-08-09
 - plotlycloth - coordinates support - WIP
