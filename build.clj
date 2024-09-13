@@ -15,7 +15,7 @@
             [deps-deploy.deps-deploy :as dd]))
 
 (def lib 'org.scicloj/hanamicloth)
-(def version "1-alpha6-SNAPSHOT")
+(def version "1-alpha7-SNAPSHOT")
 
 (def snapshot (str version "-SNAPSHOT"))
 (def class-dir "target/classes")
