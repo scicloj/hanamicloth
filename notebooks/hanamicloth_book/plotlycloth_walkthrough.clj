@@ -445,7 +445,8 @@
 ;; with statistical processing:
 
 (-> datasets/iris
-    (ploclo/layer-histogram {:=x :sepal-width}))
+    (ploclo/layer-histogram {:=x :sepal-width})
+    ploclo/plot)
 
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width
