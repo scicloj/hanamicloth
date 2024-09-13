@@ -496,7 +496,11 @@
          :right (concat (rest left)
                         [max])
          :count (map second bins)}
-        tc/dataset)))
+        tc/dataset
+        (tc/add-column :middle #(tcc/*
+                                 0.5
+                                 (tcc/+ (:left %)
+                                        (:right %)))))))
 
 (defn layer-histogram
   ([context]
@@ -506,8 +510,7 @@
           layer-base
           (merge {:=stat (util/->WrappedValue histogram-stat)
                   :=mark :bar
-                  :=x0-after-stat :left
-                  :=x1-after-stat :right
+                  :=x-after-stat :middle
                   :=y-after-stat :count
                   :=x-title :=x
                   :=y-title "count"
