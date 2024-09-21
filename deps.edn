@@ -2,7 +2,7 @@
         aerial.hanami/aerial.hanami {:mvn/version "0.20.0"}
         scicloj/metamorph.ml {:mvn/version "0.8.2"}
         generateme/fastmath {:mvn/version "3.0.0-alpha1"}
-        org.scicloj/kindly {:mvn/version "4-beta5"}
+        org.scicloj/kindly {:mvn/version "4-beta12"}
         org.scicloj/tempfiles {:mvn/version "1-alpha2"}}
  :aliases
  {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}
