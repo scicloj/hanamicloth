@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
-## [1-alpha9] - unrelease
+## [1-alpha9] - unreleased
 - deps update
 
 ## [1-alpha8] - 2024-09-21
