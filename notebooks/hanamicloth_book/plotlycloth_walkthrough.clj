@@ -368,6 +368,9 @@
                           :=name "Predicted"})
     ploclo/plot)
 
+
+
+
 ;; We can also provide the regression model details as metamorph.ml options:
 
 (require 'scicloj.ml.tribuo)
@@ -392,6 +395,28 @@
                           :=mark-opacity 0.5
                           :=name "Predicted"})
     ploclo/plot)
+
+
+;; An example inspired by Plotly's
+;; [ML Regressoin in Python](https://plotly.com/python/ml-regression/)
+;; example.
+
+(defonce tips
+  (-> "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
+      (tc/dataset {:key-fn keyword})))
+
+(-> tips
+    (tc/split :holdout {:seed 1})
+    (ploclo/base {:=x :total_bill
+                  :=y :tip})
+    (ploclo/layer-point {:=color :$split-name})
+    (ploclo/update-data (fn [ds]
+                          (-> ds
+                              (tc/select-rows #(-> % :$split-name (= :train))))))
+    (ploclo/layer-smooth {:=model-options regression-tree-options
+                          :=name "prediction"
+                          :=mark-color "purple"}))
+
 
 ;; ## Grouping
 
