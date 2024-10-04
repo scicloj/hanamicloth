@@ -285,7 +285,13 @@
              :title final-y-title}
      :title =title}))
 
-
+(dag/defn-with-deps submap->design-matrix
+  [=predictors]
+  (->> =predictors
+       (mapv (fn [k]
+               [k (list
+                   'identity
+                   (-> k name symbol))]))))
 
 (def standard-defaults
   {:=stat hc/RMV
@@ -418,13 +424,7 @@
 (def layer-text (mark-based-layer :text))
 
 
-(dag/defn-with-deps submap->design-matrix
-  [=predictors]
-  (->> =predictors
-       (mapv (fn [k]
-               [k (list
-                   'identity
-                   (-> k name symbol))]))))
+
 
 
 (dag/defn-with-deps smooth-stat
