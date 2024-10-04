@@ -341,7 +341,7 @@
                           :=name "Predicted"})
     ploclo/plot)
 
-;; We can also provide the design matrix:
+;; We can also provide the design matrix.
 
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
@@ -354,6 +354,8 @@
                           :=mark-opacity 0.5
                           :=name "Predicted"})
     ploclo/plot)
+
+;; Inspired by Sami Kallinen's [Heart of Clojure talk](https://2024.heartofclojure.eu/talks/sailing-with-scicloj-a-bayesian-adventure/):
 
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
