@@ -5,8 +5,11 @@
             [tablecloth.api :as tc]
             [tablecloth.column.api :as tcc]
             [tech.v3.dataset :as ds]
+            [tech.v3.dataset.modelling :as dsmod]
             [fastmath.stats]
-            [fastmath.ml.regression :as regression]
+            [scicloj.metamorph.ml :as ml]
+            [scicloj.metamorph.ml.regression]
+            [scicloj.metamorph.ml.design-matrix :as design-matrix]
             [scicloj.hanamicloth.v1.dag :as dag]
             [clojure.string :as str]
             [scicloj.hanamicloth.v1.util :as util]
@@ -412,8 +415,9 @@
 (def layer-segment (mark-based-layer :segment))
 (def layer-text (mark-based-layer :text))
 
+
 (dag/defn-with-deps smooth-stat
-  [=dataset =y =predictors =group]
+  [=dataset =x =y =predictors =group]
   (when-not (@=dataset =y)
     (throw (ex-info "missing =y column"
                     {:missing-column-name =y})))
@@ -429,25 +433,33 @@
                  (throw (ex-info "missing =group column"
                                  {:group =group
                                   :missing-column-name g}))))))
-  (let [predictions-fn (fn [ds]
-                         (let [nonmissing-y (-> ds
-                                                (tc/drop-missing [=y]))
-                               model (regression/glm (-> nonmissing-y
-                                                         (get =y))
-                                                     (-> nonmissing-y
-                                                         (tc/select-columns =predictors)
-                                                         tc/rows))]
+  (let [design-matrix-spec [[=y]
+                            (->> =predictors
+                                 (mapv (fn [k]
+                                         [k (list
+                                             'identity
+                                             (-> k name symbol))])))]
+        predictions-fn (fn [ds]
+                         (let [model (-> ds
+                                         (tc/drop-missing [=y])
+                                         (#(apply design-matrix/create-design-matrix
+                                                  %
+                                                  design-matrix-spec))
+                                         (tc/select-columns (cons =y =predictors))
+                                         (ml/train {:model-type :fastmath/ols}))]
                            (-> ds
-                               (tc/select-columns =predictors)
-                               tc/rows
-                               (->> (map (partial regression/predict model))))))]
+                               (#(apply design-matrix/create-design-matrix
+                                        %
+                                        design-matrix-spec))
+                               (ml/predict model)
+                               =y)))]
     (if =group
       (-> @=dataset
           (tc/group-by =group)
-          (tc/add-or-replace-column =y predictions-fn)
+          (tc/add-column =y predictions-fn)
           tc/ungroup)
       (-> @=dataset
-          (tc/add-or-replace-column =y predictions-fn)))))
+          (tc/add-column =y predictions-fn)))))
 
 
 (defn mark-based-layer [mark]
@@ -470,7 +482,6 @@
                   :=mark :line}
                  submap))))
 
-
 (defn update-data [template dataset-fn & submap]
   (-> template
       (update-in [::ht/defaults :=dataset]
@@ -480,7 +491,10 @@
                            @wrapped-data
                            submap))))))
 
-
+(defn dataset [dataset]
+  (-> dataset
+      tc/dataset
+      util/->WrappedValue))
 
 (dag/defn-with-deps histogram-stat
   [=dataset =x =histogram-nbins]
