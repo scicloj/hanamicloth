@@ -368,6 +368,31 @@
                           :=name "Predicted"})
     ploclo/plot)
 
+;; We can also provide the regression model details as metamorph.ml options:
+
+(require 'scicloj.ml.tribuo)
+
+(def regression-tree-options
+  {:model-type :scicloj.ml.tribuo/regression
+   :tribuo-components [{:name "cart"
+                        :type "org.tribuo.regression.rtree.CARTRegressionTrainer"
+                        :properties {:maxDepth "8"
+                                     :fractionFeaturesInSplit "1.0"
+                                     :seed "12345"
+                                     :impurity "mse"}}
+                       {:name "mse"
+                        :type "org.tribuo.regression.rtree.impurity.MeanSquaredError"}]
+   :tribuo-trainer-name "cart"})
+
+(-> datasets/iris
+    (ploclo/base {:=x :sepal-width
+                  :=y :sepal-length})
+    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-smooth {:=model-options regression-tree-options
+                          :=mark-opacity 0.5
+                          :=name "Predicted"})
+    ploclo/plot)
+
 ;; ## Grouping
 
 ;; The regression computed by `haclo/layer-smooth`
