@@ -433,13 +433,24 @@
                  (throw (ex-info "missing =group column"
                                  {:group =group
                                   :missing-column-name g}))))))
-  (let [predictions-fn (fn [ds]
+  (let [design-matrix-spec [[=y]
+                            (->> =predictors
+                                 (mapv (fn [k]
+                                         [k (list
+                                             'identity
+                                             (-> k name symbol))])))]
+        predictions-fn (fn [ds]
                          (let [model (-> ds
                                          (tc/drop-missing [=y])
-                                         (dsmod/set-inference-target =y)
+                                         (#(apply design-matrix/create-design-matrix
+                                                  %
+                                                  design-matrix-spec))
                                          (tc/select-columns (cons =y =predictors))
                                          (ml/train {:model-type :fastmath/ols}))]
                            (-> ds
+                               (#(apply design-matrix/create-design-matrix
+                                        %
+                                        design-matrix-spec))
                                (ml/predict model)
                                =y)))]
     (if =group

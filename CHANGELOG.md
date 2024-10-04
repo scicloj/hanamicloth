@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 - deps update
 - plotlycloth - added support to override specific layer data (experimental)
 - plotlycloth - refactored layer-smooth to use metamorph.ml
+- plotlycloth - refactored to use metamorph.ml design matrices
 
 ## [1-alpha8] - 2024-09-21
 - deps update
