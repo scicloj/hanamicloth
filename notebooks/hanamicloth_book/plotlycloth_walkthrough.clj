@@ -317,11 +317,10 @@
 ;; Soon we will add more ways of modelling the data.
 
 (-> datasets/iris
-    (ploclo/base {:=title "dummy"
-                  :=mark-color "green"
-                  :=x :sepal-width
+    (ploclo/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=name "Actual"})
     (ploclo/layer-smooth {:=mark-color "orange"
                           :=name "Predicted"})
     ploclo/plot)
@@ -334,7 +333,8 @@
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=name "Actual"})
     (ploclo/layer-smooth {:=predictors [:petal-width
                                         :petal-length]
                           :=mark-opacity 0.5
@@ -346,7 +346,8 @@
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=name "Actual"})
     (ploclo/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
                                            [:sepal-width-2 '(* sepal-width
                                                                sepal-width)]]
@@ -357,7 +358,8 @@
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=name "Actual"})
     (ploclo/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
                                            [:sepal-width-2 '(* sepal-width
                                                                sepal-width)]
@@ -390,7 +392,8 @@
 (-> datasets/iris
     (ploclo/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-point {:=mark-color "green"
+                         :=name "Actual"})
     (ploclo/layer-smooth {:=model-options regression-tree-options
                           :=mark-opacity 0.5
                           :=name "Predicted"})
