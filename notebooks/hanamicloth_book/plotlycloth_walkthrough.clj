@@ -322,8 +322,7 @@
     (ploclo/layer-point {:=mark-color "green"
                          :=name "Actual"})
     (ploclo/layer-smooth {:=mark-color "orange"
-                          :=name "Predicted"})
-    ploclo/plot)
+                          :=name "Predicted"}))
 
 ;; By default, the regression is computed with only one predictor variable,
 ;; which is `:=x`.
@@ -338,8 +337,7 @@
     (ploclo/layer-smooth {:=predictors [:petal-width
                                         :petal-length]
                           :=mark-opacity 0.5
-                          :=name "Predicted"})
-    ploclo/plot)
+                          :=name "Predicted"}))
 
 ;; We can also provide the design matrix.
 
@@ -352,8 +350,7 @@
                                            [:sepal-width-2 '(* sepal-width
                                                                sepal-width)]]
                           :=mark-opacity 0.5
-                          :=name "Predicted"})
-    ploclo/plot)
+                          :=name "Predicted"}))
 
 ;; Inspired by Sami Kallinen's [Heart of Clojure talk](https://2024.heartofclojure.eu/talks/sailing-with-scicloj-a-bayesian-adventure/):
 
@@ -369,11 +366,7 @@
                                                                sepal-width
                                                                sepal-width)]]
                           :=mark-opacity 0.5
-                          :=name "Predicted"})
-    ploclo/plot)
-
-
-
+                          :=name "Predicted"}))
 
 ;; We can also provide the regression model details as metamorph.ml options:
 
@@ -398,8 +391,7 @@
                          :=name "Actual"})
     (ploclo/layer-smooth {:=model-options regression-tree-options
                           :=mark-opacity 0.5
-                          :=name "Predicted"})
-    ploclo/plot)
+                          :=name "Predicted"}))
 
 
 ;; An example inspired by Plotly's
