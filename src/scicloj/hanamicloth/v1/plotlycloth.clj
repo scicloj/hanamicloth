@@ -329,7 +329,7 @@
    :=inferred-group submap->group
    :=group :=inferred-group
    :=predictors [:=x]
-   :=design-matrix-spec submap->design-matrix-spec
+   :=design-matrix submap->design-matrix
    :=model-options {:model-type :fastmath/ols}
    :=histogram-nbins 10
    :=coordinates hc/RMV
@@ -418,18 +418,17 @@
 (def layer-text (mark-based-layer :text))
 
 
-(dag/defn-with-deps submap->design-matrix-spec
-  [=y =predictors]
-  [[=y]
-   (->> =predictors
-        (mapv (fn [k]
-                [k (list
-                    'identity
-                    (-> k name symbol))])))])
+(dag/defn-with-deps submap->design-matrix
+  [=predictors]
+  (->> =predictors
+       (mapv (fn [k]
+               [k (list
+                   'identity
+                   (-> k name symbol))]))))
 
 
 (dag/defn-with-deps smooth-stat
-  [=dataset =x =y =predictors =group =design-matrix-spec =model-options]
+  [=dataset =x =y =predictors =group =design-matrix =model-options]
   (when-not (@=dataset =y)
     (throw (ex-info "missing =y column"
                     {:missing-column-name =y})))
@@ -448,15 +447,13 @@
   (let [predictions-fn (fn [ds]
                          (let [model (-> ds
                                          (tc/drop-missing [=y])
-                                         (#(apply design-matrix/create-design-matrix
-                                                  %
-                                                  =design-matrix-spec))
+                                         (design-matrix/create-design-matrix [=y]
+                                                                             =design-matrix)
                                          (tc/select-columns (cons =y =predictors))
                                          (ml/train =model-options))]
                            (-> ds
-                               (#(apply design-matrix/create-design-matrix
-                                        %
-                                        =design-matrix-spec))
+                               (design-matrix/create-design-matrix [=y]
+                                                                   =design-matrix)
                                (ml/predict model)
                                =y)))]
     (if =group
