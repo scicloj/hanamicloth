@@ -296,6 +296,17 @@
                          :=mark-size 15
                          :=mark-opacity 0.5}))
 
+;; ## Overriding specific layer data (experimental)
+
+(-> (tc/dataset {:x (range 4)
+                 :y [1 2 5 9]})
+    tc/dataset
+    (tc/sq :y :x)
+    (ploclo/layer-point {:=mark-size 20})
+    (ploclo/layer-line {:=dataset (ploclo/dataset {:x [0 3]
+                                                   :y [1 10]})
+                        :=mark-size 5}))
+
 ;; ## Smoothing
 
 ;; `layer-smooth` is a layer that applies some statistical
