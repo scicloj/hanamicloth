@@ -341,6 +341,33 @@
                           :=name "Predicted"})
     ploclo/plot)
 
+;; We can also provide the design matrix:
+
+(-> datasets/iris
+    (ploclo/base {:=x :sepal-width
+                  :=y :sepal-length})
+    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
+                                           [:sepal-width-2 '(* sepal-width
+                                                               sepal-width)]]
+                          :=mark-opacity 0.5
+                          :=name "Predicted"})
+    ploclo/plot)
+
+(-> datasets/iris
+    (ploclo/base {:=x :sepal-width
+                  :=y :sepal-length})
+    (ploclo/layer-point {:=name "Actual"})
+    (ploclo/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
+                                           [:sepal-width-2 '(* sepal-width
+                                                               sepal-width)]
+                                           [:sepal-width-3 '(* sepal-width
+                                                               sepal-width
+                                                               sepal-width)]]
+                          :=mark-opacity 0.5
+                          :=name "Predicted"})
+    ploclo/plot)
+
 ;; ## Grouping
 
 ;; The regression computed by `haclo/layer-smooth`
