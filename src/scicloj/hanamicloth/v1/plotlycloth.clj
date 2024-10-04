@@ -329,6 +329,7 @@
    :=inferred-group submap->group
    :=group :=inferred-group
    :=predictors [:=x]
+   :=model-options {:model-type :fastmath/ols}
    :=histogram-nbins 10
    :=coordinates hc/RMV
    :=height 400
@@ -417,7 +418,7 @@
 
 
 (dag/defn-with-deps smooth-stat
-  [=dataset =x =y =predictors =group]
+  [=dataset =x =y =predictors =group =model-options]
   (when-not (@=dataset =y)
     (throw (ex-info "missing =y column"
                     {:missing-column-name =y})))
@@ -446,7 +447,7 @@
                                                   %
                                                   design-matrix-spec))
                                          (tc/select-columns (cons =y =predictors))
-                                         (ml/train {:model-type :fastmath/ols}))]
+                                         (ml/train =model-options))]
                            (-> ds
                                (#(apply design-matrix/create-design-matrix
                                         %
