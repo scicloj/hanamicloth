@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file. This change
 
 ## [1-alpha9] - unreleased
 - deps update
+- plotlycloth - added support to override specific layer data (experimental)
 
 ## [1-alpha8] - 2024-09-21
 - deps update

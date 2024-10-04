@@ -480,7 +480,10 @@
                            @wrapped-data
                            submap))))))
 
-
+(defn dataset [dataset]
+  (-> dataset
+      tc/dataset
+      util/->WrappedValue))
 
 (dag/defn-with-deps histogram-stat
   [=dataset =x =histogram-nbins]
