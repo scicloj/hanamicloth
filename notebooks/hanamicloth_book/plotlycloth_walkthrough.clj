@@ -404,11 +404,7 @@
 ;; [ML Regressoin in Python](https://plotly.com/python/ml-regression/)
 ;; example.
 
-(defonce tips
-  (-> "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
-      (tc/dataset {:key-fn keyword})))
-
-(-> tips
+(-> datasets/tips
     (tc/split :holdout {:seed 1})
     (ploclo/base {:=x :total_bill
                   :=y :tip})

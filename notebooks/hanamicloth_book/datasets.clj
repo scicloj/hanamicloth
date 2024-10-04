@@ -1,6 +1,6 @@
 ;; # Some datasets
 
-;; In this documentation, we will use a few datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html).
+;; In this documentation, we will use a few datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html) and from the [Plotly datasets](https://plotly.github.io/datasets/).
 
 (ns hanamicloth-book.datasets
   (:require [tablecloth.api :as tc]
@@ -48,3 +48,11 @@
   (fetch-dataset "ggplot2/economics_long"))
 
 (compact-view economics-long)
+
+;; ## Tips dataset
+
+(defonce tips
+  (-> "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
+      (tc/dataset {:key-fn keyword})))
+
+(compact-view tips)
