@@ -449,7 +449,9 @@
                                          (tc/drop-missing [=y])
                                          (design-matrix/create-design-matrix [=y]
                                                                              =design-matrix)
-                                         (tc/select-columns (cons =y =predictors))
+                                         (tc/select-columns (->> =design-matrix
+                                                                 (map first)
+                                                                 (cons =y)))
                                          (ml/train =model-options))]
                            (-> ds
                                (design-matrix/create-design-matrix [=y]
@@ -460,9 +462,11 @@
       (-> @=dataset
           (tc/group-by =group)
           (tc/add-column =y predictions-fn)
+          (tc/order-by [=x])
           tc/ungroup)
       (-> @=dataset
-          (tc/add-column =y predictions-fn)))))
+          (tc/add-column =y predictions-fn)
+          (tc/order-by [=x])))))
 
 
 (defn mark-based-layer [mark]
