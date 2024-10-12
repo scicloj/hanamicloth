@@ -28,7 +28,7 @@
 
 ;; * [Kindly](https://scicloj.github.io/kindly-noted/) (to specify how certaiun values should be visualized)
 
-;; * the datasets defined in the [Datasets chapter](./hanamicloth.datasets.html)
+;; * the datasets defined in the [Datasets chapter](./hanamicloth_book.datasets.html)
 
 (ns hanamicloth-book.plotlycloth-walkthrough
   (:require [scicloj.hanamicloth.v1.plotlycloth :as ploclo]
