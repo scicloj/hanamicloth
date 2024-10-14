@@ -60,8 +60,7 @@
       :=y :sepal-length
       :=color :species
       :=mark-size 20
-      :=mark-opacity 0.6})
-    ploclo/plot)
+      :=mark-opacity 0.6}))
 
 ;; ## Templates and parameters
 
@@ -172,8 +171,7 @@
      {:=x :mpg
       :=y :disp
       :=text :cyl
-      :=mark-size 20})
-    ploclo/plot)
+      :=mark-size 20}))
 
 (-> datasets/mtcars
     (ploclo/layer-text
@@ -183,8 +181,7 @@
       :=textfont {:family "Courier New, monospace"
                   :size 16
                   :color :purple}
-      :=mark-size 20})
-    ploclo/plot)
+      :=mark-size 20}))
 
 ;; ### Segment plot
 
@@ -526,8 +523,7 @@
 ;; with statistical processing:
 
 (-> datasets/iris
-    (ploclo/layer-histogram {:=x :sepal-width})
-    ploclo/plot)
+    (ploclo/layer-histogram {:=x :sepal-width}))
 
 (-> datasets/iris
     (ploclo/layer-histogram {:=x :sepal-width
