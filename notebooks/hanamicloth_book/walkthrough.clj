@@ -369,6 +369,21 @@
     haclo/plot
     (assoc :background "lightgrey"))
 
+;; For another example, let us change the y scale to logarithmic.
+;; See [Scale](https://vega.github.io/vega-lite/docs/scale.html)
+;; in the Vega-Lite documentation.
+
+(-> datasets/economics-long
+    (tc/select-rows #(-> % :variable (= "unemploy")))
+    (haclo/base {:=x :date
+                 :=y :value})
+    (haclo/layer-line {:=mark-color "purple"})
+    (haclo/update-data tc/random 5)
+    (haclo/layer-point {:=mark-color "green"
+                        :=mark-size 200})
+    haclo/plot
+    (assoc-in [:encoding :y :scale :type] "log"))
+
 ;; ## Smoothing
 
 ;; `haclo/layer-smooth` is a layer that applies some statistical
