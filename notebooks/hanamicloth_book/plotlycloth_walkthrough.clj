@@ -119,6 +119,11 @@
     ploclo/plot
     (assoc-in [:layout :plot_bgcolor] "#eeeedd"))
 
+;; For another example, let us use a logarihmic scale for the y axis:
+(-> example1
+    ploclo/plot
+    (assoc-in [:layout :yaxis :type] "log"))
+
 ;; ## Field type inference
 
 ;; Plotlycloth infers the type of relevant fields from the data.
