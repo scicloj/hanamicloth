@@ -119,7 +119,7 @@
     ploclo/plot
     (assoc-in [:layout :plot_bgcolor] "#eeeedd"))
 
-;; For another example, let us use a logarihmic scale for the y axis:
+;; For another example, let us use a logarithmic scale for the y axis:
 (-> example1
     ploclo/plot
     (assoc-in [:layout :yaxis :type] "log"))
