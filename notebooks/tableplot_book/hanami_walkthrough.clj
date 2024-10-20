@@ -1,5 +1,11 @@
 ;; # Hanami walkthrough 👣
 
+;; Tableplot offers a Clojure API for creating [Vega-Lite](https://vega.github.io/vega-lite/) plots through layered pipelines.
+
+;; The API not only uses [Hanami templates](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations) but also partially composes with the classical Hanami templates and parameters.
+
+;; Here, we provide a walkthrough of the API.
+
 ;; In this walkthrough, we will demonstrate the main functionality of Tableplot.
 
 ;; Soon, we will provide more in-depth explanations in additional chapters.
