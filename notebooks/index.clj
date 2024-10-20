@@ -47,9 +47,9 @@ inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
 The current draft was written by Daniel Slutsky,
 mentored by jsa-aerial (Hanami author) and Kira McLean.
 
-**Source:** [![(GiuHub repo)](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scicloj/tablelplot)
+**Source:** [![(GitHub repo)](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scicloj/tableplot)
 
-**Artifact:** [![(Clojars coordinates)](https://img.shields.io/clojars/v/org.scicloj/tablelplot.svg)](https://clojars.org/org.scicloj/tablelplot)
+**Artifact:** [![(Clojars coordinates)](https://img.shields.io/clojars/v/org.scicloj/tableplot.svg)](https://clojars.org/org.scicloj/tableplot)
 
 **Status:** The API is almost stable and will soon move to beta stage.
 
@@ -97,7 +97,7 @@ Each of these APIs builds upon the strengths of its target platform and partiall
 In the longer term, this project is part of the Scicloj effort to create a grammar-of-graphics visualization library in Clojure.
 
 ## Discussion
-- development - topic threads under [#tableplot-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-tableplot-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/tablelplot/issues)
+- development - topic threads under [#tableplot-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-tableplot-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/tableplot/issues)
 - usage - topic threads under [#data-science](https://clojurians.zulipchat.com/#narrow/stream/151924-data-science/)
 
 
