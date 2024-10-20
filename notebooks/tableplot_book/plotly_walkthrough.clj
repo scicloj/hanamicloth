@@ -417,7 +417,7 @@
 
 ;; ## Grouping
 
-;; The regression computed by `haclo/layer-smooth`
+;; The regression computed by `layer-smooth`
 ;; is affected by the inferred grouping of the data.
 
 ;; For example, here we recieve three regression lines,

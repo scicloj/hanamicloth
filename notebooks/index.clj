@@ -8,7 +8,7 @@
             [clojure.string :as str]
             [clojure.string :as string]
             [scicloj.clay.v2.api :as clay]
-            [scicloj.tableplot.v1.hanami :as haclo]
+            [scicloj.tableplot.v1.hanami :as hanami]
             [tableplot-book.datasets :as datasets]
             [tablecloth.api :as tc]))
 
@@ -18,12 +18,12 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
-                 :=y :value})
-    (haclo/layer-line {:=mark-color "purple"})
-    (haclo/update-data tc/random 5)
-    (haclo/layer-point {:=mark-color "green"
-                        :=mark-size 200}))
+    (hanami/base {:=x :date
+                  :=y :value})
+    (hanami/layer-line {:=mark-color "purple"})
+    (hanami/update-data tc/random 5)
+    (hanami/layer-point {:=mark-color "green"
+                         :=mark-size 200}))
 
 (md "See more examples:
 
