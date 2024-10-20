@@ -1,4 +1,4 @@
-{:remote-repo {:git-url "https://github.com/scicloj/hanamicloth"
+{:remote-repo {:git-url "https://github.com/scicloj/tableplot"
                :branch "main"}
  :quarto {:format {:html {:toc true
                           :toc-depth 4

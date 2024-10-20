@@ -8,8 +8,8 @@
             [clojure.string :as str]
             [clojure.string :as string]
             [scicloj.clay.v2.api :as clay]
-            [scicloj.hanamicloth.v1.api :as haclo]
-            [hanamicloth-book.datasets :as datasets]
+            [scicloj.tableplot.v1.hanami :as haclo]
+            [tableplot-book.datasets :as datasets]
             [tablecloth.api :as tc]))
 
 ^:kindly/hide-code
@@ -27,15 +27,15 @@
 
 (md "See more examples:
 
-* [Main API Walkthrough](./hanamicloth_book.walkthrough.html) 👣
+* [Hanami API Walkthrough](./tableplot_book.hanami_walkthrough.html) 👣
 
-* [Plotlycloth Walkthrough](./hanamicloth_book.plotlycloth_walkthrough.html) 👣 - experimental 🛠")
+* [Plotly API Walkthrough](./tableplot_book.plotly_walkthrough.html) 👣 - experimental 🛠")
 
 ;; # Preface
 
 (md
  "
-Hanamicloth is a composition of
+Tableplot is a composition of
 [Hanami](https://github.com/jsa-aerial/hanami) data visualization [templates](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations)
 and [Tablecloth](https://scicloj.github.io/tablecloth/) datasets.
 
@@ -47,11 +47,11 @@ inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
 The current draft was written by Daniel Slutsky,
 mentored by jsa-aerial (Hanami author) and Kira McLean.
 
-**Source:** [![(GiuHub repo)](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scicloj/hanamicloth)
+**Source:** [![(GiuHub repo)](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scicloj/tablelplot)
 
-**Artifact:** [![(Clojars coordinates)](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
+**Artifact:** [![(Clojars coordinates)](https://img.shields.io/clojars/v/org.scicloj/tablelplot.svg)](https://clojars.org/org.scicloj/tablelplot)
 
-**Status:** The `api` namespace will soon move to beta stage, but still lacks some important features. The `plotlycloth` namespace is still experimental.
+**Status:** The API is almost stable and will soon move to beta stage.
 
 -------------------
 
@@ -66,11 +66,11 @@ April 2024 talk at London Clojurians:
 (md "
 ## Two APIs
 
-Hanamicloth currently supports two APIs:
+Tableplot currently supports two APIs:
 
-- `scicloj.hanamicloth.v1.api` generates [Vega-Lite](https://vega.github.io/vega-lite/) plots.
+- `scicloj.tableplot.v1.hanami` generates [Vega-Lite](https://vega.github.io/vega-lite/) plots and parially composes with the classic Hanami templates.
 
-- `scicloj.hanamicloth.v1.plotlycloth` generates the [Plotly.js](https://plotly.com/javascript/) plots.
+- `scicloj.tableplot.v1.plotly` generates the [Plotly.js](https://plotly.com/javascript/) plots.
 
 Each of these APIs builds upon the strengths of its target platform and partially uses its naming and concepts. Thus, the two APIs are not completely compatible. The Plotly-based API is expected to grow a little further in terms of its flexibility and the kinds of idioms it can express. ")
 
@@ -97,7 +97,7 @@ Each of these APIs builds upon the strengths of its target platform and partiall
 In the longer term, this project is part of the Scicloj effort to create a grammar-of-graphics visualization library in Clojure.
 
 ## Discussion
-- development - topic threads under [#hanamicloth-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-hanamicloth-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/hanamicloth/issues)
+- development - topic threads under [#tableplot-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-tableplot-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/tablelplot/issues)
 - usage - topic threads under [#data-science](https://clojurians.zulipchat.com/#narrow/stream/151924-data-science/)
 
 
@@ -107,7 +107,7 @@ In the longer term, this project is part of the Scicloj effort to create a gramm
 ^:kindly/hide-code
 (defn chapter->title [chapter]
   (or (some->> chapter
-               (format "notebooks/hanamicloth_book/%s.clj")
+               (format "notebooks/tableplot_book/%s.clj")
                slurp
                str/split-lines
                (filter #(re-matches #"^;; # .*" %))
@@ -120,7 +120,7 @@ In the longer term, this project is part of the Scicloj effort to create a gramm
      clojure.edn/read-string
      (map (fn [chapter]
             (prn [chapter (chapter->title chapter)])
-            (format "\n- [%s](hanamicloth_book.%s.html)\n"
+            (format "\n- [%s](tableplot_book.%s.html)\n"
                     (chapter->title chapter)
                     chapter)))
      (string/join "\n")

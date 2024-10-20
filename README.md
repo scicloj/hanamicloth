@@ -1,22 +1,21 @@
-# Hanamicloth
+# Tableplot
 
 Easy layered graphics with Hanami & Tablecloth
 
-[![Clojars Project](https://img.shields.io/clojars/v/org.scicloj/hanamicloth.svg)](https://clojars.org/org.scicloj/hanamicloth)
+[![Clojars Project](https://img.shields.io/clojars/v/org.scicloj/tableplot.svg)](https://clojars.org/org.scicloj/tableplot)
 
-Hanamicloth is a composition of
+Tableplot is a composition of
 [Hanami](https://github.com/jsa-aerial/hanami) data visualization [templates](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#templates-substitution-keys-and-transformations)
 and [Tablecloth](https://scicloj.github.io/tablecloth/) datasets.
 
 It is inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
 [layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html).
 
-[Documentation](https://scicloj.github.io/hanamicloth/)
+[Documentation](https://scicloj.github.io/tableplot/)
 
 ## Status
 
-The `api` namespace will soon move to beta stage, but still lacks some important features. The `plotlycloth` namespace is still experimental.
-User feedback will be appreciated on our path to stabilizing it.
+The API is almost stable and will soon move to beta stage.
 
 ## Discussion
 
@@ -24,7 +23,7 @@ Do you wish to collaborate on building this library? Let us talk!
 
 Your feedback is needed at this experimental stage.
 
-- development - topic threads under [#hanamicloth-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-hanamicloth-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/hanamicloth/issues)
+- development - topic threads under [#tableplot-dev](https://clojurians.zulipchat.com/#narrow/stream/443101-tableplot-dev) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/) or [Github Issues](https://github.com/scicloj/tableplot/issues)
 - usage - topic threads under [#data-science](https://clojurians.zulipchat.com/#narrow/stream/151924-data-science) at the [Clojurians Zulip chat](https://scicloj.github.io/docs/community/chat/)
 
 ## License

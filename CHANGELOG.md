@@ -3,24 +3,24 @@ All notable changes to this project will be documented in this file. This change
 
 ## [1-alpha9] - 2024-10-04
 - deps update
-- plotlycloth - added support to override specific layer data (experimental)
-- plotlycloth - extended layer-smooth to use metamorph.ml models and design matrices
+- plotly - added support to override specific layer data (experimental)
+- plotly - extended layer-smooth to use metamorph.ml models and design matrices
 
 ## [1-alpha8] - 2024-09-21
 - deps update
 
 ## [1-alpha7-SNAPSHOT] - 2024-09-13
-- plotlycloth - added text & font support
-- plotlycloth - bugfix: broken x axis in histograms
+- plotly - added text & font support
+- plotly - bugfix: broken x axis in histograms
 
 ## [1-alpha6-SNAPSHOT] - 2024-08-09
-- plotlycloth - coordinates support - WIP
+- plotly - coordinates support - WIP
 - plotlylcoth - styling changes
-- plotlycloth - simplified the inference of mode and type a bit
+- plotly - simplified the inference of mode and type a bit
 - debugging support - WIP
 
 ## [1-alpha5-SNAPSHOT] - 2024-08-06
-- added the `plotlycloth` API (experimental) generating [Plotly.js plots](https://plotly.com/javascript/)
+- added the `plotly` API (experimental) generating [Plotly.js plots](https://plotly.com/javascript/)
 
 ## [1-alpha4-SNAPSHOT] - 2024-07-12
 - breaking change: substitution keys are `:=abcd`-style rather than `:haclo/abcd`-style

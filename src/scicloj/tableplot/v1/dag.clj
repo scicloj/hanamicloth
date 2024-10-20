@@ -1,7 +1,7 @@
-(ns scicloj.hanamicloth.v1.dag
+(ns scicloj.tableplot.v1.dag
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]
-            [scicloj.hanamicloth.v1.cache :as cache]))
+            [scicloj.tableplot.v1.cache :as cache]))
 
 (defn xform-k
   "Apply Hanami xform
@@ -109,7 +109,7 @@
     '(fn-with-deps [A B] (+ A B)))
 
   =>
-  (scicloj.hanamicloth.v1.dag/fn-with-deps-keys
+  (scicloj.tableplot.v1.dag/fn-with-deps-keys
    [:A :B]
    (clojure.core/fn [{:keys [A B]}] (+ A B)))
 
@@ -140,7 +140,7 @@
 
   =>
   (def A+B
-    (scicloj.hanamicloth.v1.dag/fn-with-deps [A B] (+ A B)))
+    (scicloj.tableplot.v1.dag/fn-with-deps [A B] (+ A B)))
 
   (defn-with-deps B->C [B] (inc B))
   (defn-with-deps A->B [A] (inc A))

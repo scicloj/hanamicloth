@@ -1,6 +1,6 @@
-;; # Walkthrough 👣
+;; # Hanami walkthrough 👣
 
-;; In this walkthrough, we will demonstrate the main functionality of Hanamicloth.
+;; In this walkthrough, we will demonstrate the main functionality of Tableplot.
 
 ;; Soon, we will provide more in-depth explanations in additional chapters.
 
@@ -8,7 +8,7 @@
 
 ;; For this tutorial, we require:
 
-;; * Hanamicloth's main API namepace
+;; * Tableplot's Hanami API namepace
 
 ;; * [Hanami](https://github.com/jsa-aerial/hanami)
 
@@ -20,10 +20,10 @@
 
 ;; * [Kindly](https://scicloj.github.io/kindly-noted/) (to specify how certain values should be visualized)
 
-;; * the datasets defined in the [Datasets chapter](./hanamicloth_book.datasets.html)
+;; * the datasets defined in the [Datasets chapter](./tableplot_book.datasets.html)
 
-(ns hanamicloth-book.walkthrough
-  (:require [scicloj.hanamicloth.v1.api :as haclo]
+(ns tableplot-book.hanami-walkthrough
+  (:require [scicloj.tableplot.v1.hanami :as hanami]
             [aerial.hanami.templates :as ht]
             [tablecloth.api :as tc]
             [tech.v3.datatype.datetime :as datetime]
@@ -31,53 +31,53 @@
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
-            [hanamicloth-book.datasets :as datasets]))
+            [tableplot-book.datasets :as datasets]))
 
 ;; ## Basic usage
 
 ;; Let us create a scatter plot from the Iris dataset.
-;; We pass a Tablecloth dataset to a Hanamicloth function
-;; with a Hanamicloth template.
+;; We pass a Tablecloth dataset to a Tableplot function
+;; with a Tableplot template.
 
 (-> datasets/iris
-    (haclo/plot haclo/point-chart
-                {:=x :sepal-width
-                 :=y :sepal-length
-                 :=color :species
-                 :=mark-size 200}))
+    (hanami/plot hanami/point-chart
+                 {:=x :sepal-width
+                  :=y :sepal-length
+                  :=color :species
+                  :=mark-size 200}))
 
-;; Soon, the Hanamicloth docs will offer an introduction to the use of
+;; Soon, the Tableplot docs will offer an introduction to the use of
 ;; Hanami templates and substitution keys.
 ;; For now, please see the [Hanami documentation](https://github.com/jsa-aerial/hanami).
 
-;; While Hanamicloth allows using the classic Hanami templates and substitution keys,
+;; While Tableplot allows using the classic Hanami templates and substitution keys,
 ;; it also offers its own sets of templates, that we just used here.
 
 ;; Unlike the classic Hanami keys of using
 ;; capital letter substitution keys (e.g. `:COLOR`)
-;; Hanamicloth uses the convention of
+;; Tableplot uses the convention of
 ;; substitution keys beginning with `=` (e.g. `:=color`)
 
-;; The templates of Hanamicloth also support a layered grammar which is demonstrated later in this document.
+;; The templates of Tableplot also support a layered grammar which is demonstrated later in this document.
 
 ;; (Here is how we can express the same plot with the layered grammar:)
 
 (-> datasets/iris
-    (haclo/layer-point
+    (hanami/layer-point
      {:=x :sepal-width
       :=y :sepal-length
       :=color :species
       :=mark-size 200}))
 
-;; The value returned by a `haclo/plot` function
+;; The value returned by a `hanami/plot` function
 ;; is a [Vega-Lite](https://vega.github.io/vega-lite/) spec:
 
 (-> datasets/iris
-    (haclo/plot haclo/point-chart
-                {:=x :sepal-width
-                 :=y :sepal-length
-                 :=color :species
-                 :=mark-size 200})
+    (hanami/plot hanami/point-chart
+                 {:=x :sepal-width
+                  :=y :sepal-length
+                  :=color :species
+                  :=mark-size 200})
     kind/pprint)
 
 ;; By looking at the `:values` key above,
@@ -88,11 +88,11 @@
 ;; as it is annotated by Kindly as a Vega-lite plot:
 
 (-> datasets/iris
-    (haclo/plot haclo/point-chart
-                {:=x :sepal-width
-                 :=y :sepal-length
-                 :=color :species
-                 :=mark-size 200})
+    (hanami/plot hanami/point-chart
+                 {:=x :sepal-width
+                  :=y :sepal-length
+                  :=color :species
+                  :=mark-size 200})
     meta)
 
 ;; ## Using classic Hanami templates and defaults
@@ -101,18 +101,18 @@
 ;; and substitution keys (`:X`, `:Y`, `:MSIZE`).
 
 (-> datasets/iris
-    (haclo/plot ht/point-chart
-                {:X :sepal-width
-                 :Y :sepal-length
-                 :MSIZE 200
-                 :COLOR "species"}))
+    (hanami/plot ht/point-chart
+                 {:X :sepal-width
+                  :Y :sepal-length
+                  :MSIZE 200
+                  :COLOR "species"}))
 
 (-> datasets/iris
-    (haclo/plot ht/point-chart
-                {:X :sepal-width
-                 :Y :sepal-length
-                 :MSIZE 200
-                 :COLOR "species"})
+    (hanami/plot ht/point-chart
+                 {:X :sepal-width
+                  :Y :sepal-length
+                  :MSIZE 200
+                  :COLOR "species"})
     kind/pprint)
 
 ;; ## Inferring and overriding field types
@@ -122,14 +122,14 @@
 ;; (and is thus coloured with distinct colours rather than a gradient).
 
 (-> datasets/iris
-    (haclo/plot haclo/point-chart
-                {:=x :sepal-width
-                 :=y :sepal-length
-                 :=color :species
-                 :=mark-size 200}))
+    (hanami/plot hanami/point-chart
+                 {:=x :sepal-width
+                  :=y :sepal-length
+                  :=color :species
+                  :=mark-size 200}))
 
 (-> datasets/iris
-    (haclo/plot haclo/point-chart
+    (hanami/plot hanami/point-chart
                 {:=x :sepal-width
                  :=y :sepal-length
                  :=color :species
@@ -140,14 +140,14 @@
 ;; `color` is `:quantitative`:
 
 (-> datasets/mtcars
-    (haclo/plot haclo/point-chart
+    (hanami/plot hanami/point-chart
                 {:=x :mpg
                  :=y :disp
                  :=color :cyl
                  :=mark-size 200}))
 
 (-> datasets/mtcars
-    (haclo/plot haclo/point-chart
+    (hanami/plot hanami/point-chart
                 {:=x :mpg
                  :=y :disp
                  :=color :cyl
@@ -157,7 +157,7 @@
 ;; This can be overridden to define `color` as `:noninal`:
 
 (-> datasets/mtcars
-    (haclo/plot haclo/point-chart
+    (hanami/plot hanami/point-chart
                 {:=x :mpg
                  :=y :disp
                  :=color :cyl
@@ -165,48 +165,48 @@
                  :=mark-size 200}))
 
 (-> datasets/mtcars
-    (haclo/plot haclo/point-chart
-                {:=x :mpg
-                 :=y :disp
-                 :=color :cyl
-                 :=color-type :nominal
-                 :=mark-size 200})
+    (hanami/plot hanami/point-chart
+                 {:=x :mpg
+                  :=y :disp
+                  :=color :cyl
+                  :=color-type :nominal
+                  :=mark-size 200})
     kind/pprint)
 
 ;; ## More examples
 
-;; A Hanamicloth boxplot:
+;; A Tableplot boxplot:
 
 (-> datasets/mtcars
-    (haclo/plot haclo/boxplot-chart
-                {:=x :cyl
-                 :=x-type :nominal
-                 :=y :disp}))
+    (hanami/plot hanami/boxplot-chart
+                 {:=x :cyl
+                  :=x-type :nominal
+                  :=y :disp}))
 
 ;; An original Hanami boxplot:
 
 (-> datasets/mtcars
-    (haclo/plot ht/boxplot-chart
-                {:X :cyl
-                 :XTYPE :nominal
-                 :Y :disp}))
+    (hanami/plot ht/boxplot-chart
+                 {:X :cyl
+                  :XTYPE :nominal
+                  :Y :disp}))
 
-;; Plotting segments with Hanamicloth:
+;; Plotting segments with Tableplot:
 
 (-> datasets/iris
-    (haclo/plot haclo/rule-chart
-                {:=x :sepal-width
-                 :=y :sepal-length
-                 :=x2 :petal-width
-                 :=y2 :petal-length
-                 :=mark-opacity 0.5
-                 :=mark-size 3
-                 :=color :species}))
+    (hanami/plot hanami/rule-chart
+                 {:=x :sepal-width
+                  :=y :sepal-length
+                  :=x2 :petal-width
+                  :=y2 :petal-length
+                  :=mark-opacity 0.5
+                  :=mark-size 3
+                  :=color :species}))
 
 ;; Plotting segments with original Hanami:
 
 (-> datasets/iris
-    (haclo/plot ht/rule-chart
+    (hanami/plot ht/rule-chart
                 {:X :sepal-width
                  :Y :sepal-length
                  :X2 :petal-width
@@ -221,7 +221,7 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/plot haclo/line-chart
+    (hanami/plot hanami/line-chart
                 {:=x :date
                  :=y :value
                  :=mark-color "purple"}))
@@ -231,7 +231,7 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/plot haclo/line-chart
+    (hanami/plot hanami/line-chart
                 {:=x :date
                  :=y :value
                  :=mark-color "purple"})
@@ -239,12 +239,12 @@
 
 ;; ## Delayed transformation
 
-;; Instead of the `haclo/plot` function, it is possible to used
-;; `haclo/base`:
+;; Instead of the `hanami/plot` function, it is possible to used
+;; `hanami/base`:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base haclo/line-chart
+    (hanami/base hanami/line-chart
                 {:=x :date
                  :=y :value
                  :=mark-color "purple"}))
@@ -256,7 +256,7 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/plot haclo/line-chart
+    (hanami/plot hanami/line-chart
                 {:=x :date
                  :=y :value
                  :=mark-color "purple"})
@@ -264,13 +264,13 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base haclo/line-chart
+    (hanami/base hanami/line-chart
                 {:=x :date
                  :=y :value
                  :=mark-color "purple"})
     kind/pprint)
 
-;; The structure returned by `haclo/base` is a Hanami template
+;; The structure returned by `hanami/base` is a Hanami template
 ;; (with [local defaults](https://github.com/jsa-aerial/hanami?tab=readme-ov-file#template-local-defaults)).
 ;; When it is displayed, it goes through the Hanami transform
 ;; to recieve the Vega-Lite spec.
@@ -285,41 +285,41 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value
                  :=mark-color "purple"})
-    haclo/layer-line)
+    hanami/layer-line)
 
 ;; The substitution keys can also be specified on the layer level:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value})
-    (haclo/layer-line {:=mark-color "purple"}))
+    (hanami/layer-line {:=mark-color "purple"}))
 
 ;; This allows us to create, e.g., aesthetic differences between layers:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value})
-    (haclo/layer-point {:=mark-color "green"
+    (hanami/layer-point {:=mark-color "green"
                         :=mark-size 200
                         :=mark-opacity 0.1})
-    (haclo/layer-line {:=mark-color "purple"}))
+    (hanami/layer-line {:=mark-color "purple"}))
 
 ;; We can also skip the base and have everything in the layer:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/layer-line {:=x :date
+    (hanami/layer-line {:=x :date
                        :=y :value
                        :=mark-color "purple"}))
 
 ;; ## Updating data
 
-;; Using `haclo/update-data`, we may process the dataset
+;; Using `hanami/update-data`, we may process the dataset
 ;; during the pipeline, affecting only the layers added further down the pipeline.
 
 ;; This functionality is inspired by [ggbuilder](https://github.com/mjskay/ggbuilder)
@@ -327,11 +327,11 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value})
-    (haclo/layer-line {:=mark-color "purple"})
-    (haclo/update-data tc/random 5)
-    (haclo/layer-point {:=mark-color "green"
+    (hanami/layer-line {:=mark-color "purple"})
+    (hanami/update-data tc/random 5)
+    (hanami/layer-point {:=mark-color "green"
                         :=mark-size 200}))
 
 ;; You see, we have lots of data for the lines,
@@ -339,19 +339,19 @@
 
 ;; ## Processing raw vega-lite
 
-;; During a pipeline, we may call `haclo/plot`
+;; During a pipeline, we may call `hanami/plot`
 ;; to apply the Hanami transform and realize the
 ;; `Vega-Lite` spec.
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value})
-    (haclo/layer-line {:=mark-color "purple"})
-    (haclo/update-data tc/random 5)
-    (haclo/layer-point {:=mark-color "green"
+    (hanami/layer-line {:=mark-color "purple"})
+    (hanami/update-data tc/random 5)
+    (hanami/layer-point {:=mark-color "green"
                         :=mark-size 200})
-    haclo/plot
+    hanami/plot
     kind/pprint)
 
 ;; While this in itself does not affect the display of the plot,
@@ -360,13 +360,13 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value})
-    (haclo/layer-line {:=mark-color "purple"})
-    (haclo/update-data tc/random 5)
-    (haclo/layer-point {:=mark-color "green"
+    (hanami/layer-line {:=mark-color "purple"})
+    (hanami/update-data tc/random 5)
+    (hanami/layer-point {:=mark-color "green"
                         :=mark-size 200})
-    haclo/plot
+    hanami/plot
     (assoc :background "lightgrey"))
 
 ;; For another example, let us change the y scale to logarithmic.
@@ -375,18 +375,18 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value})
-    (haclo/layer-line {:=mark-color "purple"})
-    (haclo/update-data tc/random 5)
-    (haclo/layer-point {:=mark-color "green"
+    (hanami/layer-line {:=mark-color "purple"})
+    (hanami/update-data tc/random 5)
+    (hanami/layer-point {:=mark-color "green"
                         :=mark-size 200})
-    haclo/plot
+    hanami/plot
     (assoc-in [:encoding :y :scale :type] "log"))
 
 ;; ## Smoothing
 
-;; `haclo/layer-smooth` is a layer that applies some statistical
+;; `hanami/layer-smooth` is a layer that applies some statistical
 ;; processing to the dataset to model it as a smooth shape.
 ;; It is inspired by ggplot's [geom_smooth](https://ggplot2.tidyverse.org/reference/geom_smooth.html).
 
@@ -394,12 +394,12 @@
 ;; Soon we will add more ways of modelling the data.
 
 (-> datasets/iris
-    (haclo/base {:=title "dummy"
+    (hanami/base {:=title "dummy"
                  :=mark-color "green"
                  :=x :sepal-width
                  :=y :sepal-length})
-    haclo/layer-point
-    (haclo/layer-smooth {:=mark-color "orange"}))
+    hanami/layer-point
+    (hanami/layer-smooth {:=mark-color "orange"}))
 
 ;; By default, the regression is computed with only one predictor variable,
 ;; which is `:=x`.
@@ -407,27 +407,27 @@
 ;; We may compute a regression with more than one predictor.
 
 (-> datasets/iris
-    (haclo/base {:=x :sepal-width
+    (hanami/base {:=x :sepal-width
                  :=y :sepal-length})
-    haclo/layer-point
-    (haclo/layer-smooth {:=predictors [:petal-width
+    hanami/layer-point
+    (hanami/layer-smooth {:=predictors [:petal-width
                                        :petal-length]}))
 
 ;; ## Grouping
 
-;; The regression computed by `haclo/layer-smooth`
+;; The regression computed by `hanami/layer-smooth`
 ;; is affected by the inferred grouping of the data.
 
 ;; For example, here we recieve three regression lines,
 ;; each for every species.
 
 (-> datasets/iris
-    (haclo/base {:=title "dummy"
+    (hanami/base {:=title "dummy"
                  :=color :species
                  :=x :sepal-width
                  :=y :sepal-length})
-    haclo/layer-point
-    haclo/layer-smooth)
+    hanami/layer-point
+    hanami/layer-smooth)
 
 ;; This happened because the `:color` field was `:species`,
 ;; which is of `:nominal` type.
@@ -436,14 +436,14 @@
 ;; For example, let us avoid grouping:
 
 (-> datasets/iris
-    (haclo/base {:=title "dummy"
+    (hanami/base {:=title "dummy"
                  :=mark-color "green"
                  :=color :species
                  :=group []
                  :=x :sepal-width
                  :=y :sepal-length})
-    haclo/layer-point
-    haclo/layer-smooth)
+    hanami/layer-point
+    hanami/layer-smooth)
 
 ;; ## Example: out-of-sample predictions
 
@@ -497,18 +497,18 @@
     (tc/add-column :year #(datetime/long-temporal-field :years (:date %)))
     (tc/add-column :month #(datetime/long-temporal-field :months (:date %)))
     (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y))))
-    (haclo/base {:=x :date
+    (hanami/base {:=x :date
                  :=y :value})
-    (haclo/layer-smooth {:=color :relative-time
+    (hanami/layer-smooth {:=color :relative-time
                          :=mark-size 10
                          :=group []
                          :=predictors [:yearmonth]})
     ;; Keep only the past for the following layer:
-    (haclo/update-data (fn [dataset]
+    (hanami/update-data (fn [dataset]
                          (-> dataset
                              (tc/select-rows (fn [row]
                                                (-> row :relative-time (= "Past")))))))
-    (haclo/layer-line {:=mark-color "purple"
+    (hanami/layer-line {:=mark-color "purple"
                        :=mark-size 3}))
 
 ;; ## Histograms
@@ -517,8 +517,8 @@
 ;; with statistical processing:
 
 (-> datasets/iris
-    (haclo/layer-histogram {:=x :sepal-width}))
+    (hanami/layer-histogram {:=x :sepal-width}))
 
 (-> datasets/iris
-    (haclo/layer-histogram {:=x :sepal-width
+    (hanami/layer-histogram {:=x :sepal-width
                             :=histogram-nbins 30}))

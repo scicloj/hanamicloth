@@ -1,4 +1,4 @@
-(ns scicloj.hanamicloth.v1.plotlycloth
+(ns scicloj.tableplot.v1.plotly
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]
             [scicloj.kindly.v4.kind :as kind]
@@ -10,10 +10,10 @@
             [scicloj.metamorph.ml :as ml]
             [scicloj.metamorph.ml.regression]
             [scicloj.metamorph.ml.design-matrix :as design-matrix]
-            [scicloj.hanamicloth.v1.dag :as dag]
+            [scicloj.tableplot.v1.dag :as dag]
             [clojure.string :as str]
-            [scicloj.hanamicloth.v1.util :as util]
-            [scicloj.hanamicloth.v1.cache :as cache]))
+            [scicloj.tableplot.v1.util :as util]
+            [scicloj.tableplot.v1.cache :as cache]))
 
 (def submap->dataset-after-stat
   (dag/fn-with-deps-keys
@@ -546,7 +546,7 @@
                              (if (fn? v)
                                (->> v
                                     meta
-                                    :scicloj.hanamicloth.v1.dag/dep-ks
+                                    :scicloj.tableplot.v1.dag/dep-ks
                                     (map #(vector % k)))))))
         nodes (flatten edges)]
     (kind/cytoscape
