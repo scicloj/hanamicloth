@@ -1,4 +1,4 @@
-(ns scicloj.hanamicloth.v1.api
+(ns scicloj.tableplot.v1.hanami
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]
             [scicloj.kindly.v4.kind :as kind]
@@ -7,10 +7,10 @@
             [tech.v3.dataset :as ds]
             [fastmath.stats]
             [fastmath.ml.regression :as regression]
-            [scicloj.hanamicloth.v1.dag :as dag]
+            [scicloj.tableplot.v1.dag :as dag]
             [clojure.string :as str]
-            [scicloj.hanamicloth.v1.util :as util]
-            [scicloj.hanamicloth.v1.cache :as cache]))
+            [scicloj.tableplot.v1.util :as util]
+            [scicloj.tableplot.v1.cache :as cache]))
 
 (dag/defn-with-deps submap->dataset [=base-dataset =layer-dataset =layer?]
   (if =layer?
@@ -108,7 +108,7 @@
    :VALDATA :=csv-data
    :DFMT {:type "csv"}
 
-   ;; defaults for hanamicloth templates
+   ;; defaults for Tableplot's templates
    :=stat hc/RMV
    :=base-dataset hc/RMV
    :=layer-dataset hc/RMV

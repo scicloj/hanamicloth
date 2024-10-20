@@ -1,10 +1,10 @@
-;; # Plotlycloth Walkthrough 👣 - experimental 🛠
+;; # Plotly walkthrough 👣 - experimental 🛠
 
-;; Plotlycloth is a Clojure API for creating [Plotly.js](https://plotly.com/javascript/) plots through layered pipelines. It is part of the Hanamicloth library.
+;; Tableplot offers a Clojure API for creating [Plotly.js](https://plotly.com/javascript/) plots through layered pipelines.
 
 ;; Here, we provide a walkthrough of the API.
 
-;; 🛠 This part of Hanamicloth is still in experimental stage.
+;; 🛠 This part of Tableplot is still in experimental stage.
 ;; Some of the details will change soon. Feedback and comments will help.
 
 ;; Soon, we will provide more in-depth explanations in additional chapters.
@@ -18,7 +18,7 @@
 ;; ## Setup
 ;; For this tutorial, we require:
 
-;; * The plotlycloth API namepace
+;; * The Tablecloth plotly API namepace
 
 ;; * [Tablecloth](https://scicloj.github.io/tablecloth/) for dataset processing
 
@@ -28,10 +28,10 @@
 
 ;; * [Kindly](https://scicloj.github.io/kindly-noted/) (to specify how certaiun values should be visualized)
 
-;; * the datasets defined in the [Datasets chapter](./hanamicloth_book.datasets.html)
+;; * the datasets defined in the [Datasets chapter](./tableplot_book.datasets.html)
 
-(ns hanamicloth-book.plotlycloth-walkthrough
-  (:require [scicloj.hanamicloth.v1.plotlycloth :as ploclo]
+(ns tableplot-book.plotly-walkthrough
+  (:require [scicloj.tableplot.v1.plotly :as plotly]
             [tablecloth.api :as tc]
             [tablecloth.column.api :as tcc]
             [tech.v3.datatype.datetime :as datetime]
@@ -39,23 +39,23 @@
             [scicloj.kindly.v4.kind :as kind]
             [clojure.string :as str]
             [scicloj.kindly.v4.api :as kindly]
-            [hanamicloth-book.datasets :as datasets]
+            [tableplot-book.datasets :as datasets]
             [aerial.hanami.templates :as ht]))
 
 ;; ## Basic usage
 
-;; Plotlycloth plots are created by passing datasets to a pipeline
+;; Plotly plots are created by passing datasets to a pipeline
 ;; of layer functions.
 
 ;; Additional parameters to the functions are passed as maps.
-;; Plotlycloth map keys begin with `=` (e.g., `:=color`).
+;; Map keys begin with `=` (e.g., `:=color`).
 
 ;; For example, let us plot a scatterplot (a layer of points)
 ;; of 10 random items from the Iris dataset.
 
 (-> datasets/iris
     (tc/random 10 {:seed 1})
-    (ploclo/layer-point
+    (plotly/layer-point
      {:=x :sepal-width
       :=y :sepal-length
       :=color :species
@@ -76,7 +76,7 @@
 (def example1
   (-> datasets/iris
       (tc/random 10 {:seed 1})
-      (ploclo/layer-point
+      (plotly/layer-point
        {:=x :sepal-width
         :=y :sepal-length
         :=color :species
@@ -101,32 +101,32 @@
 ;; it generates a Plotly.js plot:
 
 (-> example1
-    ploclo/plot
+    plotly/plot
     kind/pprint)
 
 ;; It is annotated as `kind/plotly`, so that visual tools know how to
 ;; render it.
 
 (-> example1
-    ploclo/plot
+    plotly/plot
     meta)
 
 ;; This can be useful if you wish to process the Actual Plotly.js spec
-;; rather than use Plotlycloth's API. Let us change the background colour,
+;; rather than use the Tableplot Plotly API. Let us change the background colour,
 ;; for example:
 
 (-> example1
-    ploclo/plot
+    plotly/plot
     (assoc-in [:layout :plot_bgcolor] "#eeeedd"))
 
 ;; For another example, let us use a logarithmic scale for the y axis:
 (-> example1
-    ploclo/plot
+    plotly/plot
     (assoc-in [:layout :yaxis :type] "log"))
 
 ;; ## Field type inference
 
-;; Plotlycloth infers the type of relevant fields from the data.
+;; Tableplot infers the type of relevant fields from the data.
 
 ;; The example above was colored as it were since `:species`
 ;; column was nominal, so it was assigned distinct colours.
@@ -135,7 +135,7 @@
 ;; column, so a color gradient is used:
 
 (-> datasets/mtcars
-    (ploclo/layer-point
+    (plotly/layer-point
      {:=x :mpg
       :=y :disp
       :=color :cyl
@@ -144,7 +144,7 @@
 ;; We can override the inferred types and thus affect the generated plot:
 
 (-> datasets/mtcars
-    (ploclo/layer-point
+    (plotly/layer-point
      {:=x :mpg
       :=y :disp
       :=color :cyl
@@ -156,7 +156,7 @@
 ;; ### Boxplot
 
 (-> datasets/mtcars
-    (ploclo/layer-boxplot
+    (plotly/layer-boxplot
      {:=x :cyl
       :=y :disp}))
 
@@ -165,21 +165,21 @@
 (-> datasets/mtcars
     (tc/group-by [:cyl])
     (tc/aggregate {:total-disp #(-> % :disp tcc/sum)})
-    (ploclo/layer-bar
+    (plotly/layer-bar
      {:=x :cyl
       :=y :total-disp}))
 
 ;; ### Text
 
 (-> datasets/mtcars
-    (ploclo/layer-text
+    (plotly/layer-text
      {:=x :mpg
       :=y :disp
       :=text :cyl
       :=mark-size 20}))
 
 (-> datasets/mtcars
-    (ploclo/layer-text
+    (plotly/layer-text
      {:=x :mpg
       :=y :disp
       :=text :cyl
@@ -191,7 +191,7 @@
 ;; ### Segment plot
 
 (-> datasets/iris
-    (ploclo/layer-segment
+    (plotly/layer-segment
      {:=x0 :sepal-width
       :=y0 :sepal-length
       :=x1 :petal-width
@@ -207,13 +207,13 @@
      :IJKL [:A :A :A :A :A :B :B :B :B :B]
      :MNOP [:C :D :C :D :C :D :C :D :C :D]}
     tc/dataset
-    (ploclo/base {:=title "IJKLMNOP"})
-    (ploclo/layer-point {:=x :ABCD
+    (plotly/base {:=title "IJKLMNOP"})
+    (plotly/layer-point {:=x :ABCD
                          :=y :EFGH
                          :=color :IJKL
                          :=size :MNOP
                          :=name "QRST1"})
-    (ploclo/layer-line
+    (plotly/layer-line
      {:=title "IJKL MNOP"
       :=x :ABCD
       :=y :ABCD
@@ -229,7 +229,7 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/layer-line
+    (plotly/layer-line
      {:=x :date
       :=y :value
       :=mark-color "purple"}))
@@ -240,12 +240,12 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/layer-point {:=x :date
+    (plotly/layer-point {:=x :date
                          :=y :value
                          :=mark-color "green"
                          :=mark-size 20
                          :=mark-opacity 0.5})
-    (ploclo/layer-line {:=x :date
+    (plotly/layer-line {:=x :date
                         :=y :value
                         :=mark-color "purple"}))
 
@@ -254,25 +254,25 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
+    (plotly/base {:=x :date
                   :=y :value})
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-point {:=mark-color "green"
                          :=mark-size 20
                          :=mark-opacity 0.5})
-    (ploclo/layer-line {:=mark-color "purple"}))
+    (plotly/layer-line {:=mark-color "purple"}))
 
 
 ;; Layers can be named:
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
+    (plotly/base {:=x :date
                   :=y :value})
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-point {:=mark-color "green"
                          :=mark-size 20
                          :=mark-opacity 0.5
                          :=name "points"})
-    (ploclo/layer-line {:=mark-color "purple"
+    (plotly/layer-line {:=mark-color "purple"
                         :=name "line"}))
 
 ;; ## Updating data
@@ -290,11 +290,11 @@
 
 (-> datasets/economics-long
     (tc/select-rows #(-> % :variable (= "unemploy")))
-    (ploclo/base {:=x :date
+    (plotly/base {:=x :date
                   :=y :value})
-    (ploclo/layer-line {:=mark-color "purple"})
-    (ploclo/update-data tc/random 5)
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-line {:=mark-color "purple"})
+    (plotly/update-data tc/random 5)
+    (plotly/layer-point {:=mark-color "green"
                          :=mark-size 15
                          :=mark-opacity 0.5}))
 
@@ -304,8 +304,8 @@
                  :y [1 2 5 9]})
     tc/dataset
     (tc/sq :y :x)
-    (ploclo/layer-point {:=mark-size 20})
-    (ploclo/layer-line {:=dataset (ploclo/dataset {:x [0 3]
+    (plotly/layer-point {:=mark-size 20})
+    (plotly/layer-line {:=dataset (plotly/dataset {:x [0 3]
                                                    :y [1 10]})
                         :=mark-size 5}))
 
@@ -319,11 +319,11 @@
 ;; Soon we will add more ways of modelling the data.
 
 (-> datasets/iris
-    (ploclo/base {:=x :sepal-width
+    (plotly/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-point {:=mark-color "green"
                          :=name "Actual"})
-    (ploclo/layer-smooth {:=mark-color "orange"
+    (plotly/layer-smooth {:=mark-color "orange"
                           :=name "Predicted"}))
 
 ;; By default, the regression is computed with only one predictor variable,
@@ -332,11 +332,11 @@
 ;; We may compute a regression with more than one predictor.
 
 (-> datasets/iris
-    (ploclo/base {:=x :sepal-width
+    (plotly/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-point {:=mark-color "green"
                          :=name "Actual"})
-    (ploclo/layer-smooth {:=predictors [:petal-width
+    (plotly/layer-smooth {:=predictors [:petal-width
                                         :petal-length]
                           :=mark-opacity 0.5
                           :=name "Predicted"}))
@@ -344,11 +344,11 @@
 ;; We can also provide the design matrix.
 
 (-> datasets/iris
-    (ploclo/base {:=x :sepal-width
+    (plotly/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-point {:=mark-color "green"
                          :=name "Actual"})
-    (ploclo/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
+    (plotly/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
                                            [:sepal-width-2 '(* sepal-width
                                                                sepal-width)]]
                           :=mark-opacity 0.5
@@ -357,11 +357,11 @@
 ;; Inspired by Sami Kallinen's [Heart of Clojure talk](https://2024.heartofclojure.eu/talks/sailing-with-scicloj-a-bayesian-adventure/):
 
 (-> datasets/iris
-    (ploclo/base {:=x :sepal-width
+    (plotly/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-point {:=mark-color "green"
                          :=name "Actual"})
-    (ploclo/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
+    (plotly/layer-smooth {:=design-matrix [[:sepal-width '(identity sepal-width)]
                                            [:sepal-width-2 '(* sepal-width
                                                                sepal-width)]
                                            [:sepal-width-3 '(* sepal-width
@@ -387,11 +387,11 @@
    :tribuo-trainer-name "cart"})
 
 (-> datasets/iris
-    (ploclo/base {:=x :sepal-width
+    (plotly/base {:=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=mark-color "green"
+    (plotly/layer-point {:=mark-color "green"
                          :=name "Actual"})
-    (ploclo/layer-smooth {:=model-options regression-tree-options
+    (plotly/layer-smooth {:=model-options regression-tree-options
                           :=mark-opacity 0.5
                           :=name "Predicted"}))
 
@@ -402,13 +402,13 @@
 
 (-> datasets/tips
     (tc/split :holdout {:seed 1})
-    (ploclo/base {:=x :total_bill
+    (plotly/base {:=x :total_bill
                   :=y :tip})
-    (ploclo/layer-point {:=color :$split-name})
-    (ploclo/update-data (fn [ds]
+    (plotly/layer-point {:=color :$split-name})
+    (plotly/update-data (fn [ds]
                           (-> ds
                               (tc/select-rows #(-> % :$split-name (= :train))))))
-    (ploclo/layer-smooth {:=model-options regression-tree-options
+    (plotly/layer-smooth {:=model-options regression-tree-options
                           :=name "prediction"
                           :=mark-color "purple"}))
 
@@ -422,12 +422,12 @@
 ;; each for every species.
 
 (-> datasets/iris
-    (ploclo/base {:=title "dummy"
+    (plotly/base {:=title "dummy"
                   :=color :species
                   :=x :sepal-width
                   :=y :sepal-length})
-    ploclo/layer-point
-    ploclo/layer-smooth)
+    plotly/layer-point
+    plotly/layer-smooth)
 
 ;; This happened because the `:color` field was `:species`,
 ;; which is of `:nominal` type.
@@ -436,23 +436,23 @@
 ;; For example, let us avoid grouping:
 
 (-> datasets/iris
-    (ploclo/base {:=title "dummy"
+    (plotly/base {:=title "dummy"
                   :=color :species
                   :=group []
                   :=x :sepal-width
                   :=y :sepal-length})
-    ploclo/layer-point
-    ploclo/layer-smooth)
+    plotly/layer-point
+    plotly/layer-smooth)
 
 ;; Alternatively, we may assign the `:=color` only to the points layer
 ;; without affecting the smoothing layer.
 
 (-> datasets/iris
-    (ploclo/base {:=title "dummy"
+    (plotly/base {:=title "dummy"
                   :=x :sepal-width
                   :=y :sepal-length})
-    (ploclo/layer-point {:=color :species})
-    (ploclo/layer-smooth {:=name "Predicted"
+    (plotly/layer-point {:=color :species})
+    (plotly/layer-smooth {:=name "Predicted"
                           :=mark-color "blue"}))
 
 ;; ## Example: out-of-sample predictions
@@ -507,18 +507,18 @@
     (tc/add-column :year #(datetime/long-temporal-field :years (:date %)))
     (tc/add-column :month #(datetime/long-temporal-field :months (:date %)))
     (tc/map-columns :yearmonth [:year :month] (fn [y m] (+ m (* 12 y))))
-    (ploclo/base {:=x :date
+    (plotly/base {:=x :date
                   :=y :value})
-    (ploclo/layer-smooth {:=color :relative-time
+    (plotly/layer-smooth {:=color :relative-time
                           :=mark-size 15
                           :=group []
                           :=predictors [:yearmonth]})
     ;; Keep only the past for the following layer:
-    (ploclo/update-data (fn [dataset]
+    (plotly/update-data (fn [dataset]
                           (-> dataset
                               (tc/select-rows (fn [row]
                                                 (-> row :relative-time (= "Past")))))))
-    (ploclo/layer-line {:=mark-color "purple"
+    (plotly/layer-line {:=mark-color "purple"
                         :=mark-size 3
                         :=name "Actual"}))
 
@@ -528,10 +528,10 @@
 ;; with statistical processing:
 
 (-> datasets/iris
-    (ploclo/layer-histogram {:=x :sepal-width}))
+    (plotly/layer-histogram {:=x :sepal-width}))
 
 (-> datasets/iris
-    (ploclo/layer-histogram {:=x :sepal-width
+    (plotly/layer-histogram {:=x :sepal-width
                              :=histogram-nbins 30}))
 
 ;; ## Coordinates
@@ -551,7 +551,7 @@
     :rain (repeatedly #(rand-int 200))}))
 
 (-> rain-data
-    (ploclo/layer-bar
+    (plotly/layer-bar
      {:=r :rain
       :=theta :month
       :=coordinates :polar
@@ -562,15 +562,15 @@
 ;; (by manipulating the raw Plotly.js spec):
 
 (-> rain-data
-    (ploclo/base
+    (plotly/base
      {})
-    (ploclo/layer-bar
+    (plotly/layer-bar
      {:=r :rain
       :=theta :month
       :=coordinates :polar
       :=mark-size 20
       :=mark-opacity 0.6})
-    ploclo/plot
+    plotly/plot
     (assoc-in [:layout :polar]
               {:angularaxis {:tickfont {:size 16}
                              :rotation 90
@@ -587,13 +587,13 @@
                    (map #(rem % 360)))
        :color (range n)}
       tc/dataset
-      (ploclo/layer-point
+      (plotly/layer-point
        {:=r :r
         :=theta :theta
         :=coordinates :polar
         :=mark-size 10
         :=mark-opacity 0.6})
-      (ploclo/layer-line
+      (plotly/layer-line
        {:=r :r
         :=theta :theta
         :=coordinates :polar
@@ -607,29 +607,29 @@
 (def example-to-debug
   (-> datasets/iris
       (tc/random 10 {:seed 1})
-      (ploclo/layer-point {:=x :sepal-width
+      (plotly/layer-point {:=x :sepal-width
                            :=y :sepal-length
                            :=color :species})))
 
 (-> example-to-debug
-    ploclo/dag)
+    plotly/dag)
 
 ;; ### Viewing intermediate values in the computational dag:
 
-;; Layers (plotlycloth's intermediate data representation)
+;; Layers (tableplot's intermediate data representation)
 
 (-> example-to-debug
-    (ploclo/debug :=layers))
+    (plotly/debug :=layers))
 
 ;; Traces (part of the Plotly spec)
 
 (-> example-to-debug
-    (ploclo/debug :=traces))
+    (plotly/debug :=traces))
 
 ;; Both
 
 (-> example-to-debug
-    (ploclo/debug {:layers :=layers
+    (plotly/debug {:layers :=layers
                    :traces :=traces}))
 
 ;; ## Coming soon

@@ -1,5 +1,5 @@
 (ns build
-  "Hanamicloth's build script.
+  "Tableplot's build script.
 
   clojure -T:build ci
   clojure -T:build deploy
@@ -14,8 +14,8 @@
   (:require [clojure.tools.build.api :as b]
             [deps-deploy.deps-deploy :as dd]))
 
-(def lib 'org.scicloj/hanamicloth)
-(def version "1-alpha9")
+(def lib 'org.scicloj/tableplot)
+(def version "1-alpha10")
 
 (def snapshot (str version "-SNAPSHOT"))
 (def class-dir "target/classes")
@@ -33,28 +33,28 @@
   opts)
 
 (defn- pom-template [version]
-  [[:description "Hanamicloth is a data visualization library composing Hanami templates with Tablecloth datasets"]
-   [:url "https://scicloj.github.io/hanamicloth/"]
+  [[:description "Tableplot is a data visualization library composing Hanami templates with Tablecloth datasets"]
+   [:url "https://scicloj.github.io/tableplot/"]
    [:licenses
     [:license
      [:name "Eclipse Public License - v 2.0"]
      [:url "https://www.eclipse.org/legal/epl-2.0/"]]]
    [:scm
-    [:url "https://github.com/scicloj/hanamicloth"]
-    [:connection "scm:git:https://github.com/scicloj/hanamicloth.git"]
-    [:developerConnection "scm:git:ssh:git@github.com:scicloj/hanamicloth.git"]
+    [:url "https://github.com/scicloj/tableplot"]
+    [:connection "scm:git:https://github.com/scicloj/tableplot.git"]
+    [:developerConnection "scm:git:ssh:git@github.com:scicloj/tableplot.git"]
     [:tag (str "v" version)]]])
 
 (defn- jar-opts [opts]
-(let [version (if (:snapshot opts) snapshot version)]
-  (assoc opts
-         :lib lib   :version version
-         :jar-file  (format "target/%s-%s.jar" lib version)
-         :basis     (b/create-basis {})
-         :class-dir class-dir
-         :target    "target"
-         :src-dirs  ["src"]
-         :pom-data  (pom-template version))))
+  (let [version (if (:snapshot opts) snapshot version)]
+    (assoc opts
+           :lib lib   :version version
+           :jar-file  (format "target/%s-%s.jar" lib version)
+           :basis     (b/create-basis {})
+           :class-dir class-dir
+           :target    "target"
+           :src-dirs  ["src"]
+           :pom-data  (pom-template version))))
 
 (defn ci "Run the CI pipeline of tests (and build the JAR)." [opts]
 (test opts)

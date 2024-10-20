@@ -2,7 +2,7 @@
 
 ;; In this documentation, we will use a few datasets from [RDatasets](https://vincentarelbundock.github.io/Rdatasets/articles/data.html) and from the [Plotly datasets](https://plotly.github.io/datasets/).
 
-(ns hanamicloth-book.datasets
+(ns tableplot-book.datasets
   (:require [tablecloth.api :as tc]
             [clojure.string :as str]
             [scicloj.kindly.v4.kind :as kind]))

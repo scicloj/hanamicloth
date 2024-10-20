@@ -1,4 +1,4 @@
-(ns scicloj.hanamicloth.v1.util
+(ns scicloj.tableplot.v1.util
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]
             [scicloj.kindly.v4.kind :as kind]
@@ -7,7 +7,7 @@
             [tech.v3.dataset :as ds]
             [fastmath.stats]
             [fastmath.ml.regression :as regression]
-            [scicloj.hanamicloth.v1.dag :as dag]
+            [scicloj.tableplot.v1.dag :as dag]
             [clojure.string :as str]))
 
 

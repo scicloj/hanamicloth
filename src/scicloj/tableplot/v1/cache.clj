@@ -1,4 +1,4 @@
-(ns scicloj.hanamicloth.v1.cache
+(ns scicloj.tableplot.v1.cache
   (:require [aerial.hanami.common :as hc]
             [aerial.hanami.templates :as ht]))
 
