@@ -9,7 +9,7 @@ Tableplot is a composition of
 and [Tablecloth](https://scicloj.github.io/tablecloth/) datasets.
 
 It is inspired by [ggplot2](https://ggplot2.tidyverse.org/)'s
-[layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html).
+[layered grammar of graphics](https://vita.had.co.nz/papers/layered-grammar.html) and currently draws the plots in the browser using either [Vega-Lite](https://vega.github.io/vega-lite/) or [Plotly.js](https://plotly.com/javascript/).
 
 [Documentation](https://scicloj.github.io/tableplot/)
 
